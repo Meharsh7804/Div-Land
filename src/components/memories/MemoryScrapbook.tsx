@@ -1,246 +1,298 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "motion/react";
-import { SectionHeading } from "@/components/common/SectionHeading";
-import { Reveal } from "@/components/common/Reveal";
-import { Flower, Heart as HeartArt, Star4 } from "@/components/common/Illustrations";
-import { DottedBackdrop } from "@/components/common/Ambient";
-import { memories, memoriesCopy, type Memory } from "@/data/memories";
-import { DUR, EASE_SCENE } from "@/animations/motion";
+import { AnimatePresence, motion } from "motion/react";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { StorybookHeading } from "@/components/common/StorybookHeading";
+import { useAudioExperience } from "@/components/audio/AudioProvider";
+import { Heart as HeartArt, Sparkle, Star4 } from "@/components/common/Illustrations";
+import { DottedBackdrop, SparkleField } from "@/components/common/Ambient";
+import { memories, memoriesCopy, memoryToneStyles } from "@/data/memories";
+import { EASE_SCENE } from "@/animations/motion";
 import { cn } from "@/lib/utils";
-import { MemoryArt } from "./MemoryArt";
+import { MemoryScene } from "./MemoryArt";
 
-function TapDoodle({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden
-      className={className}
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M9.5 11.5V5.8a1.7 1.7 0 0 1 3.4 0v5.1" />
-      <path d="M12.9 10.9V9.4a1.6 1.6 0 0 1 3.2 0v2.1" />
-      <path d="M16.1 11.5v-1a1.5 1.5 0 0 1 3 0v5.2a5.5 5.5 0 0 1-5.5 5.5h-.9a5 5 0 0 1-3.8-1.8l-3.2-4a1.7 1.7 0 0 1 2.4-2.3l1.4 1.4" />
-    </svg>
-  );
-}
-
-function PolaroidCard({ memory }: { memory: Memory }) {
-  const [flipped, setFlipped] = useState(false);
-
-  return (
-    <button
-      type="button"
-      onClick={() => setFlipped((value) => !value)}
-      aria-pressed={flipped}
-      aria-label={`Memory ${memory.index}: ${memory.title}. ${
-        flipped
-          ? "Showing the secret note. Tap to see the illustration."
-          : "Tap to flip the polaroid and read the secret note."
-      }`}
-      className="group relative mx-auto block w-full max-w-[18.5rem] text-left transition-transform duration-500 [transform:rotate(var(--rot))] hover:[transform:rotate(0deg)] focus-visible:outline-offset-8 sm:max-w-[19.5rem]"
-      style={{ ["--rot" as string]: memory.rotate }}
-    >
-      <div className="relative w-full [perspective:1400px]" style={{ aspectRatio: "4 / 4.55" }}>
-        <div
-          className="relative h-full w-full transition-transform duration-700 [transform-style:preserve-3d]"
-          style={{ transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)" }}
-        >
-          <div className="absolute inset-0 [backface-visibility:hidden] [transform:translateZ(1px)]">
-            <div className="polaroid flex h-full flex-col">
-              <div className="sheen relative flex-1 overflow-hidden rounded-[2px] bg-[#FFF4E8]">
-                <MemoryArt kind={memory.key} className="h-full w-full" />
-                <span className="absolute bottom-2 right-2 flex items-center gap-1 rounded-full bg-cream/85 px-2 py-0.5 text-[0.64rem] font-extrabold uppercase tracking-[0.12em] text-plum/55">
-                  <TapDoodle className="h-2.5 w-2.5" />
-                  tap
-                </span>
-              </div>
-              <p className="mt-2 line-clamp-2 px-1 font-hand text-[1.08rem] leading-tight text-plum/75">
-                {memory.caption}
-              </p>
-              <Star4 className="absolute right-3 top-3 h-3.5 w-3.5 text-butter" />
-            </div>
-          </div>
-
-          <div
-            className="absolute inset-0 overflow-hidden rounded-[2px] p-5 [backface-visibility:hidden] [transform:rotateY(180deg)]"
-            style={{
-              background: "linear-gradient(160deg, #543B53, #2F1F2E)",
-              boxShadow: "0 22px 40px -24px rgba(47,31,46,.7)",
-            }}
-          >
-            <div className="flex h-full flex-col items-center justify-center text-center">
-              <span className="rounded-full border border-butter/35 px-2.5 py-1 text-[0.64rem] font-extrabold uppercase tracking-[0.18em] text-butter/80">
-                {memory.stamp}
-              </span>
-              <HeartArt className="mt-4 h-5 w-5 text-rose" />
-              <p className="mt-3 font-hand text-[1.55rem] leading-tight text-cream">
-                {memory.back}
-              </p>
-              <span className="mt-4 h-px w-10 bg-cream/25" />
-              <span className="mt-3 text-[0.64rem] font-extrabold uppercase tracking-[0.18em] text-cream/40">
-                tap to flip back
-              </span>
-              <Star4 className="mt-3 h-2.5 w-2.5 text-butter/70" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </button>
-  );
-}
-
-function MemoryRow({ memory, index }: { memory: Memory; index: number }) {
-  const polaroidFirst = index % 2 === 0;
-
-  return (
-    <li className="relative pb-12 pl-10 last:pb-0 sm:pl-14 md:pb-16 md:pl-0">
-      <span
-        aria-hidden
-        className="absolute left-[7px] top-8 z-10 flex h-3.5 w-3.5 items-center justify-center rounded-full border border-plum/30 bg-cream shadow-sm md:left-1/2 md:-translate-x-1/2"
-      >
-        <span className="h-1.5 w-1.5 rounded-full bg-rose-deep" />
-      </span>
-
-      <div className="md:grid md:grid-cols-2 md:items-center md:gap-14">
-        <div
-          className={cn("w-full", polaroidFirst ? "md:order-1" : "md:order-2")}
-          data-parallax={index % 2 === 0 ? -4 : 4}
-        >
-          <motion.div
-            initial={{ opacity: 0, x: polaroidFirst ? -34 : 34, rotate: polaroidFirst ? -1.4 : 1.4 }}
-            whileInView={{ opacity: 1, x: 0, rotate: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: DUR.scene, ease: EASE_SCENE }}
-          >
-            <PolaroidCard memory={memory} />
-          </motion.div>
-        </div>
-
-        <div
-          className={cn(
-            "relative mt-7 w-full md:mt-0",
-            polaroidFirst ? "md:order-2" : "md:order-1",
-          )}
-          data-parallax={index % 2 === 0 ? 3 : -3}
-        >
-          <motion.div
-            initial={{ opacity: 0, x: polaroidFirst ? 30 : -30, y: 16 }}
-            whileInView={{ opacity: 1, x: 0, y: 0 }}
-            viewport={{ once: true, amount: 0.24 }}
-            transition={{ duration: DUR.scene, delay: 0.08, ease: EASE_SCENE }}
-          >
-            <div
-              className={cn(
-                "relative rounded-[1.15rem] border border-plum/10 bg-[#FFFBF3] px-5 py-5 shadow-[0_20px_44px_-32px_rgba(47,31,46,.6)] sm:px-6",
-                index % 2 === 0 ? "rotate-[1deg]" : "rotate-[-1deg]",
-              )}
-            >
-              <span
-                className={cn(
-                  "tape h-4 w-16",
-                  memory.tape === "rose" ? "tape-rose" : "",
-                  polaroidFirst ? "-left-3 -top-2 -rotate-6" : "-right-3 -top-2 rotate-6",
-                )}
-              />
-              <div className="flex items-start justify-between gap-3">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-rose/35 bg-blush/35 font-display text-sm italic text-rose-deep">
-                  {memory.index}
-                </span>
-                <span className="rotate-[3deg] rounded-full border border-dashed border-rose-deep/35 px-2.5 py-1 text-[0.64rem] font-extrabold uppercase tracking-[0.16em] text-rose-deep/70">
-                  {memory.stamp}
-                </span>
-              </div>
-              <h3 className="mt-3 font-display text-[1.45rem] leading-tight text-plum sm:text-[1.7rem]">
-                {memory.title}
-              </h3>
-              <p className="mt-2 text-[0.88rem] leading-relaxed text-ink/75 sm:text-[0.95rem]">
-                {memory.text}
-              </p>
-              <div className="mt-3 flex items-center gap-2 border-t border-dashed border-plum/12 pt-2.5">
-                <HeartArt className="h-3 w-3 shrink-0 text-rose" />
-                <p className="font-hand text-[1.08rem] leading-tight text-plum/55">
-                  kept, not archived
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </div>
-    </li>
-  );
-}
+const scraps = [
+  {
+    className: "left-[3%] top-[16%] w-14 -rotate-[8deg] sm:w-16",
+    delay: "-1.6s",
+  },
+  {
+    className: "right-[4%] top-[10%] w-12 rotate-[7deg] sm:w-14",
+    delay: "-3.4s",
+  },
+  {
+    className: "left-[6%] bottom-[14%] hidden w-14 rotate-[5deg] md:block",
+    delay: "-2.2s",
+  },
+  {
+    className: "right-[5%] bottom-[18%] hidden w-12 -rotate-[6deg] md:block",
+    delay: "-4.1s",
+  },
+];
 
 export function MemoryScrapbook() {
+  const audio = useAudioExperience();
+  const reduceMotion = useReducedMotion();
+  const [selectedId, setSelectedId] = useState(memories[0].id);
+  const selected = memories.find((memory) => memory.id === selectedId) ?? memories[0];
+  const selectedIndex = memories.findIndex((memory) => memory.id === selected.id);
+  const tone = memoryToneStyles[selected.tone];
+
+  const open = (id: string) => {
+    audio.playSfx("page");
+    setSelectedId(id);
+  };
+
+  const step = (direction: 1 | -1) => {
+    const next = (selectedIndex + direction + memories.length) % memories.length;
+    open(memories[next].id);
+  };
+
   return (
     <section
       id="chapter-memories"
       aria-labelledby="memories-title"
-      className="relative overflow-hidden bg-[#F7EAE4] section-pad"
+      className="story-scene bg-[linear-gradient(180deg,#F9EEE8_0%,#F5E5DF_48%,#F8ECE6_100%)]"
     >
-      <div aria-hidden data-parallax={-3} className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_0%,rgba(255,255,255,.65),transparent_55%)]" />
-        <DottedBackdrop className="opacity-30" />
-        <div className="absolute -left-16 top-1/3 h-64 w-64 rounded-full bg-blush/50 blur-3xl" />
-        <div className="absolute -right-20 bottom-1/4 h-72 w-72 rounded-full bg-lavender/45 blur-3xl" />
-        <span className="tape left-[8%] top-[10%] h-7 w-24 rotate-[-8deg]" />
-        <span className="tape tape-rose right-[6%] top-[18%] h-6 w-20 rotate-[7deg]" />
-        <Flower className="absolute bottom-[8%] left-[5%] h-9 w-9 opacity-60 anim-sway" />
-        <Flower className="absolute right-[8%] top-[12%] h-7 w-7 opacity-50 anim-sway" style={{ animationDelay: "-2s" }} />
-        <Star4 className="absolute left-[16%] top-[46%] h-4 w-4 text-rose/40 anim-twinkle" />
-        <Star4 className="absolute right-[18%] bottom-[16%] h-3 w-3 text-butter anim-twinkle" style={{ animationDelay: "1s" }} />
+      <div aria-hidden className="pointer-events-none absolute inset-0">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_18%_4%,rgba(255,255,255,.7),transparent_58%)]" />
+        <DottedBackdrop className="opacity-20" />
+        <div className="absolute -left-20 top-1/3 h-72 w-72 rounded-full bg-blush/45 blur-3xl" />
+        <div className="absolute -right-24 bottom-1/4 h-80 w-80 rounded-full bg-lavender/40 blur-3xl" />
+        <SparkleField count={12} seed={57} tone="text-rose/30" />
+        <Star4 className="absolute left-[14%] top-[30%] h-3.5 w-3.5 text-butter garden-twinkle" />
+        <Star4
+          className="absolute right-[16%] top-[42%] h-3 w-3 text-rose/45 garden-twinkle"
+          style={{ animationDelay: "1.2s" }}
+        />
+        {scraps.map((scrap, index) => (
+          <div
+            key={index}
+            className={cn(
+              "absolute rounded-[0.4rem] border border-plum/10 bg-[#FFFBF1]/85 p-1.5 shadow-[0_14px_26px_-22px_rgba(47,31,46,.6)] garden-float",
+              scrap.className,
+            )}
+            style={{ animationDelay: scrap.delay }}
+          >
+            <span className="mx-auto mb-1 block h-0.5 w-2/3 rounded-full bg-plum/12" />
+            <span className="mx-auto block h-0.5 w-1/2 rounded-full bg-plum/10" />
+            <span className="absolute left-1/2 top-0 h-2 w-6 -translate-x-1/2 -translate-y-1/2 rotate-[-4deg] bg-butter/70" />
+          </div>
+        ))}
       </div>
 
       <div className="section-shell relative">
-        <SectionHeading
+        <StorybookHeading
+          id="memories-title"
           number="05"
-          sceneId="memories"
-          eyebrow={memoriesCopy.eyebrow}
-          title={<span id="memories-title">{memoriesCopy.title}</span>}
-          script={memoriesCopy.script}
-        >
-          <span className="flex flex-col items-center gap-2">
-            <span className="font-hand text-[1.35rem] text-rose-deep">
-              {memoriesCopy.hint}
-            </span>
-          </span>
-        </SectionHeading>
+          label={memoriesCopy.eyebrow.replace("Chapter 05 · ", "")}
+          title={memoriesCopy.title}
+          note={memoriesCopy.script}
+        />
 
-        <ol className="relative mx-auto mt-10 max-w-4xl sm:mt-14">
-          <div
-            aria-hidden
-            className="absolute bottom-4 left-[13px] top-4 w-px md:left-1/2"
-            style={{
-              backgroundImage:
-                "repeating-linear-gradient(to bottom, rgba(176,112,140,.6) 0 6px, transparent 6px 12px)",
-            }}
-          />
+        <div className="relative mx-auto mt-6 w-full max-w-5xl sm:mt-9">
+          <div className="paper relative rounded-[1.5rem] border border-plum/12 px-3 py-4 shadow-[0_40px_80px_-48px_rgba(47,31,46,.7)] sm:rounded-[2rem] sm:px-6 sm:py-6">
+            <span className="tape left-[12%] top-0 h-3.5 w-16 -translate-y-1/2 rotate-[-3deg]" />
+            <span className="tape tape-rose right-[10%] top-0 h-3 w-14 -translate-y-1/2 rotate-[4deg]" />
 
-          {memories.map((memory, index) => (
-            <MemoryRow key={memory.id} memory={memory} index={index} />
-          ))}
-        </ol>
+            <div className="grid gap-5 lg:grid-cols-[1.16fr_0.84fr] lg:items-center lg:gap-7">
+              <div className="relative min-w-0">
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.figure
+                    key={selected.id}
+                    initial={{
+                      opacity: 0,
+                      y: reduceMotion ? 0 : 18,
+                      rotate: reduceMotion ? 0 : -1.1,
+                    }}
+                    animate={{ opacity: 1, y: 0, rotate: 0 }}
+                    exit={{
+                      opacity: 0,
+                      y: reduceMotion ? 0 : -14,
+                      rotate: reduceMotion ? 0 : 1,
+                    }}
+                    transition={{ duration: reduceMotion ? 0.01 : 0.46, ease: EASE_SCENE }}
+                    className="relative m-0"
+                  >
+                    <div
+                      className={cn(
+                        "relative overflow-hidden rounded-[1.1rem] border bg-gradient-to-br p-2 shadow-[inset_0_1px_0_rgba(255,255,255,.7),0_22px_44px_-30px_rgba(47,31,46,.6)] sm:p-3",
+                        tone.paper,
+                        selected.core
+                          ? "border-rose-deep/45 ring-2 ring-butter/60"
+                          : "border-plum/12",
+                      )}
+                    >
+                      {selected.core ? (
+                        <span className="absolute left-2 top-2 z-10 inline-flex items-center gap-1 rounded-full border border-cream/40 bg-plum/85 px-2 py-1 text-[0.44rem] font-extrabold uppercase tracking-[0.16em] text-butter shadow-sm sm:left-3 sm:top-3">
+                          <HeartArt className="h-2.5 w-2.5" />
+                          {memoriesCopy.coreLabel}
+                        </span>
+                      ) : null}
 
-        <Reveal delay={0.06} className="mt-12">
-          <div className="flex flex-col items-center gap-4 text-center">
-            <div className="flex items-center gap-3">
-              <span className="h-px w-10 bg-plum/15" />
-              <Star4 className="h-3.5 w-3.5 text-rose-deep/60" />
-              <span className="h-px w-10 bg-plum/15" />
+                      <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[0.8rem] border border-white/55 bg-cream/60">
+                        <div className={cn("absolute inset-0 opacity-25", tone.wash)} />
+                        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_20%,rgba(255,255,255,.55),transparent_65%)]" />
+                        <MemoryScene
+                          key={`${selected.id}-scene`}
+                          kind={selected.key}
+                          animated={!reduceMotion}
+                          className="relative h-full w-full"
+                        />
+                      </div>
+                    </div>
+
+                    <figcaption className="mt-3 flex items-start justify-between gap-3 px-1">
+                      <div className="min-w-0">
+                        <p className="flex items-center gap-1.5 text-[0.5rem] font-extrabold uppercase tracking-[0.18em] text-plum/40">
+                          <Sparkle className="h-2.5 w-2.5 text-rose-deep/70" />
+                          scene {selected.index} · {selected.title}
+                        </p>
+                        <p
+                          className={cn(
+                            "hand mt-1 text-[clamp(1.2rem,3.7vw,1.62rem)] leading-tight",
+                            selected.core ? "text-rose-deep" : "text-plum/85",
+                          )}
+                        >
+                          {selected.caption}
+                        </p>
+                        {selected.core ? (
+                          <p className="mt-1 text-[0.56rem] font-semibold italic text-rose-deep/75">
+                            {memoriesCopy.coreNote}
+                          </p>
+                        ) : null}
+                      </div>
+
+                      <div className="flex shrink-0 flex-col items-center gap-1">
+                        <span className="flex h-9 w-9 items-center justify-center rounded-full border border-plum/15 bg-cream/70 text-[0.5rem] font-extrabold tracking-[0.1em] text-plum/45">
+                          {selected.index}
+                        </span>
+                        <div className="flex gap-1">
+                          <button
+                            type="button"
+                            onClick={() => step(-1)}
+                            aria-label="Previous scene"
+                            className="flex h-7 w-7 items-center justify-center rounded-full border border-plum/15 bg-cream/70 text-plum/50 transition-colors hover:bg-cream hover:text-plum"
+                          >
+                            <span aria-hidden className="text-sm leading-none">‹</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => step(1)}
+                            aria-label="Next scene"
+                            className="flex h-7 w-7 items-center justify-center rounded-full border border-plum/15 bg-cream/70 text-plum/50 transition-colors hover:bg-cream hover:text-plum"
+                          >
+                            <span aria-hidden className="text-sm leading-none">›</span>
+                          </button>
+                        </div>
+                      </div>
+                    </figcaption>
+                  </motion.figure>
+                </AnimatePresence>
+
+                <p aria-live="polite" aria-atomic="true" className="sr-only">
+                  Scene {selected.index}: {selected.title}. {selected.caption}
+                </p>
+              </div>
+
+              <div className="relative min-w-0">
+                <div className="mb-2.5 flex items-center justify-between gap-2">
+                  <p className="text-[0.5rem] font-extrabold uppercase tracking-[0.2em] text-plum/40">
+                    {memoriesCopy.hint}
+                  </p>
+                  <Star4 className="h-3 w-3 text-rose/45 garden-twinkle" />
+                </div>
+
+                <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
+                  {memories.map((memory, index) => {
+                    const active = memory.id === selected.id;
+                    const cardTone = memoryToneStyles[memory.tone];
+
+                    return (
+                      <div
+                        key={memory.id}
+                        className="relative anim-float"
+                        style={{ animationDelay: `${index * -0.8}s`, animationDuration: `${6 + (index % 3)}s` }}
+                      >
+                        <div style={{ transform: `rotate(${memory.rotate})` }}>
+                          <button
+                            type="button"
+                            onClick={() => open(memory.id)}
+                            aria-pressed={active}
+                            aria-label={`Open scene: ${memory.title}. ${memory.caption}`}
+                            className={cn(
+                              "group relative block w-full rounded-[0.8rem] border p-1.5 text-left shadow-[0_14px_26px_-22px_rgba(47,31,46,.7)] transition-all duration-300 focus-visible:outline-offset-4",
+                              active
+                                ? "border-rose-deep/55 bg-cream shadow-[0_18px_34px_-20px_rgba(47,31,46,.75)]"
+                                : memory.core
+                                  ? "border-rose-deep/35 bg-cream/80 ring-1 ring-butter/70 hover:-translate-y-0.5 hover:border-rose-deep/50 hover:bg-cream"
+                                  : "border-plum/12 bg-cream/65 hover:-translate-y-0.5 hover:border-plum/25 hover:bg-cream",
+                            )}
+                          >
+                            <span className="absolute -top-1.5 left-1/2 z-[3] h-2.5 w-9 -translate-x-1/2 rotate-[-3deg] bg-butter/80 shadow-sm" />
+
+                            <div
+                              className={cn(
+                                "relative aspect-[4/3] w-full overflow-hidden rounded-[0.55rem] border bg-cream/60",
+                                active ? "border-rose-deep/25" : "border-plum/10",
+                              )}
+                            >
+                              <div className={cn("absolute inset-0 opacity-30", cardTone.wash)} />
+                              <MemoryScene
+                                kind={memory.key}
+                                animated={false}
+                                className="relative h-full w-full"
+                              />
+                              {memory.core ? (
+                                <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-cream/90 shadow-sm">
+                                  <HeartArt className="h-2.5 w-2.5 text-rose-deep" />
+                                </span>
+                              ) : null}
+                            </div>
+
+                            <div className="mt-1 flex items-baseline justify-between gap-1 px-0.5">
+                              <span className="text-[0.42rem] font-extrabold tracking-[0.12em] text-plum/35">
+                                {memory.index}
+                              </span>
+                              <span
+                                className={cn(
+                                  "truncate hand text-[0.8rem] leading-tight",
+                                  active ? "text-rose-deep/90" : "text-plum/60",
+                                )}
+                              >
+                                {memory.short}
+                              </span>
+                            </div>
+
+                            {active ? (
+                              <span className="absolute -bottom-1 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-rose-deep" />
+                            ) : null}
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <p className="mt-2.5 text-center text-[0.48rem] font-extrabold uppercase tracking-[0.18em] text-plum/30">
+                  {memoriesCopy.closeLabel}
+                </p>
+              </div>
             </div>
-            <p className="hand max-w-md text-[1.4rem] leading-tight text-plum/60">
-              {memoriesCopy.outro}
-            </p>
-            <span className="rounded-full border border-dashed border-rose-deep/30 px-3 py-1 text-[0.64rem] font-extrabold uppercase tracking-[0.18em] text-rose-deep/60">
-              certified · actually ours
-            </span>
           </div>
-        </Reveal>
+        </div>
+
+        <div className="mt-7 flex flex-col items-center gap-2 text-center sm:mt-9">
+          <span className="h-px w-16 bg-plum/15" />
+          <p className="hand text-[clamp(1.2rem,4vw,1.65rem)] leading-tight text-rose-deep/90">
+            {memoriesCopy.outro}
+          </p>
+          <span className="flex items-center gap-1.5 text-[0.46rem] font-extrabold uppercase tracking-[0.22em] text-plum/30">
+            <HeartArt className="h-2.5 w-2.5 text-rose/60" />
+            kept anyway
+          </span>
+        </div>
       </div>
     </section>
   );

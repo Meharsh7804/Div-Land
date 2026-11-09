@@ -18,7 +18,10 @@ export function WorldDivya({ className, active = true }: CharacterProps) {
       <g
         style={{
           transition: "transform .7s cubic-bezier(.22,1,.36,1)",
-          transform: active ? "translateY(0px)" : "translateY(6px)",
+          transform: active
+            ? "translateY(0px) rotate(-1.2deg)"
+            : "translateY(8px) rotate(1.4deg) scale(0.985)",
+          transformOrigin: "110px 266px",
         }}
       >
         {/* hair back */}
@@ -80,7 +83,7 @@ export function WorldDivya({ className, active = true }: CharacterProps) {
           <path d="M76 103l11 7" stroke="#FFF9F0" strokeWidth="2.4" strokeLinecap="round" opacity=".55" />
           <path d="M119 103l11 7" stroke="#FFF9F0" strokeWidth="2.4" strokeLinecap="round" opacity=".55" />
         </g>
-        {/* nose + smirk */}
+        {/* nose */}
         <path
           d="M110 121c-2 5-1 9 4 10"
           stroke={skinShade}
@@ -88,14 +91,27 @@ export function WorldDivya({ className, active = true }: CharacterProps) {
           fill="none"
           strokeLinecap="round"
         />
-        <path
-          d="M96 139c7 5 16 5 23 0"
-          stroke="#B05F6D"
-          strokeWidth="2.4"
-          fill="none"
-          strokeLinecap="round"
-        />
-        <path d="M119 139c3 1 5 0 6-2" stroke="#B05F6D" strokeWidth="1.8" strokeLinecap="round" />
+        {/* smirk when she is in public mode */}
+        <g style={{ opacity: active ? 1 : 0, transition: "opacity .45s ease" }}>
+          <path
+            d="M96 139c7 5 16 5 23 0"
+            stroke="#B05F6D"
+            strokeWidth="2.4"
+            fill="none"
+            strokeLinecap="round"
+          />
+          <path d="M119 139c3 1 5 0 6-2" stroke="#B05F6D" strokeWidth="1.8" strokeLinecap="round" />
+        </g>
+        {/* neutral little line when she is off guard */}
+        <g style={{ opacity: active ? 0 : 1, transition: "opacity .45s ease" }}>
+          <path
+            d="M99 140c7 2 15 2 22 0"
+            stroke="#B05F6D"
+            strokeWidth="2.2"
+            fill="none"
+            strokeLinecap="round"
+          />
+        </g>
         {/* earrings */}
         <circle cx="64" cy="132" r="5.5" fill="none" stroke="#FFF0B8" strokeWidth="2.6" />
         <circle cx="156" cy="132" r="5.5" fill="none" stroke="#FFF0B8" strokeWidth="2.6" />
@@ -126,7 +142,10 @@ export function MineDivya({ className, active = false }: CharacterProps) {
       <g
         style={{
           transition: "transform .7s cubic-bezier(.22,1,.36,1)",
-          transform: active ? "translateY(0px)" : "translateY(6px)",
+          transform: active
+            ? "translateY(0px) rotate(1.2deg)"
+            : "translateY(8px) rotate(-1.4deg) scale(0.985)",
+          transformOrigin: "110px 266px",
         }}
       >
         {/* hair back */}
@@ -191,9 +210,48 @@ export function MineDivya({ className, active = false }: CharacterProps) {
         {/* blush */}
         <ellipse cx="80" cy="130" rx="10" ry="6" fill="#E69A93" opacity=".45" />
         <ellipse cx="140" cy="130" rx="10" ry="6" fill="#E69A93" opacity=".45" />
-        {/* nose + pout */}
+        {/* nose */}
         <path d="M110 122c-1 5 0 8 4 9" stroke={skinShade} strokeWidth="2" fill="none" strokeLinecap="round" />
-        <path d="M102 140c4-3 12-3 16 0-4 5-12 5-16 0Z" fill="#B05F6D" />
+        {/* tiny pout when she is not being pampered */}
+        <g style={{ opacity: active ? 0 : 1, transition: "opacity .45s ease" }}>
+          <path d="M102 140c4-3 12-3 16 0-4 5-12 5-16 0Z" fill="#B05F6D" />
+        </g>
+        {/* soft happy smile when she is off duty */}
+        <g style={{ opacity: active ? 1 : 0, transition: "opacity .45s ease" }}>
+          <path
+            d="M100 138c5 7 15 7 20 0"
+            stroke="#B05F6D"
+            strokeWidth="2.6"
+            fill="none"
+            strokeLinecap="round"
+          />
+          <path d="M112 143c2 1 4 1 6 0" stroke="#E69A93" strokeWidth="1.6" strokeLinecap="round" />
+        </g>
+        {/* blush deepens when pampered */}
+        <g style={{ opacity: active ? 1 : 0, transition: "opacity .45s ease" }}>
+          <ellipse cx="78" cy="132" rx="11" ry="6.5" fill="#E69A93" opacity=".4" />
+          <ellipse cx="142" cy="132" rx="11" ry="6.5" fill="#E69A93" opacity=".4" />
+        </g>
+        {/* floating little hearts */}
+        <g
+          className="garden-float"
+          style={{
+            opacity: active ? 1 : 0,
+            transition: "opacity .5s ease",
+            animationDuration: "5.5s",
+          }}
+        >
+          <path
+            d="M168 84c-3-4-9-3-9 2 0 3 3 4 5 6 2-2 5-3 5-6 0-5-6-6-9-2"
+            fill="#F6DCE7"
+            stroke="#C98EA8"
+            strokeWidth="1.2"
+          />
+          <path
+            d="M178 60c-2-2.6-6-2-6 1.4 0 2 2 2.7 3.4 4 1.4-1.3 3.4-2 3.4-4 0-3.4-4.8-4-6-1.4"
+            fill="#FFF0B8"
+          />
+        </g>
         {/* mug */}
         <path
           d="M77 212h66l-6 38c-1 9-9 16-18 16h-18c-9 0-17-7-18-16l-6-38Z"

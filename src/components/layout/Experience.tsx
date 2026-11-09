@@ -11,15 +11,17 @@ import { MemoryScrapbook } from "@/components/memories/MemoryScrapbook";
 import { TalentGallery } from "@/components/gallery/TalentGallery";
 import { LetterSection } from "@/components/letter/LetterSection";
 import { Finale } from "@/components/finale/Finale";
-import { SceneBridge } from "@/components/common/SceneBridge";
-import { MusicToggle } from "@/components/common/MusicToggle";
+import { AudioControls } from "@/components/audio/AudioControls";
+import {
+  AudioProvider,
+  useAudioExperience,
+} from "@/components/audio/AudioProvider";
 import { ChapterIndicator, ChapterRail } from "@/components/common/ChapterNav";
 import { SmileButton } from "@/components/common/SmileButton";
 import { BrandMark, ScrollTopButton, TopProgress } from "@/components/common/ScrollTop";
-import { chapters, site, type Chapter } from "@/data/site";
+import { chapters, type Chapter } from "@/data/site";
 import { useActiveChapter } from "@/hooks/useChapterProgress";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-import { useAudio } from "@/hooks/useAudio";
 import { scrollToTarget } from "@/animations/useSmoothScroll";
 
 const sectionIds = chapters.map((chapter) => chapter.sectionId);
@@ -37,28 +39,35 @@ const StorySections = memo(function StorySections({
       <PersonalityFiles />
       <ThoughtLab />
       <SonuCafe />
-      <SceneBridge variant="contact" />
       <MemoryScrapbook />
-      <SceneBridge variant="nightfall" />
       <TalentGallery />
-      <SceneBridge variant="curtain" />
       <LetterSection />
-      <SceneBridge variant="seal" />
       <Finale onReplay={onReplay} />
     </>
   );
 });
 
-export function Experience() {
+function ExperienceShell() {
   const reduced = useReducedMotion();
   const [entered, setEntered] = useState(false);
   const [gateOpen, setGateOpen] = useState(true);
   const [gateKey, setGateKey] = useState(0);
-  const audio = useAudio(site.music.src, site.music.volume);
+  const audio = useAudioExperience();
 
   const activeSection = useActiveChapter(sectionIds);
   const active =
     chapters.find((chapter) => chapter.sectionId === activeSection) ?? chapters[0];
+  const { setMood } = audio;
+
+  useEffect(() => {
+    if (active.id === "letter") {
+      setMood("intimate");
+    } else if (active.id === "finale") {
+      setMood("bright");
+    } else {
+      setMood("default");
+    }
+  }, [active.id, setMood]);
 
   useEffect(() => {
     if (!gateOpen) return;
@@ -69,10 +78,14 @@ export function Experience() {
     };
   }, [gateOpen]);
 
+
   const handleEnter = useCallback(() => {
     setEntered(true);
     setGateOpen(false);
-    window.setTimeout(() => scrollToTarget(0, { immediate: true }), 30);
+    window.setTimeout(
+      () => scrollToTarget("#chapter-files", { immediate: true }),
+      40,
+    );
   }, []);
 
   const handleReplay = useCallback(() => {
@@ -82,13 +95,17 @@ export function Experience() {
     scrollToTarget(0, { immediate: true });
   }, []);
 
-  const handleSelect = useCallback((chapter: Chapter) => {
-    if (chapter.sectionId === "top") {
-      scrollToTarget(0);
-      return;
-    }
-    scrollToTarget(`#${chapter.sectionId}`);
-  }, []);
+  const handleSelect = useCallback(
+    (chapter: Chapter) => {
+      audio.playSfx("page");
+      if (chapter.sectionId === "top") {
+        scrollToTarget(0);
+        return;
+      }
+      scrollToTarget(`#${chapter.sectionId}`);
+    },
+    [audio],
+  );
 
   return (
     <MotionConfig reducedMotion="user">
@@ -102,11 +119,7 @@ export function Experience() {
           Skip to the chapters
         </a>
 
-        <MusicToggle
-          playing={audio.playing}
-          busy={audio.busy}
-          onToggle={() => void audio.toggle()}
-        />
+        <AudioControls visible={entered} />
 
         <TopProgress visible={entered} />
         <BrandMark visible={entered} />
@@ -130,5 +143,13 @@ export function Experience() {
         </AnimatePresence>
       </div>
     </MotionConfig>
+  );
+}
+
+export function Experience() {
+  return (
+    <AudioProvider>
+      <ExperienceShell />
+    </AudioProvider>
   );
 }

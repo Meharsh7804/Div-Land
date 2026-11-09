@@ -2,15 +2,12 @@ export const site = {
   name: "Divya Land",
   recipient: "Divya",
   nickname: "Sonu",
-  tagline: "Everything in here is about you. Obviously.",
+  tagline: "A little universe, made just for you.",
   quote: "Good food, better conversation, and nowhere else to be.",
   music: {
-    // Drop your own licensed/original instrumental at public/music/theme.mp3
-    // and set the path below. If empty (or the file can't play), the site
-    // gracefully falls back to a soft, generated ambient soundscape.
-    src: "",
     title: "a small theme for Sonu",
-    volume: 0.32,
+    volume: 0.36,
+    sfxVolume: 0.5,
   },
 } as const;
 
@@ -84,6 +81,6 @@ export const chapters: Chapter[] = [
 export const overture = {
   eyebrow: "you're in",
   script: "welcome home, sonu",
-  line: "Eight chapters, a lot of food, and one very long letter.",
-  hint: "scroll gently — the world opens as you go",
+  line: "Eight small chapters. One very specific person.",
+  hint: "scroll to open the story",
 };

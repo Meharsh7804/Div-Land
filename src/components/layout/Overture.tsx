@@ -6,7 +6,6 @@ import {
   Butterfly,
   Cloud,
   Flower,
-  Heart as HeartArt,
   LeafSprig,
   Sparkle,
   Star4,
@@ -14,11 +13,10 @@ import {
 import { ChapterSigil } from "@/components/common/ChapterSigils";
 import { ScallopDivider } from "@/components/common/Dividers";
 import { SparkleField } from "@/components/common/Ambient";
+import { useAudioExperience } from "@/components/audio/AudioProvider";
 import { scrollToTarget } from "@/animations/useSmoothScroll";
 import { DUR, EASE_ENTER, EASE_SCENE, STAGGER } from "@/animations/motion";
-import { overture, site } from "@/data/site";
-
-const chips = ["stay a while", "scroll slowly", "have a coffee"];
+import { overture } from "@/data/site";
 
 const sequence = {
   hidden: {},
@@ -75,13 +73,14 @@ function GardenArch() {
 
 export function Overture({ playing = true }: { playing?: boolean }) {
   const sectionRef = useRef<HTMLElement | null>(null);
+  const audio = useAudioExperience();
 
   return (
     <section
       ref={sectionRef}
       id="top"
       aria-labelledby="overture-title"
-      className="relative flex min-h-[100svh] flex-col items-center justify-center overflow-hidden bg-gradient-to-b from-lavender via-blush to-cream px-4 pb-28 pt-24 text-center sm:pb-32"
+      className="story-scene flex-col bg-gradient-to-b from-lavender via-blush to-cream px-4 pb-28 pt-24 text-center sm:pb-32"
     >
       <motion.div
         aria-hidden
@@ -94,7 +93,7 @@ export function Overture({ playing = true }: { playing?: boolean }) {
           className="absolute inset-0 transition-[translate] duration-700 ease-out"
           style={{ translate: "calc(var(--px, 0) * 8px) calc(var(--py, 0) * 6px)" }}
         >
-          <div data-parallax={-4} className="absolute inset-0">
+          <div className="absolute inset-0">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_12%,rgba(255,249,240,.68),transparent_62%)]" />
             <div className="absolute left-[8%] top-[12%] h-24 w-24 rounded-full bg-butter/60 blur-3xl sm:h-36 sm:w-36" />
             <div className="absolute right-[6%] top-[30%] h-40 w-40 rounded-full bg-peach/40 blur-3xl" />
@@ -107,7 +106,7 @@ export function Overture({ playing = true }: { playing?: boolean }) {
             />
           </div>
 
-          <div data-parallax={5} className="absolute inset-0">
+          <div className="absolute inset-0">
             <Butterfly className="absolute left-[10%] top-[42%] h-10 w-10 anim-float sm:h-14 sm:w-14" />
             <Butterfly
               className="absolute right-[12%] top-[52%] h-8 w-8 anim-float"
@@ -142,7 +141,7 @@ export function Overture({ playing = true }: { playing?: boolean }) {
           <span className="hidden text-[0.64rem] font-extrabold uppercase tracking-[0.26em] text-plum/45 sm:inline">
             scene 01 · the invitation
           </span>
-          <HeartArt className="h-2.5 w-2.5 text-rose-deep" />
+          <Star4 className="h-2.5 w-2.5 text-rose-deep" />
         </motion.div>
 
         <motion.p
@@ -177,29 +176,13 @@ export function Overture({ playing = true }: { playing?: boolean }) {
           {overture.line}
         </motion.p>
 
-        <motion.div
-          variants={fadeUp}
-          className="mt-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[0.64rem] font-extrabold uppercase tracking-[0.2em] text-plum/40"
-        >
-          {chips.map((chip, index) => (
-            <span key={chip} className="flex items-center gap-3">
-              {index > 0 ? <span className="h-1 w-1 rounded-full bg-rose/55" /> : null}
-              {chip}
-            </span>
-          ))}
-        </motion.div>
-
-        <motion.blockquote variants={fadeUp} className="mt-8 max-w-sm">
-          <span className="mx-auto mb-3 block h-px w-10 bg-rose/35" />
-          <p className="font-display text-[1.08rem] italic leading-snug text-plum/60 sm:text-[1.2rem]">
-            &ldquo;{site.quote}&rdquo;
-          </p>
-        </motion.blockquote>
-
         <motion.div variants={fadeUp} className="mt-9 flex flex-col items-center gap-2">
           <button
             type="button"
-            onClick={() => scrollToTarget("#chapter-files")}
+            onClick={() => {
+              audio.playSfx("page");
+              scrollToTarget("#chapter-files");
+            }}
             className="group flex min-h-11 flex-col items-center gap-1 text-plum/60 transition-colors hover:text-plum"
           >
             <span className="text-[0.64rem] font-extrabold uppercase tracking-[0.26em]">

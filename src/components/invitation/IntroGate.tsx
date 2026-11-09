@@ -1,40 +1,108 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import {
   Butterfly,
   Cloud,
   Flower,
-  Heart,
+  LeafSprig,
   Sparkle,
   Star4,
   TinyFlower,
 } from "@/components/common/Illustrations";
-import { PetalRain, SparkleField } from "@/components/common/Ambient";
-import { DUR, EASE_ENTER } from "@/animations/motion";
+import { useAudioExperience } from "@/components/audio/AudioProvider";
+import { DUR, EASE_CINEMA, EASE_ENTER, EASE_SOFT } from "@/animations/motion";
 import { site } from "@/data/site";
+import { cn, seeded } from "@/lib/utils";
 
 type IntroGateProps = {
   onEnter: () => void;
   reduced: boolean;
 };
 
-const flowerRow = [
-  { x: 34, h: 168, tone: "#F6DCE7", center: "#FFF0B8", tilt: -8 },
-  { x: 96, h: 118, tone: "#DCD5F5", center: "#FFF9F0", tilt: 6 },
-  { x: 158, h: 196, tone: "#FFDCCB", center: "#C98EA8", tilt: -4 },
-  { x: 226, h: 138, tone: "#FFF0B8", center: "#C98EA8", tilt: 9 },
-  { x: 300, h: 176, tone: "#F6DCE7", center: "#FFF9F0", tilt: -6 },
-  { x: 372, h: 112, tone: "#DCD5F5", center: "#FFF0B8", tilt: 4 },
-  { x: 452, h: 190, tone: "#FFDCCB", center: "#FFF9F0", tilt: -3 },
-  { x: 526, h: 132, tone: "#FFF0B8", center: "#C98EA8", tilt: 7 },
-  { x: 598, h: 182, tone: "#F6DCE7", center: "#FFF0B8", tilt: -7 },
-  { x: 668, h: 124, tone: "#DCD5F5", center: "#FFF9F0", tilt: 5 },
-  { x: 742, h: 200, tone: "#FFDCCB", center: "#C98EA8", tilt: -5 },
-  { x: 814, h: 144, tone: "#FFF0B8", center: "#FFF9F0", tilt: 8 },
-  { x: 872, h: 172, tone: "#F6DCE7", center: "#C98EA8", tilt: -9 },
+const STAGE = {
+  scene: 0,
+  gate: 1,
+  bloom: 2,
+  title: 3,
+  ready: 4,
+} as const;
+
+const stars = (() => {
+  const random = seeded(19);
+  return Array.from({ length: 30 }, (_, id) => ({
+    id,
+    x: random() * 100,
+    y: random() * 56,
+    size: 2 + random() * 5,
+    delay: random() * 6,
+    duration: 3 + random() * 4.5,
+    opacity: 0.25 + random() * 0.65,
+  }));
+})();
+
+const motes = (() => {
+  const random = seeded(47);
+  return Array.from({ length: 26 }, (_, id) => ({
+    id,
+    x: random() * 100,
+    y: 16 + random() * 74,
+    size: 1.5 + random() * 3.5,
+    duration: 8 + random() * 9,
+    delay: random() * -14,
+    opacity: 0.25 + random() * 0.5,
+  }));
+})();
+
+const petals = (() => {
+  const random = seeded(83);
+  const tones = ["#F6DCE7", "#FFF0B8", "#DCD5F5", "#FFDCCB", "#F3C9DC"];
+  return Array.from({ length: 16 }, (_, id) => ({
+    id,
+    x: random() * 100,
+    size: 6 + random() * 10,
+    duration: 13 + random() * 11,
+    delay: random() * -18,
+    drift: (random() - 0.5) * 180,
+    tone: tones[Math.floor(random() * tones.length)],
+    rotate: random() * 360,
+  }));
+})();
+
+const butterflies = [
+  { top: "26%", size: "h-8 w-8 sm:h-11 sm:w-11", duration: 25, delay: -3 },
+  { top: "39%", size: "h-6 w-6 sm:h-9 sm:w-9", duration: 30, delay: -15 },
+  { top: "51%", size: "h-5 w-5 sm:h-8 sm:w-8", duration: 35, delay: -23 },
+  { top: "18%", size: "h-5 w-5 sm:h-7 sm:w-7", duration: 32, delay: -9 },
+  { top: "62%", size: "h-6 w-6 sm:h-8 sm:w-8", duration: 28, delay: -19 },
 ];
+
+const gateBlooms = [
+  { left: "-18%", bottom: "0%", size: 38, tone: "#F6DCE7", center: "#FFF0B8", delay: 0 },
+  { left: "-7%", bottom: "8%", size: 30, tone: "#DCD5F5", center: "#FFF9F0", delay: 0.1 },
+  { left: "2%", bottom: "-2%", size: 34, tone: "#FFDCCB", center: "#C98EA8", delay: 0.18 },
+  { left: "84%", bottom: "-1%", size: 36, tone: "#FFF0B8", center: "#C98EA8", delay: 0.06 },
+  { left: "94%", bottom: "7%", size: 30, tone: "#F6DCE7", center: "#FFF9F0", delay: 0.14 },
+  { left: "108%", bottom: "0%", size: 40, tone: "#DCD5F5", center: "#FFF0B8", delay: 0.22 },
+];
+
+const archRoses = [
+  { left: "5%", top: "22%", size: 18 },
+  { left: "17%", top: "10%", size: 15 },
+  { left: "38%", top: "2%", size: 20 },
+  { left: "62%", top: "2%", size: 17 },
+  { left: "83%", top: "11%", size: 16 },
+  { left: "95%", top: "24%", size: 19 },
+];
+
+function parallax(depth: number): CSSProperties {
+  return {
+    transform: `translate3d(calc(var(--px, 0) * ${depth}px), calc(var(--py, 0) * ${(
+      depth * 0.6
+    ).toFixed(2)}px), 0)`,
+  };
+}
 
 function ArrowDoodle({ className }: { className?: string }) {
   return (
@@ -53,176 +121,456 @@ function ArrowDoodle({ className }: { className?: string }) {
   );
 }
 
-function GardenBorder() {
+function SpeakerOff({ className }: { className?: string }) {
   return (
     <svg
+      viewBox="0 0 24 24"
+      fill="none"
       aria-hidden
-      viewBox="0 0 900 320"
-      preserveAspectRatio="xMidYMax slice"
-      className="pointer-events-none absolute inset-x-0 bottom-0 h-[38vh] max-h-[340px] w-full"
+      className={className}
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     >
-      <path
-        d="M0 250c120-30 210 8 330-10s210-42 330-16 170 14 240 2v94H0Z"
-        fill="#C7D3BD"
-        opacity=".55"
-      />
-      <path
-        d="M0 282c150-24 240 14 380-6s250-30 360-6 120 14 160 8v42H0Z"
-        fill="#F6DCE7"
-        opacity=".8"
-      />
-      {flowerRow.map((f, i) => (
-        <g key={i} transform={`rotate(${f.tilt} ${f.x} 300)`}>
-          <path
-            d={`M${f.x} 320 C ${f.x - 12} 280, ${f.x + 16} 250, ${f.x} ${320 - f.h}`}
-            stroke="#7E8F72"
-            strokeWidth="2"
-            fill="none"
-            strokeLinecap="round"
-            opacity=".75"
-          />
-          <ellipse
-            cx={f.x + 14}
-            cy={320 - f.h * 0.45}
-            rx="17"
-            ry="7"
-            fill="#A9B99E"
-            transform={`rotate(-32 ${f.x + 14} ${320 - f.h * 0.45})`}
-            opacity=".8"
-          />
-          <ellipse
-            cx={f.x - 13}
-            cy={320 - f.h * 0.62}
-            rx="14"
-            ry="6"
-            fill="#7E8F72"
-            transform={`rotate(30 ${f.x - 13} ${320 - f.h * 0.62})`}
-            opacity=".65"
-          />
-          {[0, 60, 120, 180, 240, 300].map((deg) => (
-            <ellipse
-              key={deg}
-              cx={f.x}
-              cy={320 - f.h - 9}
-              rx="8.5"
-              ry="14"
-              fill={f.tone}
-              transform={`rotate(${deg} ${f.x} ${320 - f.h})`}
-              opacity=".95"
-            />
-          ))}
-          <circle cx={f.x} cy={320 - f.h} r="6.5" fill={f.center} />
-          <circle cx={f.x} cy={320 - f.h} r="2.2" fill="#C98EA8" opacity=".6" />
-        </g>
-      ))}
-      {Array.from({ length: 34 }).map((_, i) => {
-        const x = 18 + i * 27;
-        const h = 16 + ((i * 37) % 40);
-        return (
-          <path
-            key={i}
-            d={`M${x} 320 Q ${x + (i % 2 === 0 ? 8 : -8)} ${320 - h * 0.6} ${x + (i % 2 === 0 ? 12 : -12)} ${320 - h}`}
-            stroke="#7E8F72"
-            strokeWidth="1.6"
-            fill="none"
-            strokeLinecap="round"
-            opacity=".55"
-          />
-        );
-      })}
+      <path d="M4 9.5h3.2L12 5.5v13L7.2 14.5H4v-5Z" />
+      <path d="M16 9.5 21 15M21 9.5 16 15" />
     </svg>
   );
 }
 
-function GardenGate({
-  opening,
-  onOpen,
+function SoundToggle({
+  onToggle,
+  musicOn,
+  playing,
+  busy,
 }: {
-  opening: boolean;
-  onOpen: () => void;
+  onToggle: () => void;
+  musicOn: boolean;
+  playing: boolean;
+  busy: boolean;
 }) {
   return (
     <button
       type="button"
-      onClick={onOpen}
-      disabled={opening}
-      aria-label="Enter your world — open the garden gate"
-      className="group relative mx-auto mt-7 flex w-full max-w-[20rem] flex-col items-center gap-4 rounded-[1.8rem] px-4 py-3 transition-transform duration-300 focus-visible:outline-offset-8 active:scale-[0.985] disabled:cursor-default"
+      onClick={onToggle}
+      disabled={busy}
+      aria-pressed={musicOn}
+      aria-label={
+        musicOn && playing
+          ? "Turn the garden soundtrack off"
+          : "Turn the garden soundtrack on"
+      }
+      className={cn(
+        "group absolute right-4 top-4 z-50 flex h-11 w-11 items-center justify-center rounded-full border backdrop-blur-md transition-all sm:right-6 sm:top-6",
+        musicOn
+          ? "border-plum/20 bg-plum/90 text-cream shadow-[0_12px_30px_-14px_rgba(47,31,46,.8)]"
+          : "border-plum/12 bg-cream/55 text-plum/55 hover:bg-cream/85 hover:text-plum",
+        busy && "opacity-60",
+      )}
+      style={{ marginTop: "env(safe-area-inset-top)" }}
     >
-      <span className="relative block h-[9.2rem] w-[13.8rem] [perspective:900px] sm:h-[10.6rem] sm:w-[16.2rem]">
-        <span
-          aria-hidden
-          className="absolute -inset-7 rounded-full bg-butter/45 blur-2xl transition-opacity duration-700 group-hover:opacity-90"
-        />
-
-        <span
-          aria-hidden
-          className="absolute inset-x-[9%] bottom-0 top-[7%] overflow-hidden rounded-t-[999px] border border-plum/15 bg-[radial-gradient(ellipse_at_50%_78%,#FFF9F0_0%,#FFF0B8_42%,#F6DCE7_78%,#DCD5F5_100%)] shadow-[inset_0_0_30px_rgba(73,51,72,.16)]"
-        >
-          <span className="absolute left-1/2 top-[22%] h-12 w-12 -translate-x-1/2 rounded-full bg-gradient-to-br from-butter to-peach shadow-[0_0_38px_18px_rgba(255,240,184,.55)] sm:h-16 sm:w-16" />
-          <Sparkle className="absolute left-[18%] top-[38%] h-4 w-4 text-cream/90 anim-twinkle" />
-          <Star4 className="absolute right-[20%] top-[30%] h-3 w-3 text-rose/70 anim-twinkle" style={{ animationDelay: ".9s" }} />
-          <span className="absolute bottom-0 left-1/2 h-[38%] w-[46%] -translate-x-1/2 bg-[linear-gradient(180deg,transparent,rgba(255,249,240,.85))]" />
-          <span className="absolute inset-x-0 bottom-0 h-5 bg-gradient-to-t from-[#A9B99E]/45 to-transparent" />
+      {musicOn && playing ? (
+        <span className="flex h-4 items-end gap-[3px]">
+          {[0, 1, 2].map((bar) => (
+            <span
+              key={bar}
+              className="w-[2.5px] animate-pulse rounded-full bg-butter"
+              style={{
+                height: 6 + bar * 4,
+                animationDelay: `${bar * 0.14}s`,
+              }}
+            />
+          ))}
         </span>
-
-        <span
-          aria-hidden
-          className={`absolute inset-y-0 left-0 z-[2] w-1/2 origin-left overflow-hidden rounded-tl-[999px] border-r border-plum/25 bg-[linear-gradient(145deg,#FFE4CF,#F6DCE7_54%,#E8C7D5)] shadow-[inset_-8px_0_16px_rgba(73,51,72,.08)] transition-transform duration-700 [backface-visibility:hidden] [transform-style:preserve-3d] ${
-            opening ? "[transform:rotateY(-82deg)]" : "[transform:rotateY(0deg)]"
-          }`}
-        >
-          <span className="absolute inset-x-3 top-[24%] h-px bg-plum/15" />
-          <span className="absolute inset-x-3 top-[48%] h-px bg-plum/15" />
-          <span className="absolute inset-x-3 top-[72%] h-px bg-plum/15" />
-          <span className="absolute right-2 top-1/2 h-3 w-3 -translate-y-1/2 rounded-full border border-butter/70 bg-butter shadow-sm" />
-          <Flower className="absolute bottom-4 left-3 h-5 w-5 text-rose/60" />
-        </span>
-
-        <span
-          aria-hidden
-          className={`absolute inset-y-0 right-0 z-[2] w-1/2 origin-right overflow-hidden rounded-tr-[999px] border-l border-plum/25 bg-[linear-gradient(215deg,#FFE4CF,#F6DCE7_54%,#E8C7D5)] shadow-[inset_8px_0_16px_rgba(73,51,72,.08)] transition-transform duration-700 [backface-visibility:hidden] [transform-style:preserve-3d] ${
-            opening ? "[transform:rotateY(82deg)]" : "[transform:rotateY(0deg)]"
-          }`}
-        >
-          <span className="absolute inset-x-3 top-[24%] h-px bg-plum/15" />
-          <span className="absolute inset-x-3 top-[48%] h-px bg-plum/15" />
-          <span className="absolute inset-x-3 top-[72%] h-px bg-plum/15" />
-          <span className="absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 rounded-full border border-butter/70 bg-butter shadow-sm" />
-          <TinyFlower className="absolute bottom-4 right-3 h-5 w-5 text-lavender-deep/70" />
-        </span>
-
-        <span className="absolute inset-x-[6%] -top-1 h-3 rounded-full border border-butter/60 bg-butter/35" />
-        <Flower
-          className={`absolute -right-7 -top-5 z-[5] h-10 w-10 transition-transform duration-700 ${
-            opening ? "translate-y-2 rotate-45 opacity-0" : "anim-sway"
-          }`}
-        />
-        <Star4
-          aria-hidden
-          className={`absolute -left-4 top-7 h-3.5 w-3.5 text-butter transition-opacity duration-500 ${
-            opening ? "opacity-0" : "anim-twinkle"
-          }`}
-        />
-        <span className="absolute inset-x-[2%] bottom-0 h-2 rounded-full bg-plum/20" />
-      </span>
-
-      <span
-        className={`btn-magic mt-1 w-full max-w-[17.5rem] text-[0.92rem] transition-opacity duration-300 ${
-          opening ? "pointer-events-none opacity-0" : "opacity-100"
-        }`}
-      >
-        <Sparkle className="h-4 w-4 text-butter" />
-        Enter your world
-        <ArrowDoodle className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-      </span>
+      ) : (
+        <SpeakerOff className="h-[18px] w-[18px]" />
+      )}
     </button>
   );
 }
 
+function FlutteringButterfly({
+  top,
+  size,
+  duration,
+  delay,
+  className,
+}: {
+  top: string;
+  size: string;
+  duration: number;
+  delay: number;
+  className?: string;
+}) {
+  return (
+    <span
+      className={cn("garden-butterfly absolute left-0", className)}
+      style={{
+        top,
+        animationDuration: `${duration}s`,
+        animationDelay: `${delay}s`,
+      }}
+    >
+      <span className="garden-float block" style={{ animationDuration: "4.2s" }}>
+        <span className="garden-flutter block">
+          <Butterfly className={size} />
+        </span>
+      </span>
+    </span>
+  );
+}
+
+function DistantGarden() {
+  return (
+    <svg
+      aria-hidden
+      viewBox="0 0 1440 640"
+      preserveAspectRatio="xMidYMax slice"
+      className="pointer-events-none absolute inset-x-0 bottom-0 h-[54%] w-full"
+    >
+      <path
+        d="M0 396c158-58 300-10 470-44 178-36 322-132 512-108 174 22 288 98 458 76v320H0Z"
+        fill="#CBC3E9"
+        opacity=".5"
+      />
+      <path
+        d="M0 442c176-56 328 8 506-26 188-36 336-108 520-74 158 30 274 78 414 58v240H0Z"
+        fill="#B7C4D8"
+        opacity=".55"
+      />
+      <path
+        d="M0 486c196-48 342 12 524-14 202-28 336-74 512-46 152 24 272 54 404 32v182H0Z"
+        fill="#9DB094"
+        opacity=".55"
+      />
+      <path
+        d="M0 436c140-34 246 4 356-18 118-24 190-70 300-58 106 12 160 54 262 50 132-6 226-46 522-16v68c-260-24-376 18-516 22-118 4-180-40-282-40-96 0-166 42-278 52-130 12-238-14-364 6Z"
+        fill="#FFF6E4"
+        opacity=".32"
+      />
+      <g fill="#7E8F72" opacity=".5">
+        {[74, 158, 238, 318, 432, 1008, 1098, 1186, 1288, 1372].map((x, index) => {
+          const y = 456 + (index % 3) * 16;
+          const scale = 0.72 + ((index * 19) % 40) / 100;
+          return (
+            <g key={x} transform={`translate(${x} ${y}) scale(${scale})`}>
+              <rect x="-2" y="0" width="4" height="54" rx="2" fill="#6F8267" />
+              <circle cx="0" cy="-10" r="24" />
+              <circle cx="-18" cy="8" r="16" />
+              <circle cx="19" cy="5" r="18" />
+            </g>
+          );
+        })}
+      </g>
+      <path
+        d="M720 640 596 640c34-92 58-150 88-188 18-24 44-24 62 0 30 38 54 96 88 188Z"
+        fill="#FFF6E4"
+        opacity=".55"
+      />
+      <path
+        d="M0 566c220-28 382 16 562-4 222-24 376-44 538-16 134 23 236 22 340 8v86H0Z"
+        fill="#F8E9D4"
+        opacity=".85"
+      />
+      <path
+        d="M0 606c236-18 402 10 594-4 236-18 382-22 548-4 108 12 202 8 298 2v40H0Z"
+        fill="#F6DCE7"
+        opacity=".55"
+      />
+    </svg>
+  );
+}
+
+function MidGarden({ bloom }: { bloom: boolean }) {
+  const clusters = [
+    { left: "4%", bottom: "0%", size: 58, tone: "#F6DCE7", center: "#FFF0B8", delay: 0 },
+    { left: "11%", bottom: "-2%", size: 42, tone: "#DCD5F5", center: "#FFF9F0", delay: 0.1 },
+    { left: "18%", bottom: "1%", size: 48, tone: "#FFF0B8", center: "#C98EA8", delay: 0.18 },
+    { left: "82%", bottom: "0%", size: 52, tone: "#FFDCCB", center: "#C98EA8", delay: 0.06 },
+    { left: "89%", bottom: "-2%", size: 44, tone: "#F6DCE7", center: "#FFF9F0", delay: 0.15 },
+    { left: "96%", bottom: "1%", size: 60, tone: "#DCD5F5", center: "#FFF0B8", delay: 0.24 },
+  ];
+
+  return (
+    <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-[34%] min-h-40">
+      <svg
+        viewBox="0 0 1440 300"
+        preserveAspectRatio="none"
+        className="absolute inset-x-0 bottom-0 h-full w-full"
+      >
+        <path
+          d="M0 160c196-56 336 18 520-6 214-28 348-92 520-66 158 24 270 70 400 52v160H0Z"
+          fill="#9DB094"
+          opacity=".6"
+        />
+        <path
+          d="M0 216c220-40 372 24 560 0 214-28 344-58 520-30 146 23 250 48 360 30v84H0Z"
+          fill="#B7C6AC"
+          opacity=".7"
+        />
+        <path
+          d="M0 266c240-22 400 10 590-4 232-18 382-24 548-6 108 12 204 8 302 2v42H0Z"
+          fill="#F0DFCE"
+          opacity=".9"
+        />
+      </svg>
+
+      {clusters.map((cluster, index) => (
+        <motion.div
+          key={`${cluster.left}-${index}`}
+          initial={false}
+          animate={bloom ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.2, y: 14 }}
+          transition={{ duration: 1, delay: cluster.delay, ease: EASE_ENTER }}
+          className="absolute origin-bottom"
+          style={{
+            left: cluster.left,
+            bottom: cluster.bottom,
+            width: cluster.size,
+            height: cluster.size,
+            transform: "translateX(-50%)",
+          }}
+        >
+          <Flower
+            className="h-full w-full garden-sway"
+            style={{
+              ["--flower-petal" as string]: cluster.tone,
+              ["--flower-center" as string]: cluster.center,
+              animationDelay: `${-index * 0.8}s`,
+            }}
+          />
+        </motion.div>
+      ))}
+
+      <LeafSprig className="absolute bottom-0 left-[8%] h-24 w-24 rotate-[16deg] text-[#7E8F72]/60 garden-sway" />
+      <LeafSprig
+        className="absolute bottom-0 right-[9%] h-28 w-28 -rotate-[20deg] text-[#7E8F72]/55 garden-sway"
+        style={{ animationDelay: "-2.4s" }}
+      />
+    </div>
+  );
+}
+
+function GardenGate({
+  visible,
+  bloom,
+  ready,
+  opening,
+  onOpen,
+}: {
+  visible: boolean;
+  bloom: boolean;
+  ready: boolean;
+  opening: boolean;
+  onOpen: () => void;
+}) {
+  return (
+    <motion.div
+      initial={false}
+      animate={
+        visible
+          ? { opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }
+          : { opacity: 0, y: 34, scale: 0.9, filter: "blur(14px)" }
+      }
+      transition={{ duration: DUR.title, ease: EASE_ENTER }}
+      inert={!ready}
+      aria-hidden={!visible}
+      className={cn("pointer-events-auto", !ready && "pointer-events-none")}
+    >
+      <button
+        type="button"
+        onClick={onOpen}
+        disabled={opening || !ready}
+        aria-label="Open the garden gate and enter Divya Land"
+        className="group relative flex flex-col items-center rounded-[2rem] px-4 py-2 focus-visible:outline-offset-8 active:scale-[0.99] disabled:cursor-default"
+      >
+        <span className="relative block h-[13.4rem] w-[9.6rem] [perspective:1300px] sm:h-[18rem] sm:w-[12.6rem]">
+          <span
+            aria-hidden
+            className={cn(
+              "absolute -inset-12 rounded-full bg-[radial-gradient(circle,rgba(255,240,184,.85),transparent_68%)] blur-2xl transition-all duration-700",
+              opening ? "scale-150 opacity-100" : "garden-glow",
+            )}
+          />
+
+          <span
+            aria-hidden
+            className="absolute -inset-x-[13%] -bottom-3 -top-3 rounded-t-[999px] border-[10px] border-[#D8C2B2] bg-[linear-gradient(180deg,rgba(255,249,240,.35),rgba(255,249,240,0))] shadow-[0_34px_60px_-32px_rgba(73,51,72,.7),inset_0_0_0_1px_rgba(255,255,255,.65)] sm:border-[12px]"
+          />
+          <span
+            aria-hidden
+            className="absolute inset-x-[4%] bottom-0 top-[2%] rounded-t-[999px] border-[3px] border-cream/70"
+          />
+
+          <span
+            aria-hidden
+            className={cn(
+              "absolute inset-x-[9%] bottom-0 top-[9%] overflow-hidden rounded-t-[999px] bg-[radial-gradient(ellipse_at_50%_80%,#FFFDF4_0%,#FFF0B8_36%,#F6DCE7_70%,#D3CDED_100%)] transition-opacity duration-700",
+              opening ? "opacity-100" : "opacity-95",
+            )}
+          >
+            <span className="absolute left-1/2 top-[14%] h-16 w-16 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,#FFFDF4,#FFE9A8_70%,#FFD9A0)] shadow-[0_0_70px_34px_rgba(255,240,184,.72)] sm:h-24 sm:w-24" />
+            <span className="absolute bottom-0 left-1/2 h-[54%] w-[70%] -translate-x-1/2 bg-[linear-gradient(180deg,transparent,rgba(255,249,240,.97))]" />
+            <span className="absolute bottom-[8%] left-1/2 h-[26%] w-[34%] -translate-x-1/2 rounded-t-full border-t border-cream/70" />
+            <Sparkle className="absolute left-[18%] top-[40%] h-4 w-4 text-cream/90 garden-twinkle" />
+            <Star4
+              className="absolute right-[19%] top-[33%] h-3 w-3 text-rose/70 garden-twinkle"
+              style={{ animationDelay: ".9s" }}
+            />
+          </span>
+
+          <span
+            aria-hidden
+            className={cn(
+              "absolute inset-y-0 left-0 z-[3] w-1/2 origin-left overflow-hidden rounded-tl-[999px] border-r border-plum/25 bg-[linear-gradient(145deg,#FFE7D6,#F6DCE7_54%,#E9CAD8)] shadow-[inset_-8px_0_16px_rgba(73,51,72,.08)] [backface-visibility:hidden] [transform-style:preserve-3d] transition-transform duration-[1100ms] [transition-timing-function:cubic-bezier(.65,0,.35,1)]",
+              opening ? "[transform:rotateY(-88deg)]" : "[transform:rotateY(0deg)]",
+            )}
+          >
+            <span className="absolute inset-x-3 top-[20%] h-px bg-plum/15" />
+            <span className="absolute inset-x-3 top-[42%] h-px bg-plum/15" />
+            <span className="absolute inset-x-3 top-[64%] h-px bg-plum/15" />
+            <span className="absolute inset-x-3 top-[84%] h-px bg-plum/15" />
+            <span className="absolute left-1/2 top-[48%] h-2.5 w-2.5 -translate-x-1/2 rounded-full bg-butter shadow-[0_0_10px_rgba(255,240,184,.9)]" />
+            <span className="absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 rounded-full border border-butter/80 bg-butter shadow-sm" />
+            <Flower className="absolute bottom-5 left-3 h-5 w-5 garden-sway" />
+            <TinyFlower className="absolute right-3 top-[24%] h-4 w-4 text-lavender-deep/70 garden-sway" />
+          </span>
+
+          <span
+            aria-hidden
+            className={cn(
+              "absolute inset-y-0 right-0 z-[3] w-1/2 origin-right overflow-hidden rounded-tr-[999px] border-l border-plum/25 bg-[linear-gradient(215deg,#FFE7D6,#F6DCE7_54%,#E9CAD8)] shadow-[inset_8px_0_16px_rgba(73,51,72,.08)] [backface-visibility:hidden] [transform-style:preserve-3d] transition-transform duration-[1100ms] [transition-timing-function:cubic-bezier(.65,0,.35,1)]",
+              opening ? "[transform:rotateY(88deg)]" : "[transform:rotateY(0deg)]",
+            )}
+          >
+            <span className="absolute inset-x-3 top-[20%] h-px bg-plum/15" />
+            <span className="absolute inset-x-3 top-[42%] h-px bg-plum/15" />
+            <span className="absolute inset-x-3 top-[64%] h-px bg-plum/15" />
+            <span className="absolute inset-x-3 top-[84%] h-px bg-plum/15" />
+            <span className="absolute left-1/2 top-[48%] h-2.5 w-2.5 -translate-x-1/2 rounded-full bg-butter shadow-[0_0_10px_rgba(255,240,184,.9)]" />
+            <span className="absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 rounded-full border border-butter/80 bg-butter shadow-sm" />
+            <Flower className="absolute bottom-5 right-3 h-5 w-5 garden-sway" />
+            <TinyFlower className="absolute left-3 top-[24%] h-4 w-4 text-lavender-deep/70 garden-sway" />
+          </span>
+
+          <span
+            aria-hidden
+            className="absolute inset-x-[-11%] -top-3 h-5 rounded-full border border-butter/70 bg-[linear-gradient(90deg,#E9CAD8,#FFF0B8,#E9CAD8)] shadow-sm"
+          />
+          <span className="absolute left-1/2 top-0 z-[5] flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-butter/70 bg-cream/85 shadow-sm sm:h-11 sm:w-11">
+            <Star4 className="h-4 w-4 text-rose-deep garden-twinkle sm:h-5 sm:w-5" />
+          </span>
+
+          {archRoses.map((rose, index) => (
+            <motion.span
+              key={`${rose.left}-${index}`}
+              aria-hidden
+              initial={false}
+              animate={bloom ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0 }}
+              transition={{ duration: 0.7, delay: 0.25 + index * 0.08, ease: EASE_ENTER }}
+              className="absolute z-[6]"
+              style={{ left: rose.left, top: rose.top, width: rose.size, height: rose.size }}
+            >
+              <Flower
+                className="h-full w-full garden-sway"
+                style={{
+                  ["--flower-petal" as string]: index % 2 ? "#F6DCE7" : "#DCD5F5",
+                  ["--flower-center" as string]: index % 2 ? "#FFF0B8" : "#FFF9F0",
+                }}
+              />
+            </motion.span>
+          ))}
+
+          <span
+            aria-hidden
+            className="absolute -bottom-3 left-1/2 z-[2] h-3 w-[118%] -translate-x-1/2 rounded-[50%] bg-[#8FA083]/55 blur-[1px]"
+          />
+
+          {gateBlooms.map((spot, index) => (
+            <motion.span
+              key={`${spot.left}-${index}`}
+              aria-hidden
+              initial={false}
+              animate={bloom ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.15, y: 14 }}
+              transition={{ duration: 0.85, delay: spot.delay, ease: EASE_ENTER }}
+              className="absolute z-[4] origin-bottom"
+              style={{
+                left: spot.left,
+                bottom: spot.bottom,
+                width: spot.size,
+                height: spot.size,
+                ["--flower-petal" as string]: spot.tone,
+                ["--flower-center" as string]: spot.center,
+              }}
+            >
+              <Flower
+                className="h-full w-full garden-sway"
+                style={{ animationDelay: `${-index * 0.6}s` }}
+              />
+            </motion.span>
+          ))}
+
+          <motion.span
+            aria-hidden
+            animate={opening ? { scale: [0.7, 2.8], opacity: [0.9, 0] } : { opacity: 0 }}
+            transition={{ duration: 1.3, ease: "easeOut" }}
+            className="absolute left-1/2 top-1/2 z-[7] h-44 w-44 -translate-x-1/2 -translate-y-1/2 rounded-full border border-butter/60"
+          />
+        </span>
+
+        <span
+          className={cn(
+            "mt-5 inline-flex min-h-10 items-center gap-2 rounded-full border border-plum/12 bg-cream/60 px-4 py-1.5 text-[0.58rem] font-extrabold uppercase tracking-[0.24em] text-plum/70 shadow-[0_10px_24px_-18px_rgba(47,31,46,.7)] backdrop-blur transition-all duration-500 group-hover:border-rose-deep/25 group-hover:bg-cream/90 group-hover:text-plum",
+            ready && !opening ? "opacity-100" : "opacity-0",
+          )}
+        >
+          open the gate
+          <ArrowDoodle className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+        </span>
+      </button>
+    </motion.div>
+  );
+}
+
+function ForegroundGarden() {
+  return (
+    <div aria-hidden className="pointer-events-none absolute inset-0 z-20">
+      <LeafSprig className="absolute -bottom-10 -left-12 h-48 w-48 rotate-[20deg] text-[#6F8267]/65 blur-[0.4px] garden-sway sm:h-64 sm:w-64" />
+      <LeafSprig
+        className="absolute -bottom-14 -right-14 h-52 w-52 -rotate-[26deg] text-[#7E8F72]/65 blur-[0.4px] garden-sway sm:h-72 sm:w-72"
+        style={{ animationDelay: "-2.2s" }}
+      />
+      <Flower
+        className="absolute -bottom-6 left-[2%] h-16 w-16 garden-sway sm:h-24 sm:w-24"
+        style={{
+          ["--flower-petal" as string]: "#F6DCE7",
+          ["--flower-center" as string]: "#FFF0B8",
+          animationDuration: "7s",
+        }}
+      />
+      <Flower
+        className="absolute -bottom-8 right-[3%] h-20 w-20 garden-sway sm:h-28 sm:w-28"
+        style={{
+          ["--flower-petal" as string]: "#DCD5F5",
+          ["--flower-center" as string]: "#C98EA8",
+          animationDuration: "8s",
+          animationDelay: "-2.4s",
+        }}
+      />
+      <TinyFlower className="absolute bottom-[12%] left-[9%] h-7 w-7 text-rose/55 garden-sway" />
+      <TinyFlower
+        className="absolute bottom-[18%] right-[11%] h-6 w-6 text-lavender-deep/55 garden-sway"
+        style={{ animationDelay: "-1.6s" }}
+      />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_44%,transparent_52%,rgba(73,51,72,.16)_100%)]" />
+    </div>
+  );
+}
+
 export function IntroGate({ onEnter, reduced }: IntroGateProps) {
-  const [phaseState, setPhase] = useState(0);
-  const phase = reduced ? 3 : phaseState;
+  const audio = useAudioExperience();
+  const [stageState, setStage] = useState<number>(reduced ? STAGE.ready : STAGE.scene);
+  const stage = reduced ? STAGE.ready : stageState;
   const [opening, setOpening] = useState(false);
   const sceneRef = useRef<HTMLDivElement | null>(null);
   const enterTimeout = useRef<number | null>(null);
@@ -231,12 +579,13 @@ export function IntroGate({ onEnter, reduced }: IntroGateProps) {
   useEffect(() => {
     if (reduced) return;
     const schedule: [number, number][] = [
-      [1250, 1],
-      [2050, 2],
-      [2850, 3],
+      [700, STAGE.gate],
+      [1500, STAGE.bloom],
+      [2200, STAGE.title],
+      [2950, STAGE.ready],
     ];
     timers.current = schedule.map(([delay, value]) =>
-      window.setTimeout(() => setPhase(value), delay),
+      window.setTimeout(() => setStage(value), delay),
     );
     return () => {
       timers.current.forEach((id) => window.clearTimeout(id));
@@ -245,6 +594,7 @@ export function IntroGate({ onEnter, reduced }: IntroGateProps) {
   }, [reduced]);
 
   useEffect(() => {
+    if (reduced) return;
     const node = sceneRef.current;
     if (!node) return;
     let frame = 0;
@@ -263,237 +613,304 @@ export function IntroGate({ onEnter, reduced }: IntroGateProps) {
       if (frame) cancelAnimationFrame(frame);
       window.removeEventListener("pointermove", onMove);
     };
-  }, []);
+  }, [reduced]);
 
   const handleEnter = () => {
     if (opening) return;
+    audio.playSfx("gate");
+    void audio.startIfEnabled();
     setOpening(true);
-    enterTimeout.current = window.setTimeout(() => onEnter(), reduced ? 320 : 1250);
+    enterTimeout.current = window.setTimeout(
+      () => onEnter(),
+      reduced ? 320 : 1500,
+    );
   };
+
+  const handleMusicToggle = () => {
+    if (audio.musicOn && !audio.playing) {
+      void audio.startIfEnabled();
+      return;
+    }
+    audio.toggleMusic();
+  };
+
+  const titleVisible = stage >= STAGE.title;
+  const ready = stage >= STAGE.ready;
 
   return (
     <motion.div
       role="dialog"
       aria-modal="true"
-      aria-label="Welcome to Divya Land"
-      className="fixed inset-0 z-[80] overflow-hidden bg-gradient-to-b from-lavender via-blush to-[#FFF6DF]"
+      aria-labelledby="intro-title"
+      className="fixed inset-0 z-[80] overflow-hidden bg-[#F4EADF]"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0, scale: 1.04, filter: "blur(10px)" }}
+      exit={{ opacity: 0 }}
       transition={{ duration: DUR.wide, ease: EASE_ENTER }}
     >
-      <span aria-hidden className="pointer-events-none absolute inset-x-0 top-0 z-[75] h-2 bg-plum/85" />
-      <span aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 z-[75] h-2 bg-plum/85" />
-
-      <div
-        ref={sceneRef}
-        className="relative flex h-full w-full flex-col overflow-y-auto overscroll-contain"
-        style={{ ["--px" as string]: 0, ["--py" as string]: 0 }}
+      <motion.div
+        className="absolute inset-0 origin-[50%_60%]"
+        animate={
+          opening
+            ? { scale: 1.4, y: "-1%", filter: "blur(3px)" }
+            : { scale: [1.015, 1.045, 1.015], y: "0%", filter: "blur(0px)" }
+        }
+        transition={
+          opening
+            ? { duration: 1.55, ease: EASE_CINEMA }
+            : { duration: 26, repeat: Infinity, ease: "easeInOut" }
+        }
       >
-        {/* sky */}
-        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -left-16 -top-24 h-72 w-72 rounded-full bg-butter/55 blur-3xl" />
-          <div className="absolute right-[-10%] top-[12%] h-72 w-72 rounded-full bg-peach/50 blur-3xl" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_18%,rgba(255,255,255,.6),transparent_60%)]" />
-          <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-lavender/90 to-transparent" />
-          <SparkleField count={20} seed={5} tone="text-cream" className="opacity-80" />
-          <PetalRain count={13} seed={21} className="opacity-80" />
-        </div>
-
-        {/* sun + clouds */}
         <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0"
-          style={{
-            transform: "translate3d(calc(var(--px) * 6px), calc(var(--py) * 4px), 0)",
-          }}
+          ref={sceneRef}
+          className="relative h-full w-full overflow-hidden"
+          style={{ ["--px" as string]: "0", ["--py" as string]: "0" }}
         >
-          <div className="absolute left-[8%] top-[12%] h-28 w-28 rounded-full bg-gradient-to-br from-butter to-peach opacity-80 shadow-[0_0_90px_40px_rgba(255,240,184,.55)] sm:h-36 sm:w-36" />
-          <Cloud className="absolute right-[4%] top-[10%] h-16 w-28 text-cream/80 anim-drift sm:h-24 sm:w-40" />
-          <Cloud
-            className="absolute left-[-2%] top-[26%] h-12 w-24 text-lavender-deep/60 anim-drift"
-            style={{ animationDuration: "24s", animationDelay: "-6s" }}
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-[linear-gradient(180deg,#B9B2E8_0%,#D3C5EC_22%,#F0D5E6_44%,#FFE6D3_64%,#FFF2D6_82%,#F8EBDD_100%)]"
           />
-          <Cloud
-            className="absolute right-[14%] top-[38%] h-10 w-20 text-white/60 anim-drift"
-            style={{ animationDuration: "30s", animationDelay: "-14s" }}
-          />
-        </div>
 
-        {/* butterflies */}
-        <div aria-hidden className="pointer-events-none absolute inset-0">
-          <Butterfly
-            className="absolute left-[6%] top-[34%] h-10 w-10 anim-float sm:h-14 sm:w-14"
-            style={{
-              animationDuration: "7s",
-              transform: "translate3d(calc(var(--px) * -14px), calc(var(--py) * -8px), 0)",
-            }}
-          />
-          <Butterfly
-            className="absolute right-[8%] top-[28%] h-8 w-8 anim-float sm:h-12 sm:w-12"
-            style={{
-              animationDuration: "9s",
-              animationDelay: "-2s",
-              transform: "translate3d(calc(var(--px) * 20px), calc(var(--py) * 12px), 0)",
-            }}
-          />
-          <Butterfly
-            className="absolute right-[18%] top-[52%] hidden h-10 w-10 anim-float sm:block"
-            style={{ animationDuration: "8s", animationDelay: "-4s" }}
-          />
-        </div>
+          <div aria-hidden className="pointer-events-none absolute inset-0 z-[1]" style={parallax(4)}>
+            <div className="absolute left-[6%] top-[8%] h-40 w-40 rounded-full bg-[radial-gradient(circle,rgba(255,240,184,.95),rgba(255,220,203,.35)_55%,transparent_72%)] blur-2xl sm:h-56 sm:w-56" />
+            <div className="absolute left-1/2 top-[24%] h-72 w-72 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,246,223,.8),transparent_68%)] blur-2xl sm:h-96 sm:w-96" />
+          </div>
 
-        <GardenBorder />
+          <div aria-hidden className="pointer-events-none absolute inset-0 z-[2]" style={parallax(7)}>
+            <Cloud className="absolute right-[3%] top-[7%] h-16 w-28 text-white/70 garden-cloud sm:h-24 sm:w-44" />
+            <Cloud
+              className="absolute left-[-6%] top-[20%] h-11 w-24 text-white/50 garden-cloud"
+              style={{ animationDuration: "31s", animationDelay: "-8s" }}
+            />
+            <Cloud
+              className="absolute right-[17%] top-[31%] h-9 w-20 text-lavender/60 garden-cloud"
+              style={{ animationDuration: "36s", animationDelay: "-17s" }}
+            />
+            <Cloud
+              className="absolute left-[22%] top-[4%] h-7 w-16 text-white/40 garden-cloud"
+              style={{ animationDuration: "42s", animationDelay: "-24s" }}
+            />
+            <Cloud
+              className="absolute left-[42%] top-[38%] h-8 w-20 text-white/35 garden-cloud"
+              style={{ animationDuration: "39s", animationDelay: "-31s" }}
+            />
+          </div>
 
-        {/* loading curtain */}
-        <AnimatePresence>
-          {phase === 0 ? (
-            <motion.div
-              initial={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.8 }}
-              className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-6 bg-gradient-to-b from-lavender via-blush to-[#FFF6DF] px-6 text-center"
-            >
-              <div className="relative flex h-24 w-24 items-center justify-center">
-                <span className="absolute inset-0 rounded-full border border-rose/30 anim-spin-slow" />
-                <span className="absolute inset-2 rounded-full border border-dashed border-rose/40" />
-                <Sparkle className="h-10 w-10 text-rose-deep anim-breathe" />
-                <Star4 className="absolute -right-2 top-2 h-4 w-4 text-butter anim-twinkle" />
-                <Star4
-                  className="absolute -left-1 bottom-3 h-3 w-3 text-lavender-deep anim-twinkle"
-                  style={{ animationDelay: ".8s" }}
-                />
-              </div>
-              <div className="max-w-xs">
-                <p className="hand text-2xl text-plum">your world is waking up&hellip;</p>
-                <p className="mt-2 text-[0.68rem] font-extrabold uppercase tracking-[0.28em] text-plum/55">
-                  threading stars · brewing coffee · arranging flowers
-                </p>
-                <div className="mx-auto mt-5 h-1 w-44 overflow-hidden rounded-full bg-plum/10">
-                  <motion.div
-                    className="h-full rounded-full bg-gradient-to-r from-rose via-rose-deep to-plum"
-                    initial={{ x: "-100%" }}
-                    animate={{ x: "0%" }}
-                    transition={{ duration: 1.15, ease: "easeInOut" }}
-                  />
-                </div>
-              </div>
-            </motion.div>
-          ) : null}
-        </AnimatePresence>
-
-        {/* content */}
-        <div className="relative z-20 mx-auto flex w-full max-w-2xl flex-1 flex-col items-center px-4 pb-24 pt-10 text-center sm:pb-16 sm:pt-16">
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: phase >= 1 ? 1 : 0, y: phase >= 1 ? 0 : -8 }}
-            transition={{ duration: 0.8 }}
-            className="flex items-center gap-2 rounded-full border border-plum/10 bg-cream/45 px-3.5 py-1.5"
-          >
-            <Heart className="h-3 w-3 text-rose-deep" />
-            <span className="text-[0.64rem] font-extrabold uppercase tracking-[0.28em] text-plum/70">
-              a world with your name on it
-            </span>
-          </motion.div>
-
-          <motion.p
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: phase >= 1 ? 1 : 0, y: phase >= 1 ? 0 : 14 }}
-            transition={{ duration: 0.9, delay: 0.05 }}
-            className="hand mt-5 max-w-[20rem] text-[1.45rem] leading-tight text-plum/80 sm:max-w-md sm:text-[1.7rem]"
-          >
-            &ldquo;{site.quote}&rdquo;
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 22, filter: "blur(10px)" }}
-            animate={{
-              opacity: phase >= 2 ? 1 : 0,
-              y: phase >= 2 ? 0 : 22,
-              filter: phase >= 2 ? "blur(0px)" : "blur(10px)",
-            }}
-            transition={{ duration: DUR.wide, ease: EASE_ENTER }}
-            className="mt-4 flex flex-col items-center"
-          >
-            <div className="relative">
-              <motion.h1
-                aria-label="Divya Land"
-                initial={{ opacity: 0, y: 18 }}
-                animate={
-                  phase >= 2 ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }
-                }
-                transition={{ duration: DUR.wide, ease: EASE_ENTER }}
-                className="display-title text-[clamp(2.85rem,14vw,6.4rem)] font-semibold uppercase leading-[0.9] tracking-[0.12em] text-plum"
-              >
-                Divya{" "}
-                <span
-                  aria-hidden
-                  className="mx-1.5 inline-block -translate-y-2 align-middle text-rose-deep sm:mx-3"
-                >
-                  <Flower className="h-[0.45em] w-[0.45em] anim-sway" />
-                </span>{" "}
-                Land
-              </motion.h1>
-              <Star4 className="absolute -right-4 -top-3 h-4 w-4 text-rose-deep anim-twinkle sm:-right-8 sm:h-6 sm:w-6" />
+          <div aria-hidden className="pointer-events-none absolute inset-0 z-[3]" style={parallax(3)}>
+            {stars.map((star) => (
               <Star4
-                className="absolute -left-4 bottom-0 h-3 w-3 text-plum/50 anim-twinkle"
-                style={{ animationDelay: "1.4s" }}
+                key={star.id}
+                className="absolute text-cream garden-twinkle"
+                style={{
+                  left: `${star.x}%`,
+                  top: `${star.y}%`,
+                  width: star.size,
+                  height: star.size,
+                  opacity: star.opacity,
+                  animationDelay: `${star.delay}s`,
+                  animationDuration: `${star.duration}s`,
+                }}
+              />
+            ))}
+          </div>
+
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 bottom-0 z-[4] h-full"
+            style={parallax(9)}
+          >
+            <DistantGarden />
+          </div>
+
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-[58%]"
+            style={parallax(12)}
+          >
+            <svg
+              viewBox="0 0 1440 420"
+              preserveAspectRatio="xMidYMax slice"
+              className="h-full w-full"
+            >
+              <g fill="#6F8267" opacity=".45">
+                {[128, 224, 318, 1104, 1198, 1296, 1392].map((x, index) => (
+                  <g key={x} transform={`translate(${x} ${296 + (index % 2) * 18})`}>
+                    <rect x="-3" y="0" width="6" height="94" rx="3" />
+                    <circle cx="0" cy="-14" r="42" />
+                    <circle cx="-30" cy="12" r="28" />
+                    <circle cx="31" cy="8" r="31" />
+                  </g>
+                ))}
+              </g>
+            </svg>
+          </div>
+
+          <div className="pointer-events-none absolute inset-0 z-[6]">
+            <MidGarden bloom={stage >= STAGE.bloom} />
+          </div>
+
+          <div className="absolute left-1/2 top-[66%] z-10 -translate-x-1/2 -translate-y-1/2 sm:top-[67%]">
+            <GardenGate
+              visible={stage >= STAGE.gate}
+              bloom={stage >= STAGE.bloom}
+              ready={ready}
+              opening={opening}
+              onOpen={handleEnter}
+            />
+          </div>
+
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 z-[14] overflow-hidden"
+            style={parallax(16)}
+          >
+            {butterflies.map((butterfly, index) => (
+              <FlutteringButterfly
+                key={index}
+                top={butterfly.top}
+                size={butterfly.size}
+                duration={butterfly.duration}
+                delay={butterfly.delay}
+                className={index === 3 ? "hidden sm:block" : undefined}
+              />
+            ))}
+          </div>
+
+          <div aria-hidden className="pointer-events-none absolute inset-0 z-[15]" style={parallax(13)}>
+            {motes.map((mote) => (
+              <span
+                key={mote.id}
+                className="garden-mote absolute rounded-full bg-cream/85 shadow-[0_0_9px_rgba(255,249,240,.9)]"
+                style={{
+                  left: `${mote.x}%`,
+                  top: `${mote.y}%`,
+                  width: mote.size,
+                  height: mote.size,
+                  opacity: mote.opacity,
+                  animationDuration: `${mote.duration}s`,
+                  animationDelay: `${mote.delay}s`,
+                }}
+              />
+            ))}
+            {petals.map((petal) => (
+              <span
+                key={`petal-${petal.id}`}
+                className="garden-petal absolute top-0 block"
+                style={{
+                  left: `${petal.x}%`,
+                  width: petal.size,
+                  height: petal.size * 0.72,
+                  background: petal.tone,
+                  borderRadius: "100% 0 100% 0",
+                  opacity: 0.7,
+                  transform: `rotate(${petal.rotate}deg)`,
+                  animationDuration: `${petal.duration}s`,
+                  animationDelay: `${petal.delay}s`,
+                  ["--drift" as string]: `${petal.drift}px`,
+                }}
+              />
+            ))}
+          </div>
+
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 bottom-0 z-[16] h-[26%] bg-[radial-gradient(ellipse_at_50%_100%,rgba(255,249,240,.96)_0%,rgba(255,240,184,.5)_38%,transparent_74%)]"
+          />
+
+          <ForegroundGarden />
+
+          <motion.div
+            initial={false}
+            animate={
+              opening
+                ? { opacity: 0, y: -30, scale: 1.06, filter: "blur(10px)" }
+                : titleVisible
+                  ? { opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }
+                  : { opacity: 0, y: 30, scale: 0.97, filter: "blur(14px)" }
+            }
+            transition={{ duration: DUR.title, ease: EASE_ENTER }}
+            className="absolute inset-x-0 top-[7%] z-30 px-5 text-center sm:top-[8%]"
+          >
+            <div className="relative mx-auto w-max max-w-full">
+              <span
+                aria-hidden
+                className="absolute inset-x-2 top-1/2 h-24 -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse,rgba(255,240,184,.7),transparent_70%)] blur-2xl"
+              />
+              <h1
+                id="intro-title"
+                className="relative display-title text-[clamp(3rem,12.5vw,7.4rem)] uppercase leading-[0.8] tracking-[0.05em] text-plum sm:tracking-[0.08em]"
+              >
+                <span className="block overflow-hidden pb-[0.06em]">
+                  <motion.span
+                    className="block"
+                    initial={false}
+                    animate={
+                      titleVisible && !opening
+                        ? { y: "0%", opacity: 1, rotate: 0 }
+                        : { y: "112%", opacity: 0, rotate: 2 }
+                    }
+                    transition={{ duration: 1.15, ease: EASE_ENTER }}
+                  >
+                    Divya
+                  </motion.span>
+                </span>
+                <span className="block overflow-hidden pb-[0.12em]">
+                  <motion.span
+                    className="block italic text-rose-deep"
+                    initial={false}
+                    animate={
+                      titleVisible && !opening
+                        ? { y: "0%", opacity: 1, rotate: 0 }
+                        : { y: "112%", opacity: 0, rotate: -2 }
+                    }
+                    transition={{ duration: 1.15, delay: 0.14, ease: EASE_ENTER }}
+                  >
+                    Land
+                  </motion.span>
+                </span>
+              </h1>
+              <Star4 className="absolute -right-3 -top-2 h-4 w-4 text-rose-deep garden-twinkle sm:-right-7 sm:h-5 sm:w-5" />
+              <Star4
+                className="absolute -left-3 bottom-2 h-3 w-3 text-plum/45 garden-twinkle"
+                style={{ animationDelay: "1.1s" }}
               />
             </div>
-            <p className="mt-3 font-display text-[1.15rem] italic text-plum/80 sm:text-[1.45rem]">
-              {site.tagline}
-            </p>
-          </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: phase >= 3 ? 1 : 0, y: phase >= 3 ? 0 : 24 }}
-            transition={{ duration: DUR.wide, ease: EASE_ENTER }}
-            inert={phase < 3}
-            className={phase < 3 ? "pointer-events-none w-full" : "w-full"}
-          >
-            <GardenGate opening={opening} onOpen={handleEnter} />
-            <p className="mx-auto mt-1 max-w-[17rem] text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-plum/45">
-              tap the gate · sound is optional · feels are not
-            </p>
-          </motion.div>
-        </div>
-
-        {/* footer + skip */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex items-end justify-between gap-4 px-4 pb-4 sm:px-6 sm:pb-6">
-          <p className="hand pointer-events-none text-base text-plum/55 sm:text-lg">
-            built with too much spare time &amp; a questionable amount of coffee
-          </p>
-          {phase < 3 ? (
-            <button
-              type="button"
-              onClick={() => setPhase(3)}
-              className="pointer-events-auto min-h-11 rounded-full border border-plum/15 bg-cream/50 px-4 text-[0.64rem] font-extrabold uppercase tracking-[0.18em] text-plum/65 transition-colors hover:bg-cream/80"
+            <motion.p
+              initial={false}
+              animate={
+                titleVisible && !opening
+                  ? { opacity: 1, y: 0, filter: "blur(0px)" }
+                  : { opacity: 0, y: 12, filter: "blur(6px)" }
+              }
+              transition={{ duration: 0.9, delay: 0.5, ease: EASE_SOFT }}
+              className="mx-auto mt-3 max-w-sm font-display text-[clamp(0.92rem,3vw,1.15rem)] italic tracking-[0.01em] text-plum/72"
             >
-              skip the suspense
-            </button>
-          ) : (
-            <span className="pointer-events-none flex items-center gap-1.5 text-[0.64rem] font-extrabold uppercase tracking-[0.22em] text-plum/40">
-              <span className="h-1.5 w-1.5 rounded-full bg-sage" />
-              divya land · est. 2026
-            </span>
-          )}
-        </div>
+              {site.tagline}
+            </motion.p>
+          </motion.div>
 
-        {/* opening bloom */}
-        <AnimatePresence>
-          {opening ? (
-            <motion.div
-              key="bloom"
-              initial={{ opacity: 0, scale: 0.2 }}
-              animate={{ opacity: [0, 0.95, 0], scale: 2.4 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 1.25, ease: "easeOut" }}
-              className="pointer-events-none absolute left-1/2 top-1/2 z-40 h-[70vmax] w-[70vmax] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,#FFF9F0_0%,#FFF0B8_35%,transparent_70%)]"
-            />
-          ) : null}
-        </AnimatePresence>
-      </div>
+          <SoundToggle
+            onToggle={handleMusicToggle}
+            musicOn={audio.musicOn}
+            playing={audio.playing}
+            busy={audio.busy}
+          />
+
+          <AnimatePresence>
+            {opening ? (
+              <motion.div
+                key="garden-bloom"
+                initial={{ opacity: 0, scale: 0.2 }}
+                animate={{ opacity: [0, 0.95, 0], scale: 2.9 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 1.4, ease: "easeOut" }}
+                className="pointer-events-none absolute left-1/2 top-1/2 z-[60] h-[76vmax] w-[76vmax] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,#FFFDF7_0%,#FFF0B8_30%,transparent_68%)]"
+              />
+            ) : null}
+          </AnimatePresence>
+        </div>
+      </motion.div>
     </motion.div>
   );
 }

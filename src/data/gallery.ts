@@ -4,50 +4,52 @@ export type GalleryPiece = {
   medium: string;
   note: string;
   image?: string;
-  art: "rangoli" | "painting" | "drawing" | "crafts";
+  art: "rangoli" | "detail" | "rhythm";
   accent: "rose" | "butter" | "lavender";
 };
 
 export const gallery = {
   eyebrow: "Chapter 06 · The Talent Gallery",
   title: "Chhota packet, bada dhamaka.",
-  script: "a small exhibition for a person with too many gifts",
-  message:
-    "Most people pick one thing. You seem to have collected a whole shelf.",
-  body: "For the girl who turns powder and patience into rangoli, blank canvas into colour, and paper into portraits — then somehow still has energy to fuss over everyone else.",
-  note: "The centrepiece is rangoli. The rest is proof she doesn't stop there.",
+  script: "a tiny exhibition for a person with too much talent",
+  entrance: {
+    kicker: "now showing",
+    title: "Chhota packet, bada dhamaka.",
+    note: "A small room built around the rangoli you shared. The lights are off. For now.",
+    action: "step inside",
+  },
+  captions: {
+    first: "Chhota packet. Bada dhamaka.",
+    second: "Some people just have a little too much talent.",
+  },
+  credit:
+    "Original decorative studies made for this room. The real rangoli is yours.",
+  hint: "tap a frame to move it into the spotlight",
+  back: "back to the centrepiece",
   pieces: [
     {
       id: "rangoli",
-      title: "Rangoli",
-      medium: "powder, patience, steady hands",
-      note: "The one you made recently. Too good to be temporary.",
+      title: "The centrepiece",
+      medium: "the one you shared recently",
+      note: "The reason this little room exists. This illustration is a tribute, not a photo.",
       art: "rangoli",
       accent: "rose",
     },
     {
-      id: "painting",
-      title: "Painting",
-      medium: "colour, canvas, instinct",
-      note: "Colour just behaves around her. It's honestly a little unfair.",
-      art: "painting",
+      id: "petals",
+      title: "Petal study",
+      medium: "a decorative study",
+      note: "Imagined in the margins of the gallery. Yours is the real thing.",
+      art: "detail",
       accent: "butter",
     },
     {
-      id: "drawing",
-      title: "Drawing",
-      medium: "pencil, paper, patience",
-      note: "Give her a pencil and a blank page, and she'll fill it before you finish your coffee.",
-      art: "drawing",
+      id: "rhythm",
+      title: "Circle study",
+      medium: "a decorative study",
+      note: "Another small study, made only to keep the rangoli company.",
+      art: "rhythm",
       accent: "lavender",
-    },
-    {
-      id: "creations",
-      title: "Things she makes",
-      medium: "craft, creativity, handmade",
-      note: "Handmade, one of a kind, and impossible to buy anywhere.",
-      art: "crafts",
-      accent: "rose",
     },
   ] satisfies GalleryPiece[],
   // Drop real photos into public/gallery/ (e.g. artwork.webp) and add
@@ -58,20 +60,31 @@ export const finale = {
   eyebrow: "Chapter 08 · The Grand Finale",
   title: "Happy Birthday, Sonuuu!",
   script: "the last chapter, and then the cake",
+  candleHint: "Tap each candle to light it.",
   wishPrompt: "Make a wish, birthday girl.",
+  holdPrompt: "Press and hold to blow them out.",
   blowPrompt: "Now blow out the candles.",
-  blownPrompt: "Wish noted. Now, cake.",
-  messageTitle: "For your next year",
+  blownPrompt: "Wish sent. Look up.",
+  messageTitle: "Happy Birthday, Sonuuu!",
   message: [
-    "of full plates, long conversations, art worth framing, and being exactly this much yourself.",
-    "More meals, more reels, more rangoli, more paint, fewer spirals. And a year that lets you be both the baddie and the baby.",
+    "For a year of full plates, long conversations, good food, and being exactly this much yourself.",
+    "More meals, more reels, more rangoli, fewer spirals. And a year that lets you be both the baddie and the baby.",
   ],
-  signature: "Happy Birthday, Divya! \ud83c\udf80",
+  signature: "With all the good wishes, always.",
   giftLabel: "one last surprise",
   giftTitle: "A gift that never expires",
+  giftKicker: "a lifetime supply of",
+  giftLines: [
+    "Unlimited coffee.",
+    "Unlimited good food.",
+    "Unlimited conversations.",
+    "And a lifetime supply of pampering.",
+  ],
   giftBody:
-    "Coffee, food, time to talk, and as much pampering as you'll allow. No expiry date.",
-  giftFooter: "Redeemable any day. Especially on the days you pretend you're fine.",
-  replay: "Replay the whole world",
+    "Unlimited coffee. Unlimited good food. Unlimited conversations. And a lifetime supply of pampering.",
+  giftFooter:
+    "Redeemable any day. Especially on the days you pretend you're fine.",
+  closing: "Your little universe will always be here.",
+  replay: "Replay this little universe",
   makeWishAgain: "Light the candles again",
 };
