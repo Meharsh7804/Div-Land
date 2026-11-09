@@ -1,7 +1,7 @@
 "use client";
 
 import { memo, useCallback, useEffect, useState } from "react";
-import { AnimatePresence, MotionConfig } from "motion/react";
+import { AnimatePresence, MotionConfig, motion } from "motion/react";
 import { IntroGate } from "@/components/invitation/IntroGate";
 import { Overture } from "@/components/layout/Overture";
 import { PersonalityFiles } from "@/components/personality/PersonalityFiles";
@@ -23,6 +23,7 @@ import { chapters, type Chapter } from "@/data/site";
 import { useActiveChapter } from "@/hooks/useChapterProgress";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { scrollToTarget } from "@/animations/useSmoothScroll";
+import { EASE_ENTER } from "@/animations/motion";
 
 const sectionIds = chapters.map((chapter) => chapter.sectionId);
 
@@ -57,6 +58,7 @@ function ExperienceShell() {
   const activeSection = useActiveChapter(sectionIds);
   const active =
     chapters.find((chapter) => chapter.sectionId === activeSection) ?? chapters[0];
+  const chromeVisible = entered && !gateOpen;
   const { setMood } = audio;
 
   useEffect(() => {
@@ -70,22 +72,25 @@ function ExperienceShell() {
   }, [active.id, setMood]);
 
   useEffect(() => {
-    if (!gateOpen) return;
+    if (!gateOpen || entered) return;
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = previous;
     };
-  }, [gateOpen]);
+  }, [gateOpen, entered]);
 
 
   const handleEnter = useCallback(() => {
     setEntered(true);
-    setGateOpen(false);
     window.setTimeout(
       () => scrollToTarget("#chapter-files", { immediate: true }),
-      40,
+      60,
     );
+  }, []);
+
+  const handleComplete = useCallback(() => {
+    setGateOpen(false);
   }, []);
 
   const handleReplay = useCallback(() => {
@@ -112,33 +117,44 @@ function ExperienceShell() {
       <div className="relative min-h-screen overflow-x-clip bg-cream">
         <a
           href="#chapter-files"
-          aria-hidden={!entered}
-          inert={!entered}
+          aria-hidden={!chromeVisible}
+          inert={!chromeVisible}
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[96] focus:rounded-full focus:bg-plum focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-cream"
         >
           Skip to the chapters
         </a>
 
-        <AudioControls visible={entered} />
+        <AudioControls visible={chromeVisible} />
 
-        <TopProgress visible={entered} />
-        <BrandMark visible={entered} />
-        <ChapterIndicator active={active} onSelect={handleSelect} visible={entered} />
-        <ChapterRail active={active} onSelect={handleSelect} visible={entered} />
-        <SmileButton visible={entered} />
-        <ScrollTopButton visible={entered} />
+        <TopProgress visible={chromeVisible} />
+        <BrandMark visible={chromeVisible} />
+        <ChapterIndicator active={active} onSelect={handleSelect} visible={chromeVisible} />
+        <ChapterRail active={active} onSelect={handleSelect} visible={chromeVisible} />
+        <SmileButton visible={chromeVisible} />
+        <ScrollTopButton visible={chromeVisible} />
 
         <main
           inert={!entered}
           aria-hidden={!entered}
           className={entered ? "relative" : "pointer-events-none relative"}
         >
-          <StorySections playing={entered} onReplay={handleReplay} />
+          <motion.div
+            initial={false}
+            animate={{ opacity: entered ? 1 : 0 }}
+            transition={{ duration: entered ? 1.4 : 0.4, ease: EASE_ENTER }}
+          >
+            <StorySections playing={entered} onReplay={handleReplay} />
+          </motion.div>
         </main>
 
         <AnimatePresence>
           {gateOpen ? (
-            <IntroGate key={gateKey} onEnter={handleEnter} reduced={reduced} />
+            <IntroGate
+              key={gateKey}
+              onEnter={handleEnter}
+              onComplete={handleComplete}
+              reduced={reduced}
+            />
           ) : null}
         </AnimatePresence>
       </div>

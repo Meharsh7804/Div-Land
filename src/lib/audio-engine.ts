@@ -1,5 +1,7 @@
 export type SfxName =
   | "gate"
+  | "garden"
+  | "enter"
   | "page"
   | "coffee"
   | "envelope"
@@ -661,6 +663,38 @@ export class DivyaAudioEngine {
         });
         this.flutter(now + 0.08);
         this.paperRustle(now + 0.4, 0.012, 0.12);
+        break;
+      }
+      case "garden": {
+        this.noiseSweep(now, 3.4, 380, 1500, 0.011, -0.18);
+        this.noiseSweep(now + 0.3, 3, 1200, 620, 0.007, 0.2);
+        this.flutter(now + 0.9);
+        this.flutter(now + 2.1);
+        [783.99, 987.77, 1174.66].forEach((freq, index) => {
+          this.bell(
+            freq,
+            now + 0.6 + index * 0.18,
+            0.011 - index * 0.002,
+            2.6,
+            index % 2 === 0 ? -0.2 : 0.2,
+            this.sfxBus,
+          );
+        });
+        break;
+      }
+      case "enter": {
+        this.noiseSweep(now, 2.1, 260, 5400, 0.019, 0);
+        [392, 523.25, 659.25, 783.99, 1046.5].forEach((freq, index) => {
+          this.bell(
+            freq,
+            now + 0.15 + index * 0.11,
+            0.025 - index * 0.003,
+            2.9,
+            index % 2 === 0 ? -0.28 : 0.28,
+            this.sfxBus,
+          );
+        });
+        this.noiseSweep(now + 0.9, 1.4, 3200, 9000, 0.006, 0.12);
         break;
       }
       case "page": {
