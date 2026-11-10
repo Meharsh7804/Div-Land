@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DivLand Cat Sticker Moodboard</title>
+  <style>
+    :root {
+      --cream: #fff9f0;
+      --cream-soft: #fff4e8;
+      --blush: #f6dce7;
+      --blush-deep: #efc9da;
+      --lavender: #dcd5f5;
+      --lavender-deep: #c9bfe9;
+      --peach: #ffdccb;
+      --butter: #fff0b8;
+      --rose: #c98ea8;
+      --rose-deep: #b0708c;
+      --plum: #493348;
+      --plum-deep: #2f1f2e;
+      --ink: #3b2838;
+      --sage: #c7d3bd;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 32px 20px 56px;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 12% 4%, rgba(255, 255, 255, .9), transparent 52%),
+        linear-gradient(160deg, var(--cream) 0%, #f8eaf0 54%, #efe8fa 100%);
+      font-family: "Nunito", "Segoe UI", system-ui, sans-serif;
+      line-height: 1.55;
+    }
+
+    .sheet {
+      width: min(980px, 100%);
+      margin: 0 auto;
+    }
+
+    header {
+      position: relative;
+      margin-bottom: 26px;
+      padding: 28px 28px 24px;
+      border: 1px solid rgba(73, 51, 72, .12);
+      border-radius: 24px;
+      background: rgba(255, 249, 240, .8);
+      box-shadow: 0 30px 60px -42px rgba(47, 31, 46, .5);
+      overflow: hidden;
+    }
+
+    header::after {
+      content: "";
+      position: absolute;
+      right: -46px;
+      top: -54px;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(246, 220, 231, .8), transparent 68%);
+    }
+
+    .eyebrow {
+      margin: 0 0 6px;
+      color: var(--rose-deep);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(30px, 5vw, 52px);
+      font-style: italic;
+      font-weight: 500;
+      line-height: 1.04;
+    }
+
+    .lede {
+      max-width: 60ch;
+      margin: 12px 0 0;
+      color: rgba(59, 40, 56, .72);
+      font-size: 14px;
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 24px;
+      font-style: italic;
+      font-weight: 500;
+    }
+
+    .section {
+      margin-top: 24px;
+      padding: 22px;
+      border: 1px solid rgba(73, 51, 72, .1);
+      border-radius: 22px;
+      background: rgba(255, 249, 240, .66);
+      box-shadow: 0 24px 48px -44px rgba(47, 31, 46, .5);
+    }
+
+    .sticker-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+      gap: 14px;
+    }
+
+    .sticker-card {
+      display: flex;
+      min-height: 174px;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 14px;
+      border: 1px solid rgba(73, 51, 72, .1);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .66), rgba(255, 244, 232, .58));
+      text-align: center;
+    }
+
+    .sticker-card:nth-child(2n) { background: linear-gradient(180deg, rgba(255, 255, 255, .62), rgba(246, 220, 231, .5)); }
+    .sticker-card:nth-child(3n) { background: linear-gradient(180deg, rgba(255, 255, 255, .62), rgba(220, 213, 245, .44)); }
+
+    .sticker-stage {
+      display: grid;
+      min-height: 104px;
+      place-items: center;
+    }
+
+    .sticker-stage img {
+      width: 84px;
+      height: 84px;
+      object-fit: contain;
+      filter:
+        drop-shadow(0 0 1px rgba(255, 249, 240, .95))
+        drop-shadow(0 10px 10px rgba(73, 51, 72, .16));
+      animation: bob 4.8s ease-in-out infinite;
+    }
+
+    .sticker-card:nth-child(2n) img { animation: sway 5.5s ease-in-out infinite; }
+    .sticker-card:nth-child(3n) img { animation: breathe 5.2s ease-in-out infinite; }
+
+    .sticker-name {
+      margin: 8px 0 0;
+      color: var(--plum);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .sticker-use {
+      margin: 2px 0 0;
+      color: rgba(59, 40, 56, .54);
+      font-size: 12px;
+    }
+
+    .palette {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .swatch {
+      width: 96px;
+      overflow: hidden;
+      border: 1px solid rgba(73, 51, 72, .12);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .55);
+    }
+
+    .swatch span {
+      display: block;
+      height: 40px;
+    }
+
+    .swatch b,
+    .swatch small {
+      display: block;
+      padding: 0 8px;
+      font-size: 10px;
+      line-height: 1.4;
+    }
+
+    .swatch b { padding-top: 6px; color: var(--plum); }
+    .swatch small { padding-bottom: 6px; color: rgba(59, 40, 56, .5); font-family: ui-monospace, monospace; }
+
+    .placement-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .placement {
+      display: grid;
+      grid-template-columns: 82px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 9px 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .5);
+    }
+
+    .placement strong { color: var(--plum); font-size: 12px; letter-spacing: .04em; }
+    .placement p { margin: 0; color: rgba(59, 40, 56, .58); font-size: 12px; }
+    .placement code { color: var(--rose-deep); font-size: 11px; }
+
+    .rules {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+    }
+
+    .rule {
+      padding: 13px 15px;
+      border-left: 3px solid var(--rose);
+      border-radius: 0 12px 12px 0;
+      background: rgba(255, 255, 255, .5);
+      font-size: 13px;
+    }
+
+    .rule.no { border-left-color: var(--lavender-deep); }
+
+    .rule b { display: block; margin-bottom: 3px; color: var(--plum); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; }
+
+    .references {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .references a {
+      display: inline-block;
+      padding: 7px 11px;
+      border: 1px solid rgba(176, 112, 140, .24);
+      border-radius: 999px;
+      color: var(--rose-deep);
+      background: rgba(255, 255, 255, .58);
+      font-size: 12px;
+      text-decoration: none;
+    }
+
+    .references a:hover { background: #fff; }
+
+    footer {
+      margin-top: 22px;
+      color: rgba(59, 40, 56, .42);
+      font-size: 11px;
+      letter-spacing: .08em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    @keyframes bob {
+      0%, 100% { transform: translateY(0) rotate(0); }
+      50% { transform: translateY(-4px) rotate(-2deg); }
+    }
+
+    @keyframes sway {
+      0%, 100% { transform: rotate(-2.5deg); }
+      50% { transform: rotate(2.5deg); }
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.035); }
+    }
+
+    @media (max-width: 560px) {
+      .placement { grid-template-columns: 1fr; gap: 2px; }
+      .placement code { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="sheet">
+    <header>
+      <p class="eyebrow">DivLand · visual direction</p>
+      <h1>Small cats, soft chaos.</h1>
+      <p class="lede">Original hand-drawn cat stickers for Divya's birthday site. Pastel fills, thin plum linework, cream sticker edges, and gentle motion. They should feel like tiny companions tucked into the existing storybook pages, never like a second layer of decoration fighting the layout.</p>
+    </header>
+
+    <section class="section">
+      <h2>The sticker set</h2>
+      <div class="sticker-grid">
+        <article class="sticker-card">
+          <div class="sticker-stage"><img src="../public/cats/peek.svg" alt="Peeking cat sticker" /></div>
+          <p class="sticker-name">Peek</p>
+          <p class="sticker-use">Hero edge · hello</p>
+        </article>
+        <article class="sticker-card">
+          <div class="sticker-stage"><img src="../public/cats/sleepy.svg" alt="Sleepy loaf cat sticker" /></div>
+          <p class="sticker-name">Sleepy</p>
+          <p class="sticker-use">Letter · read slowly</p>
+        </article>
+        <article class="sticker-card">
+          <div class="sticker-stage"><img src="../public/cats/heart.svg" alt="Heart cat sticker" /></div>
+          <p class="sticker-name">Heart</p>
+          <p class="sticker-use">Thoughts · pride</p>
+        </article>
+        <article class="sticker-card">
+          <div class="sticker-stage"><img src="../public/cats/party.svg" alt="Party hat cat sticker" /></div>
+          <p class="sticker-name">Party</p>
+          <p class="sticker-use">Finale · make a wish</p>
+        </article>
+        <article class="sticker-card">
+          <div class="sticker-stage"><img src="../public/cats/flower.svg" alt="Flower cat sticker" /></div>
+          <p class="sticker-name">Flower</p>
+          <p class="sticker-use">Memories · keepsakes</p>
+        </article>
+        <article class="sticker-card">
+          <div class="sticker-stage"><img src="../public/cats/loaf.svg" alt="Loaf cat sticker" /></div>
+          <p class="sticker-name">Loaf</p>
+          <p class="sticker-use">Personality · off duty</p>
+        </article>
+        <article class="sticker-card">
+          <div class="sticker-stage"><img src="../public/cats/cup.svg" alt="Coffee cup cat sticker" /></div>
+          <p class="sticker-name">Cup</p>
+          <p class="sticker-use">Cafe · catpuccino</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Palette</h2>
+      <div class="palette">
+        <div class="swatch"><span style="background:#fff9f0"></span><b>Cream</b><small>#FFF9F0</small></div>
+        <div class="swatch"><span style="background:#f6dce7"></span><b>Blush</b><small>#F6DCE7</small></div>
+        <div class="swatch"><span style="background:#dcd5f5"></span><b>Lavender</b><small>#DCD5F5</small></div>
+        <div class="swatch"><span style="background:#ffdccb"></span><b>Peach</b><small>#FFDCCB</small></div>
+        <div class="swatch"><span style="background:#fff0b8"></span><b>Butter</b><small>#FFF0B8</small></div>
+        <div class="swatch"><span style="background:#c98ea8"></span><b>Rose</b><small>#C98EA8</small></div>
+        <div class="swatch"><span style="background:#493348"></span><b>Plum</b><small>#493348</small></div>
+        <div class="swatch"><span style="background:#c7d3bd"></span><b>Sage</b><small>#C7D3BD</small></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Placement map</h2>
+      <div class="placement-list">
+        <div class="placement"><strong>Overture</strong><p>Peek from the lower-left edge, just above the scallop divider.</p><code>peek</code></div>
+        <div class="placement"><strong>Personality</strong><p>Loaf beside the slider card, slightly overlapping the bottom edge.</p><code>loaf</code></div>
+        <div class="placement"><strong>Thought Lab</strong><p>Heart cat at the lower-right, clear of the machine and warning note.</p><code>heart</code></div>
+        <div class="placement"><strong>Sonu Cafe</strong><p>Cup cat on the counter, left of the machine, desktop only.</p><code>cup</code></div>
+        <div class="placement"><strong>Memories</strong><p>Flower cat tucked over the scrapbook's lower-right edge.</p><code>flower</code></div>
+        <div class="placement"><strong>Making Of</strong><p>Heart cat beside the final message card, after completion.</p><code>heart</code></div>
+        <div class="placement"><strong>Letter</strong><p>Sleepy cat in the lower-left of the dark letter card, bubble opens inward.</p><code>sleepy</code></div>
+        <div class="placement"><strong>Finale</strong><p>Party cat beside the cake, peeking past the bottom tier.</p><code>party</code></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Art direction</h2>
+      <div class="rules">
+        <div class="rule"><b>Do</b>Keep linework thin, rounded, and plum. Let pastel fills stay slightly uneven and soft.</div>
+        <div class="rule"><b>Do</b>Use a cream sticker edge or soft drop shadow so cats feel placed, not pasted.</div>
+        <div class="rule"><b>Do</b>Keep one cat per scene, with a quiet idle motion and a small click reaction.</div>
+        <div class="rule no"><b>Don't</b>Use glossy 3D cats, meme faces, thick outlines, or saturated neon colors.</div>
+        <div class="rule no"><b>Don't</b>Scatter multiple cats randomly or place them over headings and body copy.</div>
+        <div class="rule no"><b>Don't</b>Let motion compete with the existing blooms, sparkles, steam, or confetti.</div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>References</h2>
+      <ul class="references">
+        <li><a href="https://www.pinterest.com/ideas/cat-stickers-kawaii/932834171509/">Kawaii cat stickers</a></li>
+        <li><a href="https://www.pinterest.com/pin/cute-kawaii-happy-space-cat-smiling-kitten-in-pink-and-purple-pastel-sticker--18155204742231981/">Pastel space cat</a></li>
+        <li><a href="https://uk.pinterest.com/pin/cute-cat-mood-digital-stickers-cat-face-emoticon-goodnotes-stickers-hand-drawn-cat-character-stickers-facial-expression-individual-png-etsy--220183869274968093/">Hand-drawn cat moods</a></li>
+        <li><a href="https://www.pinterest.kr/ideas/sleeping-kitty-sticker/948147738569/">Sleeping kitty stickers</a></li>
+        <li><a href="https://jp.pinterest.com/ideas/cat-doodle-aesthetic/896531956029/">Cat doodle aesthetic</a></li>
+      </ul>
+    </section>
+
+    <footer>Original SVGs · local assets only · DivLand birthday site</footer>
+  </main>
+</body>
+</html>

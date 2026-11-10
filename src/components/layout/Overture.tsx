@@ -13,6 +13,7 @@ import {
 import { ChapterSigil } from "@/components/common/ChapterSigils";
 import { ScallopDivider } from "@/components/common/Dividers";
 import { SparkleField } from "@/components/common/Ambient";
+import { CatSticker } from "@/components/cats/CatSticker";
 import { useAudioExperience } from "@/components/audio/AudioProvider";
 import { scrollToTarget } from "@/animations/useSmoothScroll";
 import { DUR, EASE_ENTER, EASE_SCENE, STAGGER } from "@/animations/motion";
@@ -199,6 +200,17 @@ export function Overture({ playing = true }: { playing?: boolean }) {
           <Sparkle className="h-3 w-3 text-rose/70 anim-breathe" />
         </motion.div>
       </motion.div>
+
+      <CatSticker
+        art="peek"
+        label="Say hello to the peeking cat"
+        bubble="psst… hi sonu"
+        bubbleSide="top"
+        interactive
+        motion="bob"
+        delay={-1.2}
+        className="absolute bottom-[4.25rem] left-[4%] z-[4] w-20 sm:bottom-[4.5rem] sm:left-[8%] sm:w-28"
+      />
 
       <div className="absolute inset-x-0 bottom-0 z-[3]">
         <ScallopDivider color="#FFF9F0" height={64} />

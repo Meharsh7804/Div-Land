@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { StorybookHeading } from "@/components/common/StorybookHeading";
+import { CatSticker } from "@/components/cats/CatSticker";
 import { useAudioExperience } from "@/components/audio/AudioProvider";
 import {
   Cloud,
@@ -800,6 +801,17 @@ export function SonuCafe() {
               </div>
 
               <CounterItems />
+
+              <CatSticker
+                art="cup"
+                label="Say hello to the cafe cat"
+                bubble="catpuccino?"
+                bubbleSide="top"
+                interactive
+                motion="breathe"
+                delay={-1.5}
+                className="absolute bottom-[27%] left-[14%] z-[4] hidden w-16 md:block"
+              />
 
               <div className="absolute bottom-[25.5%] left-1/2 z-20 w-[13.5rem] -translate-x-1/2 sm:w-[17rem]">
                 <CoffeeMachineArt stage={stage} drink={selected} onBrew={brew} cups={cups} />

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { StorybookHeading } from "@/components/common/StorybookHeading";
+import { CatSticker } from "@/components/cats/CatSticker";
 import { useAudioExperience } from "@/components/audio/AudioProvider";
 import {
   BrainBloom,
@@ -662,6 +663,17 @@ export function ThoughtLab() {
             />
           </div>
         </div>
+
+        <CatSticker
+          art="heart"
+          label="Say hello to the thought cat"
+          bubble="only nice thoughts"
+          bubbleSide="left"
+          interactive
+          motion="bob"
+          delay={-0.8}
+          className="absolute bottom-[6%] right-[14%] z-10 hidden w-20 md:block lg:w-24"
+        />
 
         <p aria-live="polite" aria-atomic="true" className="sr-only">
           {thought ? thought.text : "The thought chamber is empty."}

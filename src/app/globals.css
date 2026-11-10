@@ -452,6 +452,74 @@ button:disabled {
 .anim-spin-slow { animation: spin-slow 60s linear infinite; }
 .anim-bounce-soft { animation: bounce-soft 2.4s ease-in-out infinite; }
 
+/* ————— cat stickers ————— */
+@keyframes cat-float {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-1.2deg); }
+  50% { transform: translate3d(0, -7px, 0) rotate(1.2deg); }
+}
+
+@keyframes cat-bob {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(-4px) rotate(-2deg); }
+}
+
+@keyframes cat-sway {
+  0%, 100% { transform: rotate(-2.5deg); }
+  50% { transform: rotate(2.5deg); }
+}
+
+@keyframes cat-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.035); }
+}
+
+@keyframes cat-react {
+  0% { transform: scale(1) rotate(0); }
+  30% { transform: scale(1.08) rotate(-4deg); }
+  60% { transform: scale(0.97) rotate(3deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+.cat-sticker-art {
+  transform-origin: 50% 88%;
+}
+
+.cat-sticker-art > span {
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  background-size: contain;
+  filter:
+    drop-shadow(0 0 1px rgba(255, 249, 240, 0.9))
+    drop-shadow(0 10px 12px rgba(73, 51, 72, 0.16));
+}
+
+.cat-sticker-button {
+  appearance: none;
+  border: 0;
+  border-radius: 0.9rem;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform 0.35s var(--ease-scene);
+}
+
+@media (hover: hover) {
+  .cat-sticker-button:hover {
+    transform: translateY(-2px) rotate(-2deg) scale(1.035);
+  }
+}
+
+.cat-sticker-button:active {
+  transform: scale(0.96);
+}
+
+.cat-float { animation: cat-float 6.5s ease-in-out infinite; }
+.cat-bob { animation: cat-bob 4.8s ease-in-out infinite; }
+.cat-sway { animation: cat-sway 5.5s ease-in-out infinite; }
+.cat-breathe { animation: cat-breathe 5.2s ease-in-out infinite; }
+.cat-react { animation: cat-react 0.68s var(--ease-scene) both; }
+
 /* ————— letter paper motion ————— */
 @keyframes paper-breeze {
   0%, 100% { transform: rotate(-0.35deg) translateY(0); }
@@ -750,7 +818,11 @@ textarea {
     .anim-bean,
     .steam-line,
     .ink-rule,
-    .paper-breeze {
+    .paper-breeze,
+    .cat-float,
+    .cat-bob,
+    .cat-sway,
+    .cat-breathe {
       animation: none !important;
     }
 

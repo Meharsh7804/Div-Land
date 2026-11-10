@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { useRef, useState } from "react";
+import { AnimatePresence, motion, useInView } from "motion/react";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { StorybookHeading } from "@/components/common/StorybookHeading";
+import { CatSticker } from "@/components/cats/CatSticker";
 import { useAudioExperience } from "@/components/audio/AudioProvider";
 import { Heart as HeartArt, Sparkle, Star4 } from "@/components/common/Illustrations";
 import { DottedBackdrop, SparkleField } from "@/components/common/Ambient";
@@ -34,6 +35,8 @@ const scraps = [
 export function MemoryScrapbook() {
   const audio = useAudioExperience();
   const reduceMotion = useReducedMotion();
+  const sceneRef = useRef<HTMLDivElement>(null);
+  const sceneInView = useInView(sceneRef, { once: true, amount: 0.45 });
   const [selectedId, setSelectedId] = useState(memories[0].id);
   const selected = memories.find((memory) => memory.id === selectedId) ?? memories[0];
   const selectedIndex = memories.findIndex((memory) => memory.id === selected.id);
@@ -131,13 +134,16 @@ export function MemoryScrapbook() {
                         </span>
                       ) : null}
 
-                      <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[0.8rem] border border-white/55 bg-cream/60">
+                      <div
+                        ref={sceneRef}
+                        className="relative aspect-[16/10] w-full overflow-hidden rounded-[0.8rem] border border-white/55 bg-cream/60"
+                      >
                         <div className={cn("absolute inset-0 opacity-25", tone.wash)} />
                         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_20%,rgba(255,255,255,.55),transparent_65%)]" />
                         <MemoryScene
                           key={`${selected.id}-scene`}
                           kind={selected.key}
-                          animated={!reduceMotion}
+                          animated={!reduceMotion && sceneInView}
                           className="relative h-full w-full"
                         />
                       </div>
@@ -281,6 +287,17 @@ export function MemoryScrapbook() {
               </div>
             </div>
           </div>
+
+          <CatSticker
+            art="flower"
+            label="Say hello to the memory cat"
+            bubble="keep this one"
+            bubbleSide="top"
+            interactive
+            motion="sway"
+            delay={-1.8}
+            className="absolute -bottom-6 right-[2%] z-20 w-16 sm:-bottom-8 sm:right-[4%] sm:w-24"
+          />
         </div>
 
         <div className="mt-7 flex flex-col items-center gap-2 text-center sm:mt-9">

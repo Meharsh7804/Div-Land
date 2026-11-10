@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 120" fill="none">
+  <ellipse cx="70" cy="110" rx="38" ry="6" fill="#493348" opacity=".12"/>
+  <g stroke="#493348" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M38 50 29 21c-1-4 3-6 6-4l19 14Z" fill="#FFF9F0"/>
+    <path d="M102 50 111 21c1-4-3-6-6-4L86 31Z" fill="#FFF9F0"/>
+    <path d="M39 43 34 27l11 8Z" fill="#F6DCE7" stroke="none"/>
+    <path d="M101 43 106 27l-11 8Z" fill="#F6DCE7" stroke="none"/>
+
+    <path d="M35 52c0-18 15-28 35-28s35 10 35 28c0 18-15 30-35 30S35 70 35 52Z" fill="#FFF9F0"/>
+    <path d="M77 28c9 1 16 6 19 14-7 3-16 1-20-5-2-3-2-6 1-9Z" fill="#FFDCCB" opacity=".55" stroke="none"/>
+
+    <path d="M48 53c2.6 3.4 7.4 3.4 10 0" stroke-width="1.9"/>
+    <path d="M82 53c2.6 3.4 7.4 3.4 10 0" stroke-width="1.9"/>
+    <path d="M70 60l3.2 3.2H66.8L70 60Z" fill="#C98EA8" stroke="none"/>
+    <path d="M70 63.2c0 3.6-4.4 3.6-5.4 1.2M70 63.2c0 3.6 4.4 3.6 5.4 1.2" stroke-width="1.5"/>
+
+    <path d="M51 62 34 58M51 66 33 68M89 62 106 58M89 66 107 68" stroke-width="1.1" opacity=".38"/>
+
+    <path d="M49 80c0-5 4-8 9-8s9 3 9 8v20c0 4-3 6-9 6s-9-2-9-6V80Z" fill="#FFF9F0"/>
+    <path d="M73 80c0-5 4-8 9-8s9 3 9 8v20c0 4-3 6-9 6s-9-2-9-6V80Z" fill="#FFF9F0"/>
+    <path d="M54 92v6M59 92v6M63 92v6M78 92v6M83 92v6M87 92v6" stroke-width="1.2" opacity=".45"/>
+  </g>
+
+  <circle cx="46" cy="62" r="5" fill="#F6DCE7" opacity=".8"/>
+  <circle cx="94" cy="62" r="5" fill="#F6DCE7" opacity=".8"/>
+
+  <path d="M112 32l1.8 4.2 4.2 1.8-4.2 1.8-1.8 4.2-1.8-4.2-4.2-1.8 4.2-1.8 1.8-4.2Z" fill="#FFF0B8" stroke="#C98EA8" stroke-width="1.2" stroke-linejoin="round"/>
+</svg>

@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { X } from "lucide-react";
 import { StorybookHeading } from "@/components/common/StorybookHeading";
+import { CatSticker } from "@/components/cats/CatSticker";
 import { useAudioExperience } from "@/components/audio/AudioProvider";
 import {
   Flower,
@@ -639,6 +640,17 @@ export function LetterSection() {
                 {letter.hint} Some things deserve to be read slowly.
               </p>
             </div>
+
+            <CatSticker
+              art="sleepy"
+              label="Say hello to the letter cat"
+              bubble="read it slowly"
+              bubbleSide="right"
+              interactive
+              motion="breathe"
+              delay={-2.4}
+              className="absolute bottom-4 left-4 z-10 w-16 sm:bottom-6 sm:left-6 sm:w-20"
+            />
           </div>
 
           <p className="mt-4 text-center text-[0.55rem] font-extrabold uppercase tracking-[0.24em] text-cream/25">

@@ -10,6 +10,7 @@ import {
   UtensilsCrossed,
 } from "lucide-react";
 import { StorybookHeading } from "@/components/common/StorybookHeading";
+import { CatSticker } from "@/components/cats/CatSticker";
 import { useAudioExperience } from "@/components/audio/AudioProvider";
 import { SparkleField } from "@/components/common/Ambient";
 import {
@@ -275,6 +276,17 @@ function Cake({
           <div className="absolute left-1/2 top-0 h-4 w-[112%] -translate-x-1/2 rounded-[50%] border border-plum/10 bg-gradient-to-b from-[#FFFDF8] to-[#F0E2D2] shadow-[0_22px_28px_-16px_rgba(0,0,0,.75)]" />
         </div>
         <div className="mx-auto mt-3 h-1.5 w-[74%] rounded-full bg-black/25 blur-md" />
+
+        <CatSticker
+          art="party"
+          label="Say hello to the birthday cat"
+          bubble="make a wish"
+          bubbleSide="left"
+          interactive
+          motion="bob"
+          delay={-1.4}
+          className="absolute -bottom-2 -right-7 z-20 w-16 sm:-right-9 sm:w-20"
+        />
       </div>
 
       <div className="relative mt-5 flex flex-col items-center gap-2 sm:mt-7">

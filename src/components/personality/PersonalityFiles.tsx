@@ -10,6 +10,7 @@ import {
 } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { StorybookHeading } from "@/components/common/StorybookHeading";
+import { CatSticker } from "@/components/cats/CatSticker";
 import { useAudioExperience } from "@/components/audio/AudioProvider";
 import {
   Bow,
@@ -418,7 +419,7 @@ export function PersonalityFiles() {
           }
         />
 
-        <div className="mx-auto mt-7 w-full max-w-[60rem] sm:mt-9">
+        <div className="relative mx-auto mt-7 w-full max-w-[60rem] sm:mt-9">
           <div
             ref={stageRef}
             data-personality-stage
@@ -515,6 +516,17 @@ export function PersonalityFiles() {
               </div>
             </div>
           </div>
+
+          <CatSticker
+            art="loaf"
+            label="Say hi to the off-duty loaf cat"
+            bubble="off duty"
+            bubbleSide="top"
+            interactive
+            motion="breathe"
+            delay={-2}
+            className="absolute -bottom-4 left-[7%] z-20 w-14 sm:w-20"
+          />
         </div>
       </div>
     </section>

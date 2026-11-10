@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { RotateCcw, Sparkles } from "lucide-react";
 import gsap from "gsap";
 import { StorybookHeading } from "@/components/common/StorybookHeading";
+import { CatSticker } from "@/components/cats/CatSticker";
 import { DottedBackdrop, SparkleField } from "@/components/common/Ambient";
 import {
   Butterfly,
@@ -585,6 +586,17 @@ export function MakingOfDivya() {
                   {makingCopy.again}
                 </button>
               </div>
+
+              <CatSticker
+                art="heart"
+                label="Say hello to the proud little cat"
+                bubble="so proud of you"
+                bubbleSide="top"
+                interactive
+                motion="bob"
+                delay={-1.1}
+                className="absolute -bottom-6 -right-2 z-20 w-16 sm:-bottom-8 sm:-right-4 sm:w-20"
+              />
             </motion.div>
           ) : null}
         </AnimatePresence>
