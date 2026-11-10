@@ -51,6 +51,8 @@ export function DivyaPortrait({
   const photoRef = useRef<HTMLDivElement | null>(null);
   const baseRef = useRef<HTMLImageElement | null>(null);
   const emptyRef = useRef<HTMLDivElement | null>(null);
+  const veilRef = useRef<HTMLDivElement | null>(null);
+  const glowRef = useRef<HTMLDivElement | null>(null);
   const fragmentRefs = useRef<Array<HTMLDivElement | null>>([]);
   const litRef = useRef<Set<string>>(new Set());
 
@@ -118,6 +120,8 @@ export function DivyaPortrait({
     if (!width || !height) return;
 
     const current = new Set(discovered);
+    const veil = veilRef.current;
+    const empty = emptyRef.current;
     let landing = 0;
 
     portraitFragments.forEach((fragment, index) => {
@@ -130,11 +134,9 @@ export function DivyaPortrait({
         litRef.current.add(fragment.id);
 
         if (reduced) {
-          gsap.to(el, {
+          gsap.set(el, {
             opacity: 1,
-            duration: 0.45,
-            delay: landing * 0.08,
-            ease: "power1.out",
+            filter: "none",
             overwrite: true,
           });
         } else {
@@ -182,12 +184,32 @@ export function DivyaPortrait({
         }
       }
     });
+
+    if (veil) {
+      gsap.to(veil, {
+        opacity: reduced ? 0 : current.size > 0 ? 0.62 : 0,
+        duration: reduced ? 0.2 : 0.6,
+        ease: "power1.out",
+        overwrite: true,
+      });
+    }
+
+    if (empty) {
+      gsap.to(empty, {
+        opacity: current.size > 0 ? 0 : 1,
+        duration: reduced ? 0.2 : 0.45,
+        ease: "power1.out",
+        overwrite: true,
+      });
+    }
   }, [discovered, reduced]);
 
   useEffect(() => {
     const frame = frameRef.current;
     const base = baseRef.current;
     const empty = emptyRef.current;
+    const veil = veilRef.current;
+    const glow = glowRef.current;
     if (!frame || !base) return;
 
     const pieces = fragmentRefs.current.filter(
@@ -196,21 +218,59 @@ export function DivyaPortrait({
 
     if (finale) {
       if (reduced) {
-        gsap.set(base, { opacity: 1 });
+        gsap.set(base, {
+          opacity: 1,
+          clipPath: "inset(0% 0% 0% 0% round 0.45rem)",
+          filter: "none",
+        });
         gsap.set(pieces, { opacity: 0 });
         gsap.set(frame, { scale: 1 });
         gsap.set(empty, { opacity: 0 });
+        gsap.set(veil, { opacity: 0 });
+        gsap.set(glow, { opacity: 0 });
         return;
       }
 
+      gsap.set(base, {
+        opacity: 0,
+        clipPath: "inset(0% 0% 100% 0% round 0.45rem)",
+        filter: "blur(9px) brightness(1.08) saturate(0.9)",
+      });
+      gsap.set(glow, { opacity: 0, scale: 0.9, transformOrigin: "50% 50%" });
+
       const tl = gsap.timeline();
-      tl.to(empty, { opacity: 0, duration: 0.5, ease: "power1.out" }, 0)
-        .to(base, { opacity: 1, duration: 0.9, ease: "power2.out" }, 0.35)
-        .to(pieces, { opacity: 0, duration: 0.7, ease: "power1.out" }, 0.95)
+      tl.to(empty, { opacity: 0, duration: 0.45, ease: "power1.out" }, 0)
+        .to(veil, { opacity: 0, duration: 0.9, ease: "power2.inOut" }, 0.15)
+        .to(base, { opacity: 1, duration: 0.25, ease: "power1.out" }, 0.35)
+        .to(
+          base,
+          {
+            clipPath: "inset(0% 0% 0% 0% round 0.45rem)",
+            duration: 1.3,
+            ease: "power3.inOut",
+          },
+          0.35,
+        )
+        .to(
+          base,
+          {
+            filter: "blur(0px) brightness(1) saturate(1)",
+            duration: 1.4,
+            ease: "power2.out",
+          },
+          0.35,
+        )
+        .to(
+          glow,
+          { opacity: 0.85, scale: 1, duration: 0.45, ease: "power2.out" },
+          0.35,
+        )
+        .to(glow, { opacity: 0, duration: 1, ease: "power2.in" }, 0.85)
+        .to(pieces, { opacity: 0, duration: 0.6, ease: "power1.out" }, 0.9)
         .to(
           frame,
           { scale: 1.045, duration: 3, ease: "power2.inOut" },
-          0.6,
+          0.55,
         );
 
       return () => {
@@ -219,9 +279,15 @@ export function DivyaPortrait({
     }
 
     if (reduced) {
-      gsap.set(base, { opacity: 0 });
+      gsap.set(base, {
+        opacity: 0,
+        clipPath: "inset(0% 0% 0% 0% round 0.45rem)",
+        filter: "none",
+      });
       gsap.set(frame, { scale: 1 });
       gsap.set(empty, { opacity: 1 });
+      gsap.set(veil, { opacity: 0 });
+      gsap.set(glow, { opacity: 0 });
       return;
     }
 
@@ -230,6 +296,10 @@ export function DivyaPortrait({
       duration: 0.35,
       ease: "power1.out",
       overwrite: true,
+    });
+    gsap.set(base, {
+      clipPath: "inset(0% 0% 0% 0% round 0.45rem)",
+      filter: "none",
     });
     gsap.to(frame, {
       scale: 1,
@@ -244,6 +314,8 @@ export function DivyaPortrait({
       ease: "power1.out",
       overwrite: true,
     });
+    gsap.to(veil, { opacity: 0, duration: 0.4, overwrite: true });
+    gsap.to(glow, { opacity: 0, duration: 0.3, overwrite: true });
   }, [finale, reduced]);
 
   const label = finale
@@ -302,7 +374,7 @@ export function DivyaPortrait({
             loading="eager"
             decoding="async"
             fetchPriority="high"
-            className="pointer-events-none absolute inset-0 z-[1] h-full w-full select-none object-cover opacity-0"
+            className="pointer-events-none absolute inset-0 z-[12] h-full w-full select-none object-cover opacity-0"
           />
 
           <div aria-hidden className="absolute inset-0 z-10">
@@ -336,6 +408,30 @@ export function DivyaPortrait({
               </div>
             ))}
           </div>
+
+          <div
+            ref={veilRef}
+            aria-hidden
+            data-portrait-veil
+            className="pointer-events-none absolute inset-0 z-[15] rounded-[0.45rem] opacity-0"
+            style={{
+              background:
+                "linear-gradient(155deg, rgba(255,253,248,0.64), rgba(252,236,239,0.48) 48%, rgba(238,232,248,0.58))",
+              backdropFilter: "blur(2px) saturate(0.82)",
+              WebkitBackdropFilter: "blur(2px) saturate(0.82)",
+            }}
+          />
+
+          <div
+            ref={glowRef}
+            aria-hidden
+            data-portrait-glow
+            className="pointer-events-none absolute inset-0 z-[16] rounded-[0.45rem] opacity-0"
+            style={{
+              background:
+                "radial-gradient(circle at 50% 44%, rgba(255,252,245,0.95), rgba(255,228,204,0.5) 36%, rgba(255,240,214,0) 70%)",
+            }}
+          />
 
           <div
             aria-hidden
