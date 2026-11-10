@@ -5,7 +5,7 @@ export const site = {
   tagline: "A little universe, made just for you.",
   quote: "Good food, better conversation, and nowhere else to be.",
   music: {
-    title: "a small theme for Sonu",
+    title: "A small theme for Sonu",
     volume: 0.36,
     sfxVolume: 0.5,
   },
@@ -44,7 +44,7 @@ export const chapters: Chapter[] = [
   {
     id: "cafe",
     number: "04",
-    label: "Sonu's Little Café",
+    label: "Divy's Little Café",
     short: "Coffee",
     sectionId: "chapter-cafe",
   },
@@ -58,14 +58,14 @@ export const chapters: Chapter[] = [
   {
     id: "gallery",
     number: "06",
-    label: "The Talent Gallery",
-    short: "Chhota packet",
+    label: "The Many Worlds of Divya",
+    short: "Five worlds",
     sectionId: "chapter-gallery",
   },
   {
     id: "letter",
     number: "07",
-    label: "A Letter for Sonu",
+    label: "A Letter for My Sonu",
     short: "Sealed",
     sectionId: "chapter-letter",
   },
@@ -82,5 +82,5 @@ export const overture = {
   eyebrow: "you're in",
   script: "welcome home, sonu",
   line: "Eight small chapters. One very specific person.",
-  hint: "scroll to open the story",
+  hint: "Scroll to open the story",
 };

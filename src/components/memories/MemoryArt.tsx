@@ -19,6 +19,8 @@ const cream = "#FFF9F0";
 const creamSoft = "#FFF4E8";
 const sage = "#C7D3BD";
 const sageDeep = "#AFC29F";
+const yellow = "#FEFD65"
+const darkyellow = "#FFF150"
 
 type SceneProps = { animated: boolean };
 
@@ -192,157 +194,524 @@ function BeginningScene({ animated }: SceneProps) {
   );
 }
 
-function SleepScene({ animated }: SceneProps) {
+const kfcRed = "#CF4A43";
+const kfcRedDeep = "#A93A33";
+const kfcCream = "#FFF5E6";
+const kfcWall = "#FBEBD9";
+const kfcStripe = "#F6E2CD";
+const floorWarm = "#F0DECB";
+
+function KfcRoom() {
+  const awning = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+  const counterStripes = [0, 1, 2, 3, 4, 5, 6, 7];
+  const floorCols = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+
   return (
     <g>
-      <circle cx="164" cy="116" r="102" fill={butter} opacity=".2" />
-      <circle cx="62" cy="54" r="42" fill={lavender} opacity=".32" />
-      <path d="M276 24a20 20 0 1 0 8 34 24 24 0 0 1-8-34Z" fill={butter} stroke={plum} strokeWidth="1.4" />
-      <SparkShape x={244} y={30} s={0.9} color={butter} />
-      <SparkShape x={292} y={72} s={0.7} color={cream} />
-      <SparkShape x={220} y={64} s={0.6} color={rose} />
+      <rect x="0" y="0" width="320" height="176" fill={kfcWall} />
+      <rect x="0" y="62" width="320" height="16" fill={kfcRed} opacity=".9" />
+      <path d="M0 62h320M0 78h320" stroke={kfcRedDeep} strokeWidth="1.2" opacity=".35" />
+      <rect x="0" y="78" width="320" height="98" fill={kfcStripe} opacity=".45" />
+
+      <rect x="0" y="0" width="320" height="15" fill={kfcRed} />
+      {awning.map((i) => (
+        <rect key={`awn-${i}`} x={3 + i * 22} y="0" width="8" height="15" fill={kfcCream} opacity=".92" />
+      ))}
+      {awning.map((i) => (
+        <circle key={`awn-bump-${i}`} cx={12 + i * 22} cy="15" r="11" fill={kfcRed} />
+      ))}
+
+      <rect x="0" y="176" width="320" height="34" fill={floorWarm} />
+      <path d="M0 176h320" stroke={plum} strokeWidth="1.4" opacity=".16" />
+      {floorCols.map((col) =>
+        [0, 1].map((row) =>
+          (col + row) % 2 === 0 ? (
+            <rect
+              key={`floor-${col}-${row}`}
+              x={col * 20}
+              y={176 + row * 17}
+              width="20"
+              height="17"
+              fill={kfcRed}
+              opacity=".08"
+            />
+          ) : null,
+        ),
+      )}
+
+      {[150, 202].map((x) => (
+        <g key={`lamp-${x}`}>
+          <path d={`M${x} 0v20`} stroke={plum} strokeWidth="1.4" />
+          <path d={`M${x - 11} 20h22l-4 9h-14Z`} fill={kfcRed} stroke={plum} strokeWidth="1.3" strokeLinejoin="round" />
+          <ellipse cx={x} cy="30" rx="5" ry="2" fill={butter} />
+          <circle cx={x} cy="35" r="9" fill={butter} opacity=".16" />
+        </g>
+      ))}
 
       <g>
-        <circle cx="58" cy="58" r="28" fill={cream} stroke={plum} strokeWidth="2.6" />
-        <circle cx="58" cy="58" r="21" fill="none" stroke={plumSoft} strokeWidth="0.8" strokeDasharray="1 6" opacity=".35" />
-        <path d="M58 34v4M58 78v4M34 58h4M78 58h4" stroke={plum} strokeWidth="1.6" strokeLinecap="round" opacity=".65" />
-        <motion.line
-          x1="58"
-          y1="58"
-          x2="58"
-          y2="42"
-          stroke={plum}
-          strokeWidth="2.4"
-          strokeLinecap="round"
-          initial={animated ? undefined : false}
-          animate={animated ? { rotate: 360 } : { rotate: 0 }}
-          transition={animated ? { duration: 24, repeat: Infinity, ease: "linear" } : undefined}
-          style={{ transformBox: "view-box", transformOrigin: "58px 58px" }}
-        />
-        <motion.line
-          x1="58"
-          y1="58"
-          x2="58"
-          y2="38"
-          stroke={plumSoft}
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          initial={animated ? undefined : false}
-          animate={animated ? { rotate: 360 } : { rotate: 45 }}
-          transition={animated ? { duration: 120, repeat: Infinity, ease: "linear" } : undefined}
-          style={{ transformBox: "view-box", transformOrigin: "58px 58px" }}
-        />
-        <circle cx="58" cy="58" r="2.8" fill={plum} />
+        <rect x="12" y="32" width="98" height="44" rx="4" fill={plumSoft} opacity=".94" stroke={plum} strokeWidth="1.5" />
+        <rect x="17" y="37" width="88" height="34" rx="2" fill="#453542" />
+        <path d="M23 43h26" stroke={kfcCream} strokeWidth="2.2" strokeLinecap="round" opacity=".85" />
+        <path d="M23 51h44M23 56h38M23 61h46M23 66h28" stroke={kfcCream} strokeWidth="1.3" strokeLinecap="round" opacity=".4" />
+        <g transform="translate(90 52)">
+          <path d="M-6 -9h12l-2 15h-8Z" fill={kfcCream} stroke={kfcRed} strokeWidth="1" strokeLinejoin="round" />
+          <path d="M-3.5 -9l.7 15M0 -9v15M3.5 -9l-.7 15" stroke={kfcRed} strokeWidth="1.6" />
+          <ellipse cx="0" cy="-9" rx="6" ry="1.8" fill={kfcCream} stroke={kfcRed} strokeWidth=".9" />
+        </g>
       </g>
 
-      <ellipse cx="238" cy="146" rx="42" ry="6" fill={plum} opacity=".12" />
-      <circle cx="240" cy="128" r="24" fill={butter} opacity=".28" />
-      <rect x="206" y="98" width="66" height="46" rx="6" fill={creamSoft} stroke={plum} strokeWidth="2" />
-      <rect x="200" y="90" width="78" height="12" rx="4" fill={rose} stroke={plum} strokeWidth="1.6" />
-      <path d="M212 90v12M226 90v12M240 90v12M254 90v12M268 90v12" stroke={cream} strokeWidth="2.4" opacity=".75" />
-      <rect x="232" y="118" width="16" height="26" rx="2" fill={bean} stroke={plum} strokeWidth="1.2" />
-      <rect x="216" y="110" width="12" height="13" rx="2" fill={butter} stroke={plum} strokeWidth="1.2" />
-      <path d="M216 116h12M222 110v13" stroke={plum} strokeWidth="0.9" opacity=".45" />
-      <rect x="252" y="110" width="12" height="13" rx="2" fill={butter} stroke={plum} strokeWidth="1.2" />
-      <path d="M252 116h12M258 110v13" stroke={plum} strokeWidth="0.9" opacity=".45" />
-      <g transform="translate(274 62)">
-        <line x1="0" y1="0" x2="0" y2="30" stroke={plum} strokeWidth="1.6" />
-        <motion.path
-          d="M0 1l16 4-16 5Z"
-          fill={roseDeep}
-          initial={animated ? undefined : false}
-          animate={animated ? { skewY: [0, -3, 0, 3, 0] } : { skewY: 0 }}
-          transition={animated ? { duration: 2.4, repeat: Infinity, ease: "easeInOut" } : undefined}
-          style={{ transformBox: "fill-box", transformOrigin: "left center" }}
-        />
-      </g>
-      <HeartShape x={240} y={84} s={1.5} color={rose} />
-
-      <path
-        d="M18 200C56 192 46 168 92 166S150 154 178 146s36-10 44-14"
-        stroke={roseDeep}
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        strokeDasharray="1 8"
-        fill="none"
-        opacity=".65"
-      />
-      <motion.path
-        d="M18 200C56 192 46 168 92 166S150 154 178 146s36-10 44-14"
-        stroke={roseDeep}
-        strokeWidth="6"
-        strokeLinecap="round"
-        strokeDasharray="1 8"
-        fill="none"
-        opacity=".16"
-        initial={animated ? undefined : false}
-        animate={animated ? { strokeDashoffset: [0, -18] } : { strokeDashoffset: 0 }}
-        transition={animated ? { duration: 2.2, repeat: Infinity, ease: "linear" } : undefined}
-      />
-
-      <g opacity=".38">
-        <ellipse cx="66" cy="190" rx="4" ry="2.4" fill={plum} />
-        <ellipse cx="78" cy="185" rx="4" ry="2.4" fill={plum} />
-        <ellipse cx="89" cy="179" rx="4" ry="2.4" fill={plum} />
-      </g>
-
-      <g transform="translate(104 170)">
-        <motion.g
-          initial={animated ? undefined : false}
-          animate={animated ? { y: [0, -2.2, 0], rotate: [-0.6, 0.6, -0.6] } : { y: 0, rotate: 0 }}
-          transition={animated ? { duration: 3.2, repeat: Infinity, ease: "easeInOut" } : undefined}
-          style={{ transformBox: "fill-box", transformOrigin: "50% 100%" }}
-        >
-          <path d="M-6-18-11 0M6-18 11 0" stroke={plum} strokeWidth="4.4" strokeLinecap="round" />
-          <ellipse cx="-12" cy="1" rx="5" ry="2.6" fill={plumSoft} />
-          <ellipse cx="12" cy="1" rx="5" ry="2.6" fill={plumSoft} />
-          <path d="M-13-46C-17-32-14-18-6-18H8C16-18 18-32 14-46Z" fill={lavenderDeep} stroke={plum} strokeWidth="2" strokeLinejoin="round" />
-          <path d="M-12-44C-18-40-20-32-16-27" stroke={plum} strokeWidth="2" fill="none" strokeLinecap="round" />
-          <path d="M12-44C19-40 21-34 17-29" stroke={plum} strokeWidth="2" fill="none" strokeLinecap="round" />
-          <path d="M-8-46h16" stroke={rose} strokeWidth="4" strokeLinecap="round" />
-          <circle cx="1" cy="-58" r="11" fill={creamSoft} stroke={plum} strokeWidth="2" />
-          <path d="M-10-62c1-9 21-11 21-1-3-3-6-2-9-3-4 3-8 2-12 4Z" fill={bean} />
-          <path d="M-6-59c1.2 1.2 2.8 1.2 4 0M3-59c1.2 1.2 2.8 1.2 4 0" stroke={plum} strokeWidth="1.4" strokeLinecap="round" fill="none" />
-          <path d="M-6-55c1 0.8 2 0.8 3 0M3-55c1 0.8 2 0.8 3 0" stroke={roseDeep} strokeWidth="0.9" strokeLinecap="round" fill="none" opacity=".7" />
-          <ellipse cx="1" cy="-51" rx="2.2" ry="2.8" fill={plumSoft} opacity=".8" />
-          <g transform="translate(18 -30)">
-            <rect x="-4" y="0" width="9" height="9" rx="2" fill={cream} stroke={plum} strokeWidth="1.4" />
-            <path d="M5 2h2c2 0 2 3 0 3H5" stroke={plum} strokeWidth="1.2" fill="none" />
-            <path d="M0-2c-1-2 2-2 0-4M3-2c-1-2 2-2 0-4" stroke={roseDeep} strokeWidth="1.1" strokeLinecap="round" fill="none" opacity=".7" />
+      <g>
+        <rect x="8" y="114" width="122" height="8" rx="3" fill={kfcCream} stroke={plum} strokeWidth="1.4" />
+        <rect x="14" y="122" width="110" height="54" fill={kfcRed} stroke={plum} strokeWidth="1.5" />
+        {counterStripes.map((i) => (
+          <rect key={`counter-${i}`} x={22 + i * 13} y="128" width="5" height="48" fill={kfcCream} opacity=".85" />
+        ))}
+        <rect x="10" y="172" width="118" height="6" rx="2" fill={kfcRedDeep} />
+        <g transform="translate(92 114)">
+          <rect x="-13" y="-14" width="26" height="14" rx="2" fill={kfcCream} stroke={plum} strokeWidth="1.3" />
+          <rect x="-9" y="-19" width="18" height="6" rx="2" fill={plumSoft} stroke={plum} strokeWidth="1" />
+          <path d="M-9 -9h18M-9 -5h11" stroke={plum} strokeWidth="1" opacity=".4" />
+        </g>
+        <g transform="translate(40 114)">
+          <path d="M-9 0h18l-2-19h-14Z" fill={kfcCream} stroke={plum} strokeWidth="1.4" strokeLinejoin="round" />
+          <path d="M-5 0l.6-19M0 0v-19M5 0l-.6-19" stroke={kfcRed} strokeWidth="3" opacity=".9" />
+          <ellipse cx="0" cy="-19" rx="9.5" ry="3" fill={kfcCream} stroke={plum} strokeWidth="1.2" />
+          <g transform="translate(2 -19) rotate(-16)">
+            <ellipse cx="0" cy="0" rx="5" ry="3.4" fill={bean} stroke={plum} strokeWidth=".9" />
+            <path d="M4 2l5 4" stroke={kfcCream} strokeWidth="2.6" strokeLinecap="round" />
           </g>
-        </motion.g>
+        </g>
       </g>
+
+      <g>
+        <rect x="244" y="104" width="74" height="50" rx="8" fill={kfcRed} stroke={plum} strokeWidth="1.6" />
+        <path d="M251 112h60M251 146h60" stroke={kfcCream} strokeWidth="2" strokeLinecap="round" opacity=".65" />
+        <rect x="238" y="148" width="80" height="12" rx="5" fill={kfcRedDeep} stroke={plum} strokeWidth="1.4" />
+        <rect x="246" y="160" width="8" height="16" fill={bean} />
+        <rect x="304" y="160" width="8" height="16" fill={bean} />
+      </g>
+    </g>
+  );
+}
+
+function ScooterRider() {
+  return (
+    <g transform="translate(-10 -26)">
+      <path d="M-1 2c5 2 10 6 13 12" stroke={plum} strokeWidth="4.6" strokeLinecap="round" fill="none" />
+      <path d="M4 1c5 2 9 6 12 11" stroke={plumSoft} strokeWidth="4.4" strokeLinecap="round" fill="none" />
+      <ellipse cx="14" cy="15" rx="5" ry="2.2" fill={plumSoft} />
+      <path d="M-9 0c-3-7-2-13 3-16 3-2 7-1 9 2 3 4 3 9 1 14Z" fill={lavenderDeep} stroke={plum} strokeWidth="1.8" strokeLinejoin="round" />
+      <path d="M-4 -3h8" stroke={lavender} strokeWidth="2.4" strokeLinecap="round" />
+      <path d="M6 -12c8 0 16 3 22 6" stroke={lavenderDeep} strokeWidth="4.6" strokeLinecap="round" fill="none" />
+      <circle cx="28" cy="-6" r="2.6" fill={creamSoft} stroke={plum} strokeWidth=".9" />
+      <path d="M-3 -16h6v4h-6Z" fill={creamSoft} stroke={plum} strokeWidth="1" />
+      <circle cx="0" cy="-25" r="9.4" fill={creamSoft} stroke={plum} strokeWidth="1.8" />
+      <circle cx="-9" cy="-31" r="4.8" fill={bean} />
+      <path d="M-12 -33c1.6-1.6 3.6-1.6 5 0" stroke={plumSoft} strokeWidth="1" fill="none" strokeLinecap="round" />
+      <path d="M-9.4 -27c.4-7 4.2-10 9.4-10s9 3.6 9.4 10c-2-3.6-5-5.4-9.4-5.4s-7.4 1.8-9.4 5.4Z" fill={bean} />
+      <path d="M-3 -37c2.6-1.4 5.6-.8 7.4 1.6" stroke={rose} strokeWidth="1.8" fill="none" strokeLinecap="round" />
+      <path d="M-5.4 -25c1.2 1.2 2.6 1.2 3.8 0M1.4 -25c1.2 1.2 2.6 1.2 3.8 0" stroke={plum} strokeWidth="1.1" fill="none" strokeLinecap="round" />
+      <path d="M-2 -21.6c1.2 1 3 1 4.2 0" stroke={roseDeep} strokeWidth=".9" fill="none" strokeLinecap="round" />
+      <ellipse cx="-6" cy="-23" rx="2.2" ry="1.3" fill={rose} opacity=".4" />
+      <ellipse cx="5.4" cy="-23" rx="2.2" ry="1.3" fill={rose} opacity=".4" />
+    </g>
+  );
+}
+
+function Scooter({ parked = false, animated = false }: { parked?: boolean; animated?: boolean }) {
+  return (
+    <g>
+      <ellipse cx="0" cy="2" rx="36" ry="4" fill={plum} opacity=".12" />
+      {[-24, 24].map((cx) => (
+        <g key={`wheel-${cx}`}>
+          <circle cx={cx} cy="-8" r="8" fill="#4A3546" stroke={plum} strokeWidth="1.8" />
+          <motion.g
+            initial={{ rotate: 0 }}
+            animate={animated ? { rotate: [0, 720] } : { rotate: 0 }}
+            transition={animated ? { duration: 1.5, delay: 0.5, ease: "linear" } : undefined}
+            style={{ transformBox: "fill-box", transformOrigin: "center" }}
+          >
+            <circle cx={cx} cy="-8" r="3.2" fill={kfcCream} />
+            <path d={`M${cx - 5} -8h10M${cx} -13v10`} stroke={plumSoft} strokeWidth="1" opacity=".7" />
+          </motion.g>
+        </g>
+      ))}
+      <path d="M-34 -12c0-8 5-13 13-13h12c5 0 9 4 9 9v8c0 5-4 8-9 8h-18c-4 0-7-5-7-12Z" fill={butter} stroke={plum} strokeWidth="1.9" strokeLinejoin="round" />
+      <path d="M-30 -26h24c3 0 5 2 4 5l-1 3h-28c-2 0-3-2-2-5Z" fill={plumSoft} stroke={plum} strokeWidth="1.2" strokeLinejoin="round" />
+      <path d="M-6 -10h24v5h-24Z" fill={butter} stroke={plum} strokeWidth="1.4" strokeLinejoin="round" />
+      <path d="M16 -32c6-3 12 0 13 6l2 14c1 5-3 8-8 8h-8Z" fill={butter} stroke={plum} strokeWidth="1.8" strokeLinejoin="round" />
+      <path d="M24 -34l6-4" stroke={plum} strokeWidth="2.2" strokeLinecap="round" />
+      <circle cx="31" cy="-39" r="1.8" fill={plum} />
+      <path d="M29 -39v-6" stroke={plum} strokeWidth="1.2" strokeLinecap="round" />
+      <ellipse cx="29" cy="-47" rx="3" ry="1.8" fill={creamSoft} stroke={plum} strokeWidth=".8" />
+      <circle cx="30" cy="-22" r="4" fill={cream} stroke={plum} strokeWidth="1.2" />
+      <circle cx="-33" cy="-20" r="2" fill={kfcRed} />
+      {parked ? <path d="M-12 -8l-8 8" stroke={plum} strokeWidth="1.8" strokeLinecap="round" /> : null}
+    </g>
+  );
+}
+
+function DivyaStanding() {
+  return (
+    <g transform="rotate(1.4 0 0)">
+      <ellipse cx="0" cy="2" rx="16" ry="3" fill={plum} opacity=".12" />
+      <path d="M-5.5 -16l-3 16M5.5 -16l3 16" stroke={plum} strokeWidth="4.4" strokeLinecap="round" />
+      <ellipse cx="-10" cy="1" rx="5.6" ry="2.5" fill={plumSoft} />
+      <ellipse cx="10" cy="1" rx="5.6" ry="2.5" fill={plumSoft} />
+      <path d="M-14 -14c-2-13 3-21 14-21s16 8 14 21c-1 5-7 7-14 7s-13-2-14-7Z" fill={lavenderDeep} stroke={plum} strokeWidth="1.9" strokeLinejoin="round" />
+      <path d="M-9 -33c2-4 5-6 9-6s7 2 9 6c-3 3-15 3-18 0Z" fill={lavender} stroke={plum} strokeWidth="1.1" />
+      <path d="M-8 -16h16" stroke={lavender} strokeWidth="2.6" strokeLinecap="round" opacity=".9" />
+      <path d="M-13 -31c-4 6-4 11-1 14M13 -31c4 6 4 11 1 14" stroke={lavenderDeep} strokeWidth="4.8" strokeLinecap="round" fill="none" />
+      <circle cx="-14" cy="-15" r="2.6" fill={creamSoft} stroke={plum} strokeWidth=".9" />
+      <circle cx="14" cy="-15" r="2.6" fill={creamSoft} stroke={plum} strokeWidth=".9" />
+      <g transform="translate(16 -14)">
+        <rect x="-3.6" y="-7" width="7.2" height="9" rx="1.6" fill={cream} stroke={plum} strokeWidth="1.1" />
+        <path d="M-3.6 -4.5h7.2" stroke={kfcRed} strokeWidth="2" />
+        <path d="M-1.2 -8c-1-2 2-2 0-4M1.4 -8c-1-2 2-2 0-4" stroke={roseDeep} strokeWidth=".9" strokeLinecap="round" fill="none" opacity=".55" />
+      </g>
+      <path d="M-3.5 -38h7v5h-7Z" fill={creamSoft} stroke={plum} strokeWidth="1" />
+      <circle cx="0" cy="-47" r="10.4" fill={creamSoft} stroke={plum} strokeWidth="1.9" />
+      <ellipse cx="-10.4" cy="-46" rx="2.2" ry="3.2" fill={creamSoft} stroke={plum} strokeWidth="1" />
+      <ellipse cx="10.4" cy="-46" rx="2.2" ry="3.2" fill={creamSoft} stroke={plum} strokeWidth="1" />
+      <circle cx="9" cy="-57" r="5.4" fill={bean} />
+      <path d="M6 -59c2-2 4.4-2 6 0" stroke={plumSoft} strokeWidth="1" fill="none" strokeLinecap="round" />
+      <path d="M-10.4 -49c.6-7 4.6-11 10.4-11s9.8 4 10.4 11c-2-4-5.4-6-10.4-6s-8.4 2-10.4 6Z" fill={bean} />
+      <path d="M-10 -38c-1 4-1 8 .4 11M10 -38c1 4 1 8-.4 11" stroke={bean} strokeWidth="2.4" strokeLinecap="round" />
+      <path d="M-6.4 -47c1.4 1.5 3 1.5 4.4 0M2 -47c1.4 1.5 3 1.5 4.4 0" stroke={plum} strokeWidth="1.3" fill="none" strokeLinecap="round" />
+      <path d="M-7 -47l-1.6-1.4M7.4 -47l1.6-1.4" stroke={plum} strokeWidth=".9" strokeLinecap="round" />
+      <ellipse cx="-7" cy="-43.8" rx="2.6" ry="1.5" fill={rose} opacity=".45" />
+      <ellipse cx="7" cy="-43.8" rx="2.6" ry="1.5" fill={rose} opacity=".45" />
+      <path d="M-2.4 -41.4c1.4 1.5 3.8 1.5 5.2 0" stroke={roseDeep} strokeWidth="1.1" fill="none" strokeLinecap="round" />
+      <path d="M7 -53l4 2" stroke={rose} strokeWidth="2.4" strokeLinecap="round" />
+    </g>
+  );
+}
+
+function BoyWaiting({ animated }: SceneProps) {
+  return (
+    <g transform="translate(278 176)">
+      <ellipse cx="0" cy="2" rx="18" ry="3.2" fill={plum} opacity=".1" />
+      <path d="M-7 -16l-2 16M7 -16l2 16" stroke={plum} strokeWidth="4.6" strokeLinecap="round" />
+      <ellipse cx="-9" cy="1" rx="5" ry="2.4" fill={plumSoft} />
+      <ellipse cx="9" cy="1" rx="5" ry="2.4" fill={plumSoft} />
+      <path d="M-14 -14c-2-13 2-21 14-21s16 8 14 21c-1 5-6 7-14 7s-13-2-14-7Z" fill={sageDeep} stroke={plum} strokeWidth="1.9" strokeLinejoin="round" />
+      <path d="M-8 -31c2-4 5-6 8-6s6 2 8 6c-3 3-13 3-16 0Z" fill={sage} stroke={plum} strokeWidth="1.1" />
+      <path d="M-12 -28c-4 6-4 10-1 13M12 -28c4 6 4 10 1 13" stroke={sageDeep} strokeWidth="4.8" strokeLinecap="round" fill="none" />
+      <circle cx="-14" cy="-14" r="2.6" fill={creamSoft} stroke={plum} strokeWidth=".9" />
+      <circle cx="14" cy="-14" r="2.6" fill={creamSoft} stroke={plum} strokeWidth=".9" />
+      <path d="M-3.5 -40h7v5h-7Z" fill={creamSoft} stroke={plum} strokeWidth="1" />
+      <motion.g
+        initial={animated ? { rotate: 0 } : { rotate: -7 }}
+        animate={animated ? { rotate: [0, 0, -7] } : { rotate: -7 }}
+        transition={animated ? { duration: 3.8, times: [0, 0.62, 0.8], ease: EASE_SCENE } : undefined}
+        style={{ transformBox: "fill-box", transformOrigin: "50% 100%" }}
+      >
+        <circle cx="0" cy="-48" r="9.6" fill={creamSoft} stroke={plum} strokeWidth="1.9" />
+        <ellipse cx="-9.6" cy="-47" rx="2" ry="3" fill={creamSoft} stroke={plum} strokeWidth="1.1" />
+        <ellipse cx="9.6" cy="-47" rx="2" ry="3" fill={creamSoft} stroke={plum} strokeWidth="1.1" />
+        <path d="M-9.6 -50c.4-7 4.4-11 9.6-11s9.2 4 9.6 11c-2-4-5-6-9.6-6s-7.6 2-9.6 6Z" fill={plum} />
+        <path d="M-4 -59c3-2 7-1 9 2" stroke={plum} strokeWidth="2.4" fill="none" strokeLinecap="round" />
+        <circle cx="-5.4" cy="-47" r="1.2" fill={plum} />
+        <circle cx="3.4" cy="-47" r="1.2" fill={plum} />
+        <path d="M-6.6 -50.4c1.2-.6 2.8-.6 4 0M2.6 -50.4c1.2-.6 2.8-.6 4 0" stroke={plum} strokeWidth=".9" strokeLinecap="round" fill="none" opacity=".7" />
+        <path d="M-2.6 -43.4c1.4 1.5 3.8 1.5 5.2 0" stroke={roseDeep} strokeWidth="1.1" fill="none" strokeLinecap="round" />
+        <ellipse cx="-6" cy="-45.6" rx="2.4" ry="1.4" fill={rose} opacity=".4" />
+        <ellipse cx="6" cy="-45.6" rx="2.4" ry="1.4" fill={rose} opacity=".4" />
+      </motion.g>
+      <motion.g
+        initial={animated ? { opacity: 0, scale: 0.5 } : false}
+        animate={animated ? { opacity: 1, scale: 1 } : { opacity: 1, scale: 1 }}
+        transition={animated ? { duration: 0.35, delay: 2.2, ease: EASE_SCENE } : undefined}
+        style={{ transformBox: "fill-box", transformOrigin: "center" }}
+      >
+        <SparkShape x={0} y={-72} s={1.15} color={butter} />
+        <SparkShape x={0} y={-72} s={0.58} color={rose} />
+      </motion.g>
+    </g>
+  );
+}
+
+function KfcBoothTable() {
+  return (
+    <g transform="translate(244 164)">
+      <ellipse cx="0" cy="14" rx="30" ry="5" fill={plum} opacity=".1" />
+      <ellipse cx="0" cy="0" rx="28" ry="9" fill={kfcCream} stroke={plum} strokeWidth="1.6" />
+      <path d="M-4 8v14h8V8" fill={kfcRedDeep} stroke={plum} strokeWidth="1.2" />
+      <ellipse cx="0" cy="22" rx="13" ry="3" fill={kfcRedDeep} opacity=".8" />
+      <g transform="translate(-8 -2)">
+        <path d="M-6 0l1.6-13h8.8L6 0Z" fill={kfcCream} stroke={plum} strokeWidth="1.2" strokeLinejoin="round" />
+        <path d="M-3.6 -8h7.2" stroke={kfcRed} strokeWidth="2.6" />
+        <ellipse cx="0" cy="-13" rx="5" ry="1.8" fill={kfcCream} stroke={plum} strokeWidth="1" />
+        <path d="M2 -14l2-6" stroke={roseDeep} strokeWidth="1.4" strokeLinecap="round" />
+      </g>
+      <g transform="translate(12 -2)">
+        <path d="M-6 0h12l-1.5-11h-9Z" fill={kfcCream} stroke={plum} strokeWidth="1.2" strokeLinejoin="round" />
+        <path d="M-3.5 0l.5-11M0 0v-11M3.5 0l-.5-11" stroke={kfcRed} strokeWidth="1.8" />
+        <ellipse cx="0" cy="-11" rx="6" ry="2" fill={kfcCream} stroke={plum} strokeWidth="1" />
+      </g>
+    </g>
+  );
+}
+
+function BoyCozy() {
+  return (
+    <g transform="translate(128 158) rotate(3 0 -24)">
+      <path d="M-18 2c1-15 7-24 18-24s17 9 18 24Z" fill={sageDeep} stroke={plum} strokeWidth="1.9" strokeLinejoin="round" />
+      <path d="M-8 -20c2-4 5-6 8-6s6 2 8 6c-3 4-13 4-16 0Z" fill={sage} stroke={plum} strokeWidth="1.2" />
+      <path d="M-16 -12c-4 6-5 11-3 14M16 -12c4 6 5 11 3 14" stroke={plum} strokeWidth="2" fill="none" strokeLinecap="round" />
+      <ellipse cx="-17" cy="2" rx="4" ry="2.6" fill={creamSoft} stroke={plum} strokeWidth="1.1" />
+      <ellipse cx="17" cy="2" rx="4" ry="2.6" fill={creamSoft} stroke={plum} strokeWidth="1.1" />
+      <path d="M-3.5 -22h7v-5h-7Z" fill={creamSoft} stroke={plum} strokeWidth="1" />
+      <circle cx="0" cy="-33" r="9.6" fill={creamSoft} stroke={plum} strokeWidth="1.8" />
+      <path d="M-9.6 -35c.5-7 4.5-11 9.6-11s9 4 9.6 11c-2-4-5-6-9.6-6s-7.6 2-9.6 6Z" fill={plum} />
+      <path d="M-3 -45c3-2 7-2 9 1" stroke={plum} strokeWidth="2.2" fill="none" strokeLinecap="round" />
+      <circle cx="-2.6" cy="-33" r="1.1" fill={plum} />
+      <circle cx="5.6" cy="-33" r="1.1" fill={plum} />
+      <path d="M-6 -36.5c1.2-.6 2.6-.6 3.8 0M3 -36.5c1.2-.6 2.6-.6 3.8 0" stroke={plum} strokeWidth=".9" strokeLinecap="round" fill="none" opacity=".7" />
+      <path d="M-3 -27c1.6 1.8 4.4 1.8 6 0" stroke={roseDeep} strokeWidth="1.2" fill="none" strokeLinecap="round" />
+      <ellipse cx="-6.5" cy="-29.5" rx="2.4" ry="1.5" fill={rose} opacity=".4" />
+      <ellipse cx="6.5" cy="-29.5" rx="2.4" ry="1.5" fill={rose} opacity=".4" />
+    </g>
+  );
+}
+
+function DivyaCozy() {
+  return (
+    <g transform="translate(192 158) rotate(-3 0 -24)">
+      <path d="M-18 2c1-15 7-24 18-24s17 9 18 24Z" fill={lavenderDeep} stroke={plum} strokeWidth="1.9" strokeLinejoin="round" />
+      <path d="M-8 -20c2-4 5-6 8-6s6 2 8 6c-3 4-13 4-16 0Z" fill={lavender} stroke={plum} strokeWidth="1.2" />
+      <path d="M-16 -12c-4 6-5 11-3 14M16 -12c4 6 5 11 3 14" stroke={plum} strokeWidth="2" fill="none" strokeLinecap="round" />
+      <ellipse cx="-17" cy="2" rx="4" ry="2.6" fill={creamSoft} stroke={plum} strokeWidth="1.1" />
+      <ellipse cx="17" cy="2" rx="4" ry="2.6" fill={creamSoft} stroke={plum} strokeWidth="1.1" />
+      <path d="M-3.5 -22h7v-5h-7Z" fill={creamSoft} stroke={plum} strokeWidth="1" />
+      <circle cx="0" cy="-34" r="11" fill={bean} />
+      <circle cx="9" cy="-43" r="5.2" fill={bean} />
+      <path d="M6 -45c2-2 4.4-2 6 0" stroke={plumSoft} strokeWidth="1" fill="none" strokeLinecap="round" />
+      <circle cx="0" cy="-33" r="9.6" fill={creamSoft} stroke={plum} strokeWidth="1.8" />
+      <path d="M-9.6 -36c.6-7 4.5-11 9.6-11s9 4 9.6 11c-2-3.5-5-5-9.6-5s-7.6 1.5-9.6 5Z" fill={bean} />
+      <path d="M-9 -36c-1 4-1 8 .4 11M9 -36c1 4 1 8-.4 11" stroke={bean} strokeWidth="2.4" strokeLinecap="round" />
+      <path d="M-6 -33c1.4 1.5 3 1.5 4.4 0M2 -33c1.4 1.5 3 1.5 4.4 0" stroke={plum} strokeWidth="1.3" fill="none" strokeLinecap="round" />
+      <path d="M-6.6 -33l-1.6-1.4M5.8 -33l1.6-1.4" stroke={plum} strokeWidth=".9" strokeLinecap="round" />
+      <path d="M-5.5 -30.4c1.2.6 2.4.6 3.6 0M2.5 -30.4c1.2.6 2.4.6 3.6 0" stroke={roseDeep} strokeWidth=".8" opacity=".3" fill="none" strokeLinecap="round" />
+      <ellipse cx="-6.5" cy="-30" rx="2.6" ry="1.6" fill={rose} opacity=".45" />
+      <ellipse cx="6.5" cy="-30" rx="2.6" ry="1.6" fill={rose} opacity=".45" />
+      <path d="M-2.4 -26.4c1.4 1.4 3.8 1.4 5.2 0" stroke={roseDeep} strokeWidth="1.1" fill="none" strokeLinecap="round" />
+      <path d="M7 -40l4 2" stroke={rose} strokeWidth="2.4" strokeLinecap="round" />
+    </g>
+  );
+}
+
+function KfcFeast() {
+  return (
+    <g>
+      <ellipse cx="160" cy="164" rx="76" ry="8" fill={plum} opacity=".06" />
+      <g transform="translate(160 160)">
+        <path d="M-13 0l2.6-25h20.8L13 0Z" fill={kfcCream} stroke={plum} strokeWidth="1.7" strokeLinejoin="round" />
+        <path d="M-7 0l1.2-25h3.2L-3.6 0Z" fill={kfcRed} />
+        <path d="M-1 0v-25h3.2V0Z" fill={kfcRed} />
+        <path d="M7 0l-1.4-25h3.2L10 0Z" fill={kfcRed} />
+        <ellipse cx="0" cy="-25" rx="15" ry="4.2" fill={kfcCream} stroke={plum} strokeWidth="1.4" />
+        <g transform="translate(-7 -27) rotate(-22)">
+          <ellipse cx="0" cy="0" rx="6.4" ry="4.2" fill={bean} stroke={plum} strokeWidth="1" />
+          <path d="M5 2l6 4" stroke={cream} strokeWidth="3" strokeLinecap="round" />
+          <circle cx="12.4" cy="6.6" r="2.2" fill={cream} stroke={plum} strokeWidth=".7" />
+        </g>
+        <g transform="translate(8 -27) rotate(20)">
+          <ellipse cx="0" cy="0" rx="6" ry="4" fill={bean} stroke={plum} strokeWidth="1" />
+          <path d="M-5 2l-6 4" stroke={cream} strokeWidth="3" strokeLinecap="round" />
+          <circle cx="-12" cy="6.6" r="2.2" fill={cream} stroke={plum} strokeWidth=".7" />
+        </g>
+      </g>
+
+      <g transform="translate(113 160)">
+        <path d="M-8 0l2-18h12l2 18Z" fill={kfcRed} stroke={plum} strokeWidth="1.4" strokeLinejoin="round" />
+        <path d="M-5.6 -7h11.2" stroke={kfcCream} strokeWidth="3.4" opacity=".95" />
+        <ellipse cx="0" cy="-18" rx="7" ry="2.4" fill={kfcCream} stroke={plum} strokeWidth="1.2" />
+        <path d="M2 -19l4-9" stroke={roseDeep} strokeWidth="1.8" strokeLinecap="round" />
+        <path d="M6 -28h4.5" stroke={roseDeep} strokeWidth="1.8" strokeLinecap="round" />
+      </g>
+
+      <g transform="translate(207 160)">
+        <path d="M-8 0l2-18h12l2 18Z" fill={kfcRed} stroke={plum} strokeWidth="1.4" strokeLinejoin="round" />
+        <path d="M-5.6 -7h11.2" stroke={kfcCream} strokeWidth="3.4" opacity=".95" />
+        <ellipse cx="0" cy="-18" rx="7" ry="2.4" fill={kfcCream} stroke={plum} strokeWidth="1.2" />
+        <path d="M-2 -19l-4-9" stroke={roseDeep} strokeWidth="1.8" strokeLinecap="round" />
+        <path d="M-6 -28h-4.5" stroke={roseDeep} strokeWidth="1.8" strokeLinecap="round" />
+      </g>
+
+      <g transform="translate(136 160)">
+        <path d="M-7 0l2-13h10l2 13Z" fill={kfcRed} stroke={plum} strokeWidth="1.2" strokeLinejoin="round" />
+        <path d="M-3 -13l.5-5M0 -13v-6M3 -13l-.5-5" stroke={butter} strokeWidth="2.4" strokeLinecap="round" />
+        <path d="M-4.4 -6h8.8" stroke={kfcCream} strokeWidth="1.6" opacity=".9" />
+      </g>
+    </g>
+  );
+}
+
+function KfcCozyScene({ animated }: SceneProps) {
+  return (
+    <g>
+      <KfcRoom />
+      <circle cx="160" cy="122" r="76" fill={butter} opacity=".18" />
+      <circle cx="160" cy="122" r="46" fill={butter} opacity=".16" />
+
+      <motion.g
+        initial={animated ? undefined : false}
+        animate={animated ? { y: [0, -0.9, 0] } : { y: 0 }}
+        transition={animated ? { duration: 4.6, repeat: Infinity, ease: "easeInOut" } : undefined}
+      >
+        <BoyCozy />
+        <DivyaCozy />
+      </motion.g>
+
+      <ellipse cx="160" cy="198" rx="104" ry="7" fill={plum} opacity=".12" />
+      <rect x="58" y="160" width="204" height="10" rx="5" fill={cream} stroke={plum} strokeWidth="2" />
+      <rect x="66" y="170" width="188" height="6" rx="3" fill={kfcRed} opacity=".32" />
+      <rect x="80" y="176" width="9" height="28" rx="3" fill={bean} />
+      <rect x="231" y="176" width="9" height="28" rx="3" fill={bean} />
+
+      <KfcFeast />
+
+      <Steam x={156} y={130} animated={animated} delay={0.2} color={rose} width={1.8} />
+      <Steam x={164} y={129} animated={animated} delay={1.3} color={rose} width={1.8} />
+
+      <motion.g
+        initial={animated ? undefined : false}
+        animate={animated ? { y: [0, -5, 0], opacity: [0.55, 0.95, 0.55] } : { y: 0, opacity: 0.85 }}
+        transition={animated ? { duration: 3.8, repeat: Infinity, ease: "easeInOut" } : undefined}
+      >
+        <HeartShape x={160} y={104} s={1.35} color={yellow} />
+        <HeartShape x={172} y={96} s={0.8} color={darkyellow} />
+      </motion.g>
 
       {[
-        { x: 92, y: 96, size: 12, delay: 0 },
-        { x: 108, y: 86, size: 15, delay: 0.6 },
-        { x: 124, y: 78, size: 10, delay: 1.2 },
+        { x: 206, y: 112, size: 11, delay: 0 },
+        { x: 213, y: 103, size: 13, delay: 1.2 },
       ].map((z) => (
         <motion.text
-          key={z.x}
+          key={`cozy-z-${z.x}`}
           x={z.x}
           y={z.y}
           fontFamily="var(--font-caveat)"
           fontSize={z.size}
           fill={roseDeep}
           initial={animated ? undefined : false}
-          animate={
-            animated
-              ? { opacity: [0, 0.9, 0], y: [0, -8, -16] }
-              : { opacity: 0.55 }
-          }
-          transition={
-            animated
-              ? { duration: 3, repeat: Infinity, delay: z.delay, ease: "easeOut" }
-              : undefined
-          }
+          animate={animated ? { opacity: [0, 0.75, 0], y: [0, -6, -12] } : { opacity: 0.5 }}
+          transition={animated ? { duration: 3, repeat: Infinity, delay: z.delay, ease: "easeOut" } : undefined}
         >
           z
         </motion.text>
       ))}
 
-      <SparkShape x={190} y={80} s={0.8} color={butter} />
-      <SparkShape x={166} y={60} s={0.6} color={rose} />
+      <SparkShape x={130} y={92} s={0.7} color={butter} />
+      <SparkShape x={214} y={88} s={0.6} color={cream} />
+    </g>
+  );
+}
+
+function SleepScene({ animated }: SceneProps) {
+  if (!animated) {
+    return (
+      <g>
+        <KfcRoom />
+        <g transform="translate(62 176)">
+          <Scooter parked />
+        </g>
+        <BoyWaiting animated={false} />
+        <KfcBoothTable />
+        <g transform="translate(210 176)">
+          <DivyaStanding />
+        </g>
+        <HeartShape x={242} y={124} s={1.25} color={darkyellow} />
+        <SparkShape x={214} y={92} s={0.7} color={butter} />
+        <SparkShape x={162} y={88} s={0.6} color={rose} />
+      </g>
+    );
+  }
+
+  return (
+    <g>
+      <motion.g
+        initial={{ opacity: 1 }}
+        animate={{ opacity: [1, 1, 0] }}
+        transition={{ duration: 6.4, times: [0, 0.73, 0.87], ease: "easeInOut" }}
+      >
+        <motion.g
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.7, ease: EASE_SCENE }}
+        >
+          <KfcRoom />
+        </motion.g>
+
+        <g transform="translate(62 176)">
+          <motion.g
+            initial={{ x: -250 }}
+            animate={{ x: 0 }}
+            transition={{ duration: 1.5, delay: 0.5, ease: EASE_SCENE }}
+          >
+            <motion.g
+              animate={{ rotate: [0, 0, -2.4] }}
+              transition={{ duration: 2.6, times: [0, 0.8, 1], ease: EASE_SCENE }}
+              style={{ transformBox: "fill-box", transformOrigin: "50% 100%" }}
+            >
+              <Scooter animated />
+            </motion.g>
+            <motion.g
+              animate={{ opacity: [1, 1, 0] }}
+              transition={{ duration: 2.3, times: [0, 0.86, 1], ease: "easeInOut" }}
+            >
+              <ScooterRider />
+            </motion.g>
+          </motion.g>
+        </g>
+
+        <BoyWaiting animated />
+        <KfcBoothTable />
+
+        <g transform="translate(210 176)">
+          <motion.g
+            initial={{ opacity: 0, x: -106 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{
+              opacity: { duration: 0.32, delay: 1.95 },
+              x: { duration: 1.12, delay: 2.4, ease: EASE_SCENE },
+            }}
+          >
+            <motion.g
+              animate={{ y: [0, -1.6, 0] }}
+              transition={{ duration: 0.28, repeat: 4, delay: 2.4, ease: "easeInOut" }}
+            >
+              <DivyaStanding />
+            </motion.g>
+          </motion.g>
+        </g>
+
+        <motion.g
+          initial={{ opacity: 0, scale: 0.6 }}
+          animate={{ opacity: [0, 1, 0.9], scale: [0.6, 1.1, 1] }}
+          transition={{ duration: 1.2, delay: 3.5, ease: EASE_SCENE }}
+          style={{ transformBox: "fill-box", transformOrigin: "center" }}
+        >
+          <HeartShape x={242} y={124} s={1.25} color={yellow} />
+        </motion.g>
+        <motion.g
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 0.9, 0.6] }}
+          transition={{ duration: 1.6, delay: 3.2, ease: "easeInOut" }}
+        >
+          <SparkShape x={214} y={92} s={0.7} color={butter} />
+          <SparkShape x={162} y={88} s={0.6} color={rose} />
+        </motion.g>
+      </motion.g>
+
+      <motion.g
+        initial={{ opacity: 0 }}
+        animate={{ opacity: [0, 0, 1] }}
+        transition={{ duration: 6.4, times: [0, 0.73, 0.87], ease: "easeInOut" }}
+      >
+        <KfcCozyScene animated />
+      </motion.g>
     </g>
   );
 }
@@ -512,14 +881,14 @@ function ConversationsScene({ animated }: SceneProps) {
         animate={animated ? { y: [0, -5, 0], opacity: [0.7, 1, 0.7] } : { y: 0, opacity: 0.9 }}
         transition={animated ? { duration: 3.8, repeat: Infinity, ease: "easeInOut" } : undefined}
       >
-        <HeartShape x={226} y={72} s={1.5} color={rose} />
+        <HeartShape x={226} y={72} s={1.5} color={darkyellow} />
       </motion.g>
       <motion.g
         initial={animated ? undefined : false}
         animate={animated ? { y: [0, -4, 0], opacity: [0.5, 0.9, 0.5] } : { y: 0, opacity: 0.75 }}
         transition={animated ? { duration: 4.4, repeat: Infinity, ease: "easeInOut", delay: 0.9 } : undefined}
       >
-        <HeartShape x={92} y={104} s={1.1} color={peach} />
+        <HeartShape x={92} y={104} s={1.1} color={yellow} />
       </motion.g>
 
       <SparkShape x={72} y={68} s={0.8} color={butter} />
@@ -603,7 +972,7 @@ function ReelsScene({ animated }: SceneProps) {
           animate={animated ? { y: [0, -10, 0], opacity: [0, 0.95, 0] } : { y: 0, opacity: 0.7 }}
           transition={animated ? { duration: 3.4, repeat: Infinity, delay: heart.delay, ease: "easeOut" } : undefined}
         >
-          <HeartShape x={heart.x} y={heart.y} s={heart.s} color={heart.s > 1 ? rose : peach} />
+          <HeartShape x={heart.x} y={heart.y} s={heart.s} color={heart.s > 1 ? yellow : darkyellow} />
         </motion.g>
       ))}
 
@@ -687,8 +1056,8 @@ function UnexpectedScene({ animated }: SceneProps) {
         style={{ transformBox: "fill-box", transformOrigin: "center" }}
       >
         <circle cx="202" cy="64" r="20" fill={butter} opacity=".32" />
-        <HeartShape x={202} y={64} s={1.9} color={rose} />
-        <HeartShape x={202} y={64} s={1.1} color={blushDeep} />
+        <HeartShape x={202} y={64} s={1.9} color={yellow} />
+        <HeartShape x={202} y={64} s={1.1} color={darkyellow} />
         <path d="M202 40v-6M202 88v6M178 64h-6M226 64h6M185 47l-4-4M219 81l4 4M219 47l4-4M185 81l-4 4" stroke={butter} strokeWidth="1.8" strokeLinecap="round" />
       </motion.g>
 
@@ -697,8 +1066,8 @@ function UnexpectedScene({ animated }: SceneProps) {
         animate={animated ? { y: [0, -4, 0], opacity: [0.5, 0.9, 0.5] } : { y: 0, opacity: 0.75 }}
         transition={animated ? { duration: 3.6, repeat: Infinity, ease: "easeInOut" } : undefined}
       >
-        <HeartShape x={80} y={74} s={0.9} color={peach} />
-        <HeartShape x={250} y={110} s={0.7} color={rose} />
+        <HeartShape x={80} y={74} s={0.9} color={darkyellow} />
+        <HeartShape x={250} y={110} s={0.7} color={yellow} />
       </motion.g>
 
       <SparkShape x={130} y={84} s={0.8} color={butter} />

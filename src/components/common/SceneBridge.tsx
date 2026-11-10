@@ -173,7 +173,6 @@ export function SceneBridge({ variant }: SceneBridgeProps) {
           <path d="M0 180v-38l180-22 140 30 190-36 180 40 190-26 170 28 210-34 180 28v40Z" fill="#2A1C29" />
         </svg>
 
-        <BridgeCue name="gallery" label="chhota packet" light className="right-4 top-3 sm:right-6" />
       </div>
     );
   }

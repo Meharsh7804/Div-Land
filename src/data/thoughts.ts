@@ -12,7 +12,7 @@ export const thoughts: Thought[] = [
   },
   {
     id: "rangoli",
-    text: "Your Rangoli deserves an exhibition.",
+    text: "Your rangoli deserves its own little world.",
     tone: "peach",
   },
   {

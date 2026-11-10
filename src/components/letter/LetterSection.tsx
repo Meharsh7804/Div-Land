@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { X } from "lucide-react";
@@ -15,7 +15,7 @@ import {
   TinyFlower,
 } from "@/components/common/Illustrations";
 import { letter, letterUi } from "@/data/letter";
-import { EASE_ENTER } from "@/animations/motion";
+import { EASE_CURTAIN, EASE_ENTER, EASE_EXIT, EASE_SCENE } from "@/animations/motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { cn, seeded } from "@/lib/utils";
 
@@ -29,6 +29,24 @@ const dust = Array.from({ length: 22 }, (_, i) => ({
   duration: 9 + random() * 9,
   opacity: 0.2 + random() * 0.45,
 }));
+
+const sparkRandom = seeded(118);
+const sealSparks = Array.from({ length: 14 }, (_, i) => {
+  const angle = (i / 14) * Math.PI * 2 + sparkRandom() * 0.55;
+  const distance = 30 + sparkRandom() * 52;
+  return {
+    id: i,
+    tx: Math.cos(angle) * distance,
+    ty: Math.sin(angle) * distance - 8,
+    size: 2.5 + sparkRandom() * 4,
+    delay: Math.round(sparkRandom() * 120),
+  };
+});
+
+const SEAL_LEFT =
+  "polygon(0 0, 56% 0, 50% 16%, 58% 32%, 46% 50%, 57% 68%, 48% 84%, 55% 100%, 0 100%)";
+const SEAL_RIGHT =
+  "polygon(56% 0, 100% 0, 100% 100%, 55% 100%, 48% 84%, 57% 68%, 46% 50%, 58% 32%, 50% 16%)";
 
 function Candle() {
   return (
@@ -57,78 +75,176 @@ function EnvelopeScene({
       type="button"
       onClick={onOpen}
       aria-label="Open the letter for Sonu"
-      className="group relative mx-auto block w-full max-w-[22rem] text-left transition-transform duration-300 active:scale-[0.985] sm:max-w-[24rem]"
+      aria-haspopup="dialog"
+      aria-expanded={opening}
+      className="group relative mx-auto block w-full max-w-[22rem] touch-manipulation text-left transition-transform duration-300 active:scale-[0.985] sm:max-w-[24rem]"
     >
-      <span aria-hidden className="absolute left-1/2 top-1/2 -z-10 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-butter/20 blur-3xl transition-opacity group-hover:opacity-100" />
+      <span
+        aria-hidden
+        className={cn(
+          "absolute left-1/2 top-1/2 -z-10 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl transition-all duration-700",
+          opening ? "scale-125 bg-butter/30" : "bg-butter/20 group-hover:scale-110 group-hover:bg-butter/25",
+        )}
+      />
 
-      <span className="paper-breeze relative block aspect-[1.52] w-full [perspective:1100px]">
-        <span className="absolute inset-0 rounded-[12px] border border-plum/25 bg-[linear-gradient(160deg,#FFFDF8,#FFEFDD)] shadow-[0_30px_54px_-26px_rgba(0,0,0,.8)]" />
-        <span className="absolute inset-x-0 bottom-0 z-[2] h-[62%] rounded-b-[12px] bg-[linear-gradient(180deg,#FFF8EC,#FFE2CE)]" style={{ clipPath: "polygon(0 22%, 50% 100%, 100% 22%, 100% 100%, 0 100%)" }} />
-        <span className="absolute inset-x-0 bottom-0 z-[1] h-[55%] bg-[linear-gradient(180deg,rgba(73,51,72,.08),transparent)]" style={{ clipPath: "polygon(0 10%, 50% 92%, 100% 10%, 100% 100%, 0 100%)" }} />
+      <span
+        className={cn(
+          "relative block transition-transform duration-[1100ms] [transition-timing-function:cubic-bezier(.22,1,.36,1)]",
+          opening ? "-translate-y-1 scale-[1.055] will-change-transform" : "scale-100",
+        )}
+      >
+        <span className="paper-breeze relative block aspect-[1.52] w-full [perspective:1100px]">
+          <span className="absolute inset-0 rounded-[12px] border border-plum/25 bg-[linear-gradient(160deg,#FFFDF8,#FFEFDD)] shadow-[0_30px_54px_-26px_rgba(0,0,0,.8)]" />
 
-        <span
-          aria-hidden
-          className={cn(
-            "absolute left-[7%] top-[7%] z-[1] flex h-[86%] w-[86%] flex-col rounded-[6px] border border-plum/10 bg-[#FFFCF6] px-4 py-4 shadow-[0_6px_18px_rgba(73,51,72,.12)] transition-all duration-[850ms] [transition-timing-function:cubic-bezier(.22,1,.36,1)]",
-            opening
-              ? "-translate-y-[58%] rotate-[-1.2deg]"
-              : "translate-y-[7%] opacity-0 group-hover:-translate-y-[8%] group-hover:opacity-90",
-          )}
-        >
-          <span className="flex items-center justify-between border-b border-dashed border-plum/12 pb-2">
-            <span className="text-[0.5rem] font-extrabold uppercase tracking-[0.2em] text-plum/35">a letter</span>
-            <HeartArt className="h-2.5 w-2.5 text-rose-deep/55" />
+          <span
+            aria-hidden
+            className={cn(
+              "pointer-events-none absolute inset-0 z-[1] rounded-[12px] transition-all duration-[900ms] [transition-timing-function:cubic-bezier(.22,1,.36,1)]",
+              opening ? "scale-100 opacity-100" : "scale-75 opacity-0",
+            )}
+            style={{
+              background:
+                "radial-gradient(circle at 50% 50%, rgba(255,244,203,.92) 0%, rgba(255,208,120,.42) 32%, transparent 66%)",
+              mixBlendMode: "screen",
+            }}
+          />
+
+          <span className="absolute inset-x-0 bottom-0 z-[1] h-[55%] bg-[linear-gradient(180deg,rgba(73,51,72,.08),transparent)]" style={{ clipPath: "polygon(0 10%, 50% 92%, 100% 10%, 100% 100%, 0 100%)" }} />
+
+          <span
+            aria-hidden
+            className={cn(
+              "absolute left-[7%] top-[7%] z-[1] flex h-[86%] w-[86%] flex-col rounded-[6px] border border-plum/10 bg-[#FFFCF6] px-4 py-4 shadow-[0_6px_18px_rgba(73,51,72,.12)] transition-all duration-[900ms] [transition-timing-function:cubic-bezier(.22,1,.36,1)]",
+              opening
+                ? "-translate-y-[60%] rotate-[-1.8deg] scale-[1.02] opacity-100 [transition-delay:120ms]"
+                : "translate-y-[7%] opacity-0 group-hover:-translate-y-[8%] group-hover:opacity-90 group-focus-visible:-translate-y-[8%] group-focus-visible:opacity-90",
+            )}
+          >
+            <span className="flex items-center justify-between border-b border-dashed border-plum/12 pb-2">
+              <span className="text-[0.5rem] font-extrabold uppercase tracking-[0.2em] text-plum/35">a letter</span>
+              <HeartArt className="h-2.5 w-2.5 text-rose-deep/55" />
+            </span>
+            <span className="mt-3 font-display text-[0.98rem] leading-snug text-plum/75">{letter.greeting}</span>
+            <span className="mt-1 text-[0.7rem] leading-relaxed text-plum/38">
+              We met because of a committee interview&hellip;
+            </span>
+            <span className="mt-auto flex items-end justify-between gap-3">
+              <span className="font-hand text-[1.15rem] leading-none text-rose-deep">{letter.signature}</span>
+              <span className="h-6 w-6 rounded-full border border-rose-deep/30 bg-blush/30" />
+            </span>
           </span>
-          <span className="mt-3 font-display text-[0.98rem] leading-snug text-plum/75">{letter.greeting}</span>
-          <span className="mt-1 text-[0.7rem] leading-relaxed text-plum/38">
-            We met because of a committee interview&hellip;
+
+          <span className="absolute inset-x-0 bottom-0 z-[2] h-[62%] rounded-b-[12px] bg-[linear-gradient(180deg,#FFF8EC,#FFE2CE)]" style={{ clipPath: "polygon(0 22%, 50% 100%, 100% 22%, 100% 100%, 0 100%)" }} />
+
+          <span
+            aria-hidden
+            className={cn(
+              "pointer-events-none absolute -inset-8 z-[2] rounded-[2rem] bg-[radial-gradient(circle,rgba(255,240,184,.5),transparent_62%)] blur-2xl transition-all duration-[900ms] [transition-timing-function:cubic-bezier(.22,1,.36,1)]",
+              opening ? "scale-100 opacity-100" : "scale-75 opacity-0",
+            )}
+          />
+
+          <span
+            aria-hidden
+            className={cn(
+              "absolute inset-x-0 top-0 z-[3] h-[64%] origin-top bg-[linear-gradient(180deg,#FFE4CF,#FFD0BE)] shadow-[0_4px_10px_rgba(73,51,72,.18)] transition-transform duration-[900ms] [transform-style:preserve-3d] [transition-timing-function:cubic-bezier(.22,1,.36,1)]",
+              opening
+                ? "[transform:rotateX(-172deg)]"
+                : "[transform:rotateX(0deg)] group-hover:[transform:rotateX(-12deg)]",
+            )}
+            style={{ clipPath: "polygon(0 0, 100% 0, 50% 100%)" }}
+          />
+
+          <span className="absolute left-1/2 top-[54%] z-[4] h-12 w-12 -translate-x-1/2 transition-transform duration-500 group-hover:scale-105">
+            <span
+              aria-hidden
+              className={cn(
+                "absolute inset-[-45%] rounded-full bg-[radial-gradient(circle,rgba(255,208,120,.45),transparent_66%)] blur-md transition-opacity duration-500",
+                opening ? "opacity-0" : "anim-breathe opacity-70 group-hover:opacity-100",
+              )}
+            />
+            <span
+              aria-hidden
+              className={cn(
+                "absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,#FFF9F0,#FFD078_58%,transparent_72%)] blur-[2px] transition-all duration-500",
+                opening ? "scale-[2.8] opacity-90" : "scale-0 opacity-0",
+              )}
+            />
+            <span
+              aria-hidden
+              className={cn(
+                "absolute inset-0 flex items-center justify-center rounded-full bg-[radial-gradient(circle_at_38%_28%,#C9809C,#B0708C_58%,#9B5874)] font-display text-lg italic text-cream transition-opacity duration-200",
+                opening ? "opacity-0" : "opacity-100",
+              )}
+            >
+              S
+              <span className="absolute inset-1 rounded-full border border-cream/25" />
+            </span>
+            {(["left", "right"] as const).map((side) => (
+              <span
+                key={side}
+                aria-hidden
+                className={cn(
+                  "absolute inset-0 flex items-center justify-center rounded-full border border-[#9E5C78] bg-[radial-gradient(circle_at_38%_28%,#C9809C,#B0708C_58%,#9B5874)] font-display text-lg italic text-cream shadow-[0_10px_20px_rgba(73,51,72,.28)] transition-all duration-[560ms] [transition-timing-function:cubic-bezier(.22,1,.36,1)]",
+                  opening
+                    ? side === "left"
+                      ? "-translate-x-[78%] -translate-y-[24%] -rotate-[38deg] opacity-0"
+                      : "translate-x-[78%] translate-y-[18%] rotate-[34deg] opacity-0"
+                    : "translate-x-0 translate-y-0 rotate-0 opacity-100",
+                )}
+                style={{ clipPath: side === "left" ? SEAL_LEFT : SEAL_RIGHT }}
+              >
+                S
+                <span className="absolute inset-1 rounded-full border border-cream/25" />
+              </span>
+            ))}
+            {opening ? (
+              <span aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 h-0 w-0">
+                {sealSparks.map((spark) => (
+                  <span
+                    key={spark.id}
+                    className="anim-seal-spark absolute left-0 top-0 rounded-full bg-butter shadow-[0_0_10px_2px_rgba(255,208,120,.6)]"
+                    style={
+                      {
+                        "--tx": `${spark.tx}px`,
+                        "--ty": `${spark.ty}px`,
+                        width: spark.size,
+                        height: spark.size,
+                        animationDelay: `${spark.delay}ms`,
+                      } as CSSProperties
+                    }
+                  />
+                ))}
+              </span>
+            ) : null}
           </span>
-          <span className="mt-auto flex items-end justify-between gap-3">
-            <span className="font-hand text-[1.15rem] leading-none text-rose-deep">{letter.signature}</span>
-            <span className="h-6 w-6 rounded-full border border-rose-deep/30 bg-blush/30" />
+
+          <span
+            aria-hidden
+            className="absolute right-3 top-3 z-[4] flex h-10 w-8 rotate-6 flex-col items-center justify-center gap-0.5 rounded-[2px] border border-dashed border-rose-deep/40 bg-cream/80 text-[0.58rem] font-extrabold uppercase leading-tight tracking-widest text-rose-deep/55"
+          >
+            with
+            <br />
+            care
           </span>
+
+          <LeafSprig className="absolute -left-4 bottom-3 z-[5] h-14 w-14 rotate-12 text-sage/60" />
+          <Flower className="absolute -right-5 -top-4 z-[5] h-12 w-12 anim-sway" />
+          <Star4 className="absolute -left-5 top-5 z-[5] h-3.5 w-3.5 text-butter anim-twinkle" />
+          <span aria-hidden className="absolute -bottom-2 left-1/2 h-3 w-[70%] -translate-x-1/2 rounded-full bg-black/40 blur-md" />
         </span>
-
-        <span
-          aria-hidden
-          className={cn(
-            "absolute inset-x-0 top-0 z-[3] h-[64%] origin-top bg-[linear-gradient(180deg,#FFE4CF,#FFD0BE)] shadow-[0_4px_10px_rgba(73,51,72,.18)] transition-transform duration-[900ms] [transform-style:preserve-3d] [transition-timing-function:cubic-bezier(.16,1,.3,1)]",
-            opening ? "[transform:rotateX(-172deg)]" : "[transform:rotateX(0deg)]",
-          )}
-          style={{ clipPath: "polygon(0 0, 100% 0, 50% 100%)" }}
-        />
-
-        <span
-          aria-hidden
-          className={cn(
-            "absolute left-1/2 top-[54%] z-[4] flex h-12 w-12 -translate-x-1/2 items-center justify-center rounded-full border border-[#9E5C78] bg-rose-deep font-display text-lg italic text-cream shadow-[0_10px_20px_rgba(73,51,72,.25)] transition-all duration-500",
-            opening ? "scale-0 opacity-0" : "scale-100 opacity-100",
-          )}
-        >
-          S
-          <span className="absolute inset-1 rounded-full border border-cream/25" />
-        </span>
-
-        <span
-          aria-hidden
-          className="absolute right-3 top-3 z-[4] flex h-10 w-8 rotate-6 flex-col items-center justify-center gap-0.5 rounded-[2px] border border-dashed border-rose-deep/40 bg-cream/80 text-[0.58rem] font-extrabold uppercase leading-tight tracking-widest text-rose-deep/55"
-        >
-          with
-          <br />
-          care
-        </span>
-
-        <LeafSprig className="absolute -left-4 bottom-3 z-[5] h-14 w-14 rotate-12 text-sage/60" />
-        <Flower className="absolute -right-5 -top-4 z-[5] h-12 w-12 anim-sway" />
-        <Star4 className="absolute -left-5 top-5 z-[5] h-3.5 w-3.5 text-butter anim-twinkle" />
-        <span aria-hidden className="absolute -bottom-2 left-1/2 h-3 w-[70%] -translate-x-1/2 rounded-full bg-black/40 blur-md" />
       </span>
 
       <span className="mt-5 flex flex-col items-center gap-1 text-center">
         <span className="text-[0.58rem] font-extrabold uppercase tracking-[0.28em] text-cream/45">
           {letter.envelopeTo} · {letter.envelopeFrom}
         </span>
-        <span className="font-hand text-[1.3rem] leading-none text-butter/75 transition-transform group-hover:translate-y-0.5">
+        <span
+          className={cn(
+            "font-hand text-[1.3rem] leading-none text-butter/75 transition-all duration-500",
+            opening ? "-translate-y-1 opacity-0" : "group-hover:translate-y-0.5",
+          )}
+        >
           tap to break the seal
         </span>
       </span>
@@ -136,14 +252,17 @@ function EnvelopeScene({
   );
 }
 
-function LetterModal({ onClose }: { onClose: () => void }) {
+function LetterModal({ onClose, reduceMotion }: { onClose: () => void; reduceMotion: boolean }) {
   const closeRef = useRef<HTMLButtonElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const previouslyFocused = document.activeElement as HTMLElement | null;
     const previousBodyOverflow = document.body.style.overflow;
+    const previousBodyPadding = document.body.style.paddingRight;
+    const scrollbar = window.innerWidth - document.documentElement.clientWidth;
     document.body.style.overflow = "hidden";
+    if (scrollbar > 0) document.body.style.paddingRight = `${scrollbar}px`;
     closeRef.current?.focus();
 
     const onKey = (event: KeyboardEvent) => {
@@ -172,25 +291,35 @@ function LetterModal({ onClose }: { onClose: () => void }) {
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = previousBodyOverflow;
+      document.body.style.paddingRight = previousBodyPadding;
       previouslyFocused?.focus();
     };
   }, [onClose]);
 
   return (
     <motion.div
+      id="letter-dialog"
       role="dialog"
       aria-modal="true"
       aria-labelledby="letter-title"
       className="fixed inset-0 z-[100] overflow-y-auto overflow-x-hidden overscroll-contain bg-[#1B121B]/92 px-3 py-4 sm:px-6 sm:py-8"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.45 }}
+      exit={{ opacity: 0, transition: { duration: reduceMotion ? 0.2 : 0.4, ease: EASE_EXIT, delay: 0 } }}
+      transition={reduceMotion ? { duration: 0.2 } : { duration: 0.95, delay: 0.35, ease: EASE_CURTAIN }}
       onClick={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
     >
       <div aria-hidden className="pointer-events-none fixed inset-0 overflow-hidden">
+        {reduceMotion ? null : (
+          <motion.div
+            initial={{ opacity: 0.85, scale: 0.25 }}
+            animate={{ opacity: 0, scale: 2.4 }}
+            transition={{ duration: 1.7, ease: EASE_ENTER }}
+            className="absolute left-1/2 top-1/2 h-[36rem] w-[36rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,244,203,.6),rgba(255,208,120,.2)_38%,transparent_66%)] blur-3xl"
+          />
+        )}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_32%,rgba(255,240,184,.16),transparent_56%)]" />
         <div className="absolute left-1/2 top-0 h-[42rem] w-[min(50rem,140vw)] -translate-x-1/2 bg-[linear-gradient(180deg,rgba(255,240,184,.18),rgba(255,240,184,.03)_50%,transparent_80%)] [clip-path:polygon(45%_0,55%_0,100%_100%,0_100%)] blur-2xl" />
         {dust.slice(0, 14).map((mote) => (
@@ -217,10 +346,10 @@ function LetterModal({ onClose }: { onClose: () => void }) {
         className="relative mx-auto my-auto flex min-h-full w-full max-w-[46rem] items-center justify-center"
       >
         <motion.div
-          initial={{ opacity: 0, scale: 0.93, y: 40 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.96, y: 30 }}
-          transition={{ duration: 0.75, ease: EASE_ENTER }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0, transition: { duration: reduceMotion ? 0.2 : 0.35, ease: EASE_EXIT } }}
+          transition={reduceMotion ? { duration: 0.2 } : { duration: 0.5, delay: 0.55, ease: EASE_SCENE }}
           style={{ transformOrigin: "top center", perspective: 1600 }}
           className="relative w-full [perspective:1600px]"
         >
@@ -245,9 +374,24 @@ function LetterModal({ onClose }: { onClose: () => void }) {
           </div>
 
           <motion.div
-            initial={{ opacity: 0, rotateX: -42, scaleY: 0.66, y: -26 }}
-            animate={{ opacity: 1, rotateX: 0, scaleY: 1, y: 0 }}
-            transition={{ duration: 1.25, delay: 0.12, ease: EASE_ENTER }}
+            initial={
+              reduceMotion
+                ? { opacity: 0 }
+                : { rotateX: -38, scaleY: 0.7, scale: 0.92, y: 36 }
+            }
+            animate={
+              reduceMotion
+                ? { opacity: 1 }
+                : { rotateX: 0, scaleY: 1, scale: 1, y: 0 }
+            }
+            exit={{
+              opacity: 0,
+              rotateX: reduceMotion ? 0 : 14,
+              scaleY: reduceMotion ? 1 : 0.94,
+              y: reduceMotion ? 0 : 22,
+              transition: { duration: reduceMotion ? 0.2 : 0.4, ease: EASE_EXIT },
+            }}
+            transition={reduceMotion ? { duration: 0.25, delay: 0.05 } : { duration: 1.2, delay: 0.6, ease: EASE_SCENE }}
             style={{ transformOrigin: "top center", transformStyle: "preserve-3d" }}
             className="paper relative overflow-hidden rounded-[4px] px-5 pb-8 pt-9 shadow-[0_60px_120px_-30px_rgba(0,0,0,.9)] sm:px-11 sm:pb-12 sm:pt-12"
           >
@@ -274,11 +418,11 @@ function LetterModal({ onClose }: { onClose: () => void }) {
             </button>
 
             <motion.div
-              initial="hidden"
+              initial={reduceMotion ? false : "hidden"}
               animate="show"
               variants={{
                 hidden: {},
-                show: { transition: { staggerChildren: 0.18, delayChildren: 0.85 } },
+                show: { transition: { staggerChildren: reduceMotion ? 0 : 0.1, delayChildren: reduceMotion ? 0 : 1.05 } },
               }}
               className="relative"
             >
@@ -343,7 +487,7 @@ function LetterModal({ onClose }: { onClose: () => void }) {
                 </p>
                 <div className="mt-5 flex items-end justify-between gap-4">
                   <div>
-                    <p className="text-[0.62rem] font-extrabold uppercase tracking-[0.2em] text-plum/35">yours,</p>
+                    <p className="text-[0.62rem] font-extrabold uppercase tracking-[0.2em] text-plum/35">Meharsh,</p>
                     <p className="font-hand text-[1.7rem] leading-tight text-rose-deep sm:text-[1.95rem]">
                       {letter.signature}
                     </p>
@@ -396,18 +540,16 @@ export function LetterSection() {
     audio.playSfx("envelope");
     setPortalReady(true);
     setOpening(true);
-    timer.current = window.setTimeout(
-      () => {
-        setOpen(true);
-        setOpening(false);
-      },
-      reduceMotion ? 80 : 880,
-    );
+    setOpen(true);
+    if (reduceMotion) return;
+    timer.current = window.setTimeout(() => audio.playSfx("spark"), 280);
   }, [audio, opening, open, reduceMotion]);
 
   const handleClose = useCallback(() => {
+    if (timer.current) window.clearTimeout(timer.current);
     audio.playSfx("page");
     setOpen(false);
+    setOpening(false);
   }, [audio]);
 
   return (
@@ -483,7 +625,13 @@ export function LetterSection() {
             </div>
 
             <div className="relative mt-5 flex flex-col items-center gap-2 text-center">
-              <button type="button" onClick={handleOpen} className="btn-magic min-h-[3.1rem] text-[0.88rem]">
+              <button
+                type="button"
+                onClick={handleOpen}
+                aria-haspopup="dialog"
+                aria-expanded={opening}
+                className="btn-magic min-h-[3.1rem] text-[0.88rem]"
+              >
                 <HeartArt className="h-4 w-4 text-butter" />
                 {letterUi.open}
               </button>
@@ -502,7 +650,7 @@ export function LetterSection() {
       {portalReady && typeof document !== "undefined"
         ? createPortal(
             <AnimatePresence>
-              {open ? <LetterModal key="letter" onClose={handleClose} /> : null}
+              {open ? <LetterModal key="letter" onClose={handleClose} reduceMotion={reduceMotion} /> : null}
             </AnimatePresence>,
             document.body,
           )

@@ -12,9 +12,9 @@ export type MenuItem = {
 };
 
 export const cafe = {
-  eyebrow: "Chapter 04 · Sonu's Little Café",
-  title: "Coffee, conversations & absolutely no plans to leave.",
-  script: "table for two, no rush",
+  eyebrow: "Chapter 04 · If you owned a Café",
+  title: "Coffee, Conversations & Absolutely no plans to leave.",
+  script: "Table for two please",
   intro:
     "A tiny café with one favourite regular, one table, and no closing time. Everything's free, especially the long conversations.",
   menu: [
@@ -49,16 +49,16 @@ export const cafe = {
     },
     {
       id: "mocha",
-      name: "Unlimited Gossip Mocha",
+      name: "Gossip Mocha",
       notes: "Comes with zero judgement and an unreasonable number of plot twists.",
-      price: "free, obviously",
+      price: "free obviously",
       liquid: "#6B4432",
       foam: "#FFF0D6",
       accent: "#B0708C",
     },
     {
       id: "special",
-      name: "Sonu Special",
+      name: "Div's Special",
       notes: "The owner's favourite. Secret ingredients: good food, better company.",
       price: "always free",
       tag: "chef's pick",
@@ -90,13 +90,13 @@ export const cafe = {
     seal: "quality checked by the café",
   },
   counter: {
-    label: "cups poured",
+    label: "Cups poured",
     suffix: "all for you",
   },
   menuCopy: {
-    boardTitle: "today's menu",
+    boardTitle: "Today's menu",
     boardNote: "everything tastes better when you're the one talking",
-    hint: "pick a drink. the machine will handle the rest.",
+    hint: "Pick a drink. The machine will handle the rest.",
   },
 } as const;
 

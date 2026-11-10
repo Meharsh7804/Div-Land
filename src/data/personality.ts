@@ -16,9 +16,9 @@ export const personalities: Record<PersonalityMode, Personality> = {
     tab: "Public Divya",
     short: "public",
     kicker: "public mode",
-    headline: "Unavailable. Unbothered. Booked.",
-    support: "Public availability: Extremely limited.",
-    caption: "Unavailable. Unbothered. Booked.",
+    headline: "Unavailable. IDGAF. Cool Diva.",
+    support: "Responsibilities. Deadlines. Meetings.",
+    caption: "Unavailable. IDGAF. Booked.",
   },
   mine: {
     id: "mine",
@@ -26,7 +26,7 @@ export const personalities: Record<PersonalityMode, Personality> = {
     short: "off-duty",
     kicker: "off-duty mode",
     headline: "Softness detected. Pampering required.",
-    support: "Madam's off-duty hours.",
+    support: "Personal time. Self-care. Relaxation.",
     caption: "Softness detected. Pampering required.",
   },
 };
@@ -34,6 +34,6 @@ export const personalities: Record<PersonalityMode, Personality> = {
 export const filesCopy = {
   eyebrow: "The Divya Files",
   title: "One person. Two settings.",
-  footer: "Both are 100% Sonu.",
-  hint: "drag the mood",
+  footer: "Both are 100% same person.",
+  hint: "Drag the mood",
 };

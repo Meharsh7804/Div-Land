@@ -26,7 +26,7 @@ Requires Node.js 20.9+ (built with Next.js 16, React 19 and Tailwind CSS v4).
 3. **The Positive Overthinking Centre** — a thought mixer that turns worries into kinder thoughts.
 4. **Sonu's Little Café** — brew an order and get a tiny note in return.
 5. **The Little Things** — six scrapbook memories in an illustrated timeline.
-6. **The Talent Gallery** — a dark little exhibition with a self-drawing rangoli centrepiece.
+6. **The Many Worlds of Sonu** — five interactive worlds through the artist, the voice, the strong one, the responsible one, and all of her at once. Paint, hold the mic, part the wind, gather the little things, then bring every side together.
 7. **A Letter for Sonu** — break the wax seal, read the letter, seal it back.
 8. **The Grand Birthday Finale** — light the candles, make a wish, blow them out, find the gift, replay the world.
 
@@ -43,26 +43,9 @@ Most copy lives in `src/data/`:
 | `thoughts.ts` | Positive-overthinking prompts |
 | `cafe.ts` | Café menu, orders and responses |
 | `memories.ts` | Scrapbook memories, captions, stamps and notes |
-| `gallery.ts` | Gallery pieces and all finale copy |
+| `worlds.ts` | The five worlds, captions and interaction prompts |
+| `gallery.ts` | Finale copy |
 | `letter.ts` | Envelope labels, the full letter and modal UI text |
-
-### Add real photos to the gallery
-
-Drop images into `public/gallery/`, then add an `image` path to any piece in `src/data/gallery.ts`:
-
-```ts
-{
-  id: "rangoli",
-  title: "Rangoli",
-  medium: "powder, patience, steady hands",
-  note: "The one you made recently.",
-  art: "rangoli",
-  accent: "rose",
-  image: "/gallery/rangoli.webp",
-}
-```
-
-The existing frames fall back to the drawn art when `image` is omitted. Prefer `.webp` or `.avif`, roughly 1200px wide.
 
 ### Add music
 

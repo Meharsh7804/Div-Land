@@ -8,7 +8,7 @@ import { PersonalityFiles } from "@/components/personality/PersonalityFiles";
 import { ThoughtLab } from "@/components/overthinking/ThoughtLab";
 import { SonuCafe } from "@/components/cafe/SonuCafe";
 import { MemoryScrapbook } from "@/components/memories/MemoryScrapbook";
-import { TalentGallery } from "@/components/gallery/TalentGallery";
+import { ManyWorlds } from "@/components/worlds/ManyWorlds";
 import { LetterSection } from "@/components/letter/LetterSection";
 import { Finale } from "@/components/finale/Finale";
 import { AudioControls } from "@/components/audio/AudioControls";
@@ -41,7 +41,7 @@ const StorySections = memo(function StorySections({
       <ThoughtLab />
       <SonuCafe />
       <MemoryScrapbook />
-      <TalentGallery />
+      <ManyWorlds />
       <LetterSection />
       <Finale onReplay={onReplay} />
     </>

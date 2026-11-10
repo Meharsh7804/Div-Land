@@ -717,7 +717,7 @@ export function Finale({ onReplay }: { onReplay: () => void }) {
                     exit={{ opacity: 0 }}
                     className="max-w-sm font-hand text-[1.35rem] leading-snug text-cream/55"
                   >
-                    three candles. one very important wish. tap each flame into being.
+                    Three candles. One very important wish. Tap each flame into being.
                   </motion.p>
                 )}
               </AnimatePresence>

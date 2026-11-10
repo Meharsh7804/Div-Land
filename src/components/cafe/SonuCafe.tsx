@@ -390,7 +390,7 @@ function CoffeeMachineArt({
           <path d="M80 166a16 16 0 0 1 10-5" stroke="#C98EA8" strokeWidth="1.6" fill="none" opacity=".7" />
 
           <text x="170" y="157" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="17" fill="#493348">
-            sonu&apos;s
+            Divy&apos;s
           </text>
           <text x="170" y="170" textAnchor="middle" fontFamily="var(--font-nunito)" fontWeight="800" fontSize="6.5" letterSpacing="2.2" fill="#B0708C">
             COFFEE CO.
@@ -817,7 +817,7 @@ export function SonuCafe() {
                 aria-hidden
                 className="pointer-events-none absolute left-[4%] top-[4%] z-[4] rounded-full border border-cream/50 bg-cream/30 px-3 py-1 text-[0.44rem] font-extrabold uppercase tracking-[0.2em] text-plum/45 backdrop-blur-sm"
               >
-                open late · always
+                Open 24x7
               </div>
             </div>
 
