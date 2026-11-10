@@ -452,36 +452,10 @@ button:disabled {
 .anim-spin-slow { animation: spin-slow 60s linear infinite; }
 .anim-bounce-soft { animation: bounce-soft 2.4s ease-in-out infinite; }
 
-/* ————— worlds rangoli + letter paper motion ————— */
-@keyframes rangoli-spin {
-  to { transform: rotate(360deg); }
-}
-
-@keyframes rangoli-spin-reverse {
-  to { transform: rotate(-360deg); }
-}
-
+/* ————— letter paper motion ————— */
 @keyframes paper-breeze {
   0%, 100% { transform: rotate(-0.35deg) translateY(0); }
   50% { transform: rotate(0.5deg) translateY(-3px); }
-}
-
-.rangoli-turn {
-  animation: rangoli-spin 150s linear infinite;
-  transform-box: fill-box;
-  transform-origin: center;
-}
-
-.rangoli-turn-reverse {
-  animation: rangoli-spin-reverse 110s linear infinite;
-  transform-box: fill-box;
-  transform-origin: center;
-}
-
-.rangoli-breathe {
-  animation: breathe 7s ease-in-out infinite;
-  transform-box: fill-box;
-  transform-origin: center;
 }
 
 .paper-breeze {
@@ -502,74 +476,6 @@ button:disabled {
 .anim-seal-spark {
   animation: seal-spark 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
   will-change: transform, opacity;
-}
-
-/* ————— the many worlds of sonu ————— */
-@keyframes world-progress-fill {
-  from { width: 0%; }
-  to { width: 100%; }
-}
-
-@keyframes world-sway {
-  0%, 100% { transform: rotate(-2.2deg) translateY(0); }
-  50% { transform: rotate(2.6deg) translateY(-4px); }
-}
-
-@keyframes world-sway-soft {
-  0%, 100% { transform: rotate(-1.1deg) translateY(0); }
-  50% { transform: rotate(1.3deg) translateY(-2px); }
-}
-
-@keyframes world-glide {
-  0%, 100% { transform: translate3d(0, 0, 0) rotate(-0.4deg); }
-  50% { transform: translate3d(0, -7px, 0) rotate(0.5deg); }
-}
-
-@keyframes world-sweep {
-  0% { opacity: 0; transform: translateX(-130%) skewX(-12deg); }
-  16% { opacity: 0.6; }
-  100% { opacity: 0; transform: translateX(320%) skewX(-12deg); }
-}
-
-.world-progress {
-  width: 0%;
-  animation-name: world-progress-fill;
-  animation-timing-function: linear;
-  animation-fill-mode: forwards;
-}
-
-.world-sway {
-  animation: world-sway 7s ease-in-out infinite;
-  transform-box: view-box;
-}
-
-.world-sway-soft {
-  animation: world-sway-soft 9s ease-in-out infinite;
-  transform-box: view-box;
-}
-
-.world-glide {
-  animation: world-glide 6.5s ease-in-out infinite;
-}
-
-.world-sweep {
-  animation: world-sweep 1.5s var(--ease-cinema) both;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 249, 240, 0.5),
-    transparent
-  );
-}
-
-.world-grain::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.09;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 /* ————— opening garden (motion stays alive on mobile) ————— */
@@ -844,13 +750,7 @@ textarea {
     .anim-bean,
     .steam-line,
     .ink-rule,
-    .rangoli-turn,
-    .rangoli-turn-reverse,
-    .rangoli-breathe,
-    .paper-breeze,
-    .world-sway,
-    .world-sway-soft,
-    .world-glide {
+    .paper-breeze {
       animation: none !important;
     }
 

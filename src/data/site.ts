@@ -56,11 +56,11 @@ export const chapters: Chapter[] = [
     sectionId: "chapter-memories",
   },
   {
-    id: "gallery",
+    id: "making",
     number: "06",
-    label: "The Many Worlds of Divya",
-    short: "Five worlds",
-    sectionId: "chapter-gallery",
+    label: "The Making of Divya",
+    short: "Little things",
+    sectionId: "chapter-making",
   },
   {
     id: "letter",

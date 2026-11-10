@@ -7,7 +7,7 @@ export type SigilName =
   | "overthinking"
   | "cafe"
   | "memories"
-  | "gallery"
+  | "making"
   | "letter"
   | "finale";
 
@@ -79,7 +79,7 @@ export function ChapterSigil({ name, className, ...props }: SigilProps) {
         </>
       ) : null}
 
-      {name === "gallery" ? (
+      {name === "making" ? (
         <>
           {[0, 45, 90, 135].map((deg) => (
             <ellipse key={deg} cx="20" cy="13.5" rx="3.4" ry="7" transform={`rotate(${deg} 20 20)`} opacity=".7" />
