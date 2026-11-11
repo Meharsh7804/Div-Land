@@ -19,7 +19,7 @@ const shared = {
 export function SkillGlyph({ id, className, ...props }: SkillGlyphProps) {
   return (
     <svg className={className} {...shared} {...props}>
-      {id === "painting" ? (
+      {id === "artistry" ? (
         <>
           <path
             d="M8.5 29.5C6 21 12.5 13.5 22 12.6c9.4-.9 16.6 4.4 15.9 12-.6 6.7-7.4 5.9-10.3 8.8-2.8 2.8-1.7 6.6-5.7 6.6-6 0-10.6-3.8-13.4-10.5Z"
@@ -35,7 +35,7 @@ export function SkillGlyph({ id, className, ...props }: SkillGlyphProps) {
         </>
       ) : null}
 
-      {id === "sketching" ? (
+      {id === "confidence" ? (
         <>
           <path d="M7 35c6.3-5.7 11.1 2.4 17.7-2.3 5.2-3.7 4.8-9.7.9-10.6-3.2-.7-5.3 2.5-3.1 4.6 1.6 1.5 4.7.7 5.6-1.8" opacity=".6" />
           <path d="m26.7 8.5 9.7 9.7-17.5 17.5-9.7-9.7L26.7 8.5Z" fill="#FFF9F0" />
@@ -58,7 +58,7 @@ export function SkillGlyph({ id, className, ...props }: SkillGlyphProps) {
         </>
       ) : null}
 
-      {id === "hosting" ? (
+      {id === "marwadi-dimaag" ? (
         <>
           <path d="M7.5 13h33v25.5h-33V13Z" fill="#FFF9F0" />
           <path d="M7.5 13c4.4.3 6.3 5.4 6.3 12.2S11.9 37.2 7.5 38.5V13Z" fill="#F2C8D7" />
@@ -73,7 +73,7 @@ export function SkillGlyph({ id, className, ...props }: SkillGlyphProps) {
         </>
       ) : null}
 
-      {id === "creativity" ? (
+      {id === "smartness" ? (
         <>
           <path
             d="M24 23c0-3.7 5.5-3.7 5.5 0 0 5.5-9 6.4-10.3 0-1.5-8 12.4-11.3 15.6-2.1 3.1 9-8.5 16-16.5 9.2-7.6-6.4-1.2-18.4 8.6-17.2"

@@ -2,10 +2,6 @@ import type { CSSProperties } from "react";
 import { seeded, cn } from "@/lib/utils";
 import { Star4 } from "./Illustrations";
 
-export function GrainOverlay() {
-  return <div aria-hidden className="grain-overlay" />;
-}
-
 const PETAL_COLORS = ["#F6DCE7", "#FFF0B8", "#DCD5F5", "#FFDCCB", "#C98EA8"];
 
 export function PetalRain({

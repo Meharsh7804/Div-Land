@@ -1,11 +1,11 @@
 import type { SfxName } from "@/lib/audio-engine";
 
 export type SkillId =
-  | "painting"
-  | "sketching"
+  | "artistry"
+  | "confidence"
   | "speaking"
-  | "hosting"
-  | "creativity"
+  | "marwadi-dimaag"
+  | "smartness"
   | "allrounder"
   | "kindness";
 
@@ -31,7 +31,7 @@ export const makingCopy = {
   label: "A living portrait",
   title: "The Making of Divya",
   note: "every little thing, made her",
-  hint: "Choose her little things. Watch her come together.",
+  hint: "Click on each skill to complete it.",
   progress: "little things discovered",
   collected: "little things found",
   messageLineOne: "They say a perfect girl can't exist...",
@@ -42,9 +42,9 @@ export const makingCopy = {
 
 export const skills: Skill[] = [
   {
-    id: "painting",
-    label: "Painting",
-    chip: "painting",
+    id: "artistry",
+    label: "Artistry",
+    chip: "Artistry",
     note: "colour spills",
     sfx: "page",
     restRotate: -3,
@@ -58,9 +58,9 @@ export const skills: Skill[] = [
     },
   },
   {
-    id: "sketching",
-    label: "Sketching & Drawing",
-    chip: "sketching",
+    id: "confidence",
+    label: "Confidence",
+    chip: "Confidence",
     note: "pencil lines",
     sfx: "page",
     restRotate: 2.4,
@@ -77,7 +77,7 @@ export const skills: Skill[] = [
   {
     id: "speaking",
     label: "Public Speaking",
-    chip: "speaking",
+    chip: "Public Speaking",
     note: "the room listens",
     sfx: "lights",
     restRotate: -2,
@@ -91,9 +91,9 @@ export const skills: Skill[] = [
     },
   },
   {
-    id: "hosting",
-    label: "Hosting",
-    chip: "hosting",
+    id: "marwadi-dimaag",
+    label: "Marwadi Dimaag",
+    chip: "Marwadi Dimaag",
     note: "lights, camera, you",
     sfx: "lights",
     restRotate: 2.8,
@@ -107,9 +107,9 @@ export const skills: Skill[] = [
     },
   },
   {
-    id: "creativity",
-    label: "Creativity",
-    chip: "creativity",
+    id: "smartness",
+    label: "Smartness",
+    chip: "Smartness",
     note: "a hundred ideas",
     sfx: "spark",
     restRotate: -2.6,
@@ -126,7 +126,7 @@ export const skills: Skill[] = [
   {
     id: "allrounder",
     label: "Being an All-Rounder",
-    chip: "all-rounder",
+    chip: "All-Rounder",
     note: "all of it, always",
     sfx: "spark",
     restRotate: 2.2,
@@ -143,7 +143,7 @@ export const skills: Skill[] = [
   {
     id: "kindness",
     label: "Kindness",
-    chip: "kindness",
+    chip: "Kindness",
     note: "softest superpower",
     sfx: "candle",
     restRotate: -1.6,

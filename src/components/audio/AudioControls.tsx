@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { site } from "@/data/site";
 import { cn } from "@/lib/utils";
@@ -186,7 +186,37 @@ export function AudioControls({ visible }: { visible: boolean }) {
   const audio = useAudioExperience();
   const [mixOpen, setMixOpen] = useState(false);
 
+  useEffect(() => {
+    const onOtherPanel = (event: Event) => {
+      if ((event as CustomEvent<string>).detail !== "audio") setMixOpen(false);
+    };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMixOpen(false);
+    };
+    window.addEventListener("divland:panel-open", onOtherPanel);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("divland:panel-open", onOtherPanel);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (visible) return;
+    const timer = window.setTimeout(() => setMixOpen(false), 0);
+    return () => window.clearTimeout(timer);
+  }, [visible]);
+
   if (!visible) return null;
+
+  const toggleMix = () => {
+    if (!mixOpen) {
+      window.dispatchEvent(
+        new CustomEvent("divland:panel-open", { detail: "audio" }),
+      );
+    }
+    setMixOpen((open) => !open);
+  };
 
   return (
     <div
@@ -227,7 +257,7 @@ export function AudioControls({ visible }: { visible: boolean }) {
 
         <button
           type="button"
-          onClick={() => setMixOpen((open) => !open)}
+          onClick={toggleMix}
           aria-expanded={mixOpen}
           aria-controls="audio-mix-panel"
           aria-label={mixOpen ? "Close sound controls" : "Open sound controls"}

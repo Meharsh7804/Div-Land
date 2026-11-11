@@ -1,6 +1,6 @@
 import type { SkillId } from "./making";
 
-export const PORTRAIT_SRC = "/divya/divya.png";
+export const PORTRAIT_SRC = "/divya/divya.webp";
 export const PORTRAIT_WIDTH = 720;
 export const PORTRAIT_HEIGHT = 1469;
 export const PORTRAIT_ASPECT = `${PORTRAIT_WIDTH} / ${PORTRAIT_HEIGHT}`;
@@ -36,21 +36,21 @@ const COLS = 3;
 const ROWS = 7;
 
 const ROW_SKILLS: SkillId[] = [
-  "painting",
-  "sketching",
+  "artistry",
+  "confidence",
   "speaking",
-  "hosting",
-  "creativity",
+  "marwadi-dimaag",
+  "smartness",
   "allrounder",
   "kindness",
 ];
 
 const SKILL_ANCHORS: Record<SkillId, [number, number]> = {
-  painting: [-0.64, -0.55],
-  sketching: [0.64, -0.56],
+  artistry: [-0.64, -0.55],
+  confidence: [0.64, -0.56],
   speaking: [-0.66, -0.04],
-  hosting: [0.66, 0.03],
-  creativity: [-0.64, 0.54],
+  "marwadi-dimaag": [0.66, 0.03],
+  smartness: [-0.64, 0.54],
   allrounder: [0.64, 0.55],
   kindness: [0, 0.63],
 };

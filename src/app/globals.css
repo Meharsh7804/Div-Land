@@ -570,42 +570,240 @@ button:disabled {
 .garden-petal { animation: petal-fall 16s linear infinite; }
 .garden-glow { animation: gate-glow 5.5s ease-in-out infinite; }
 
-/* ————— opening film camera ————— */
-.intro-camera-push {
-  transform-origin: 50% 62%;
-  animation: intro-camera-push 14s var(--ease-scene) forwards;
+/* ————— enchanted opening: world, light and camera ————— */
+.intro-world {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  isolation: isolate;
+  background: #160f1c;
+  perspective: 1600px;
+}
+
+.intro-camera {
+  position: absolute;
+  inset: -3%;
+  transform-origin: 50% 55%;
+  animation: intro-breathe 34s ease-in-out infinite alternate;
   will-change: transform;
 }
 
-@keyframes intro-camera-push {
-  from { transform: scale(1) translate3d(0, 0, 0); }
-  to { transform: scale(1.1) translate3d(0, -0.6%, 0); }
+@keyframes intro-breathe {
+  from { transform: scale(1.015) translate3d(0, 0, 0); }
+  to { transform: scale(1.07) translate3d(0, -0.7%, 0); }
+}
+
+.intro-sky {
+  background:
+    radial-gradient(ellipse at 50% 84%, rgba(255, 249, 236, 0.95) 0%, rgba(255, 236, 200, 0.52) 34%, transparent 64%),
+    linear-gradient(180deg, #b3aae0 0%, #d5c3e4 24%, #f1cfdd 47%, #ffdcc4 70%, #fff0d9 100%);
 }
 
 .intro-depth {
-  transform-origin: 50% 62%;
-  transition: transform 2.3s var(--ease-cinema), opacity 1.1s ease;
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 54%;
+  transition: transform 2.8s var(--ease-cinema), opacity 1.5s ease;
   will-change: transform;
 }
 
 .intro-depth[data-open="true"] {
-  transform: scale(var(--push, 2));
+  transform: scale(var(--push, 1.5));
   opacity: var(--push-opacity, 1);
 }
 
-.intro-sunrays {
+.intro-fog {
   background:
-    linear-gradient(118deg, transparent 36%, rgba(255, 247, 214, 0.32) 42%, transparent 49%),
-    linear-gradient(118deg, transparent 54%, rgba(255, 236, 188, 0.2) 60%, transparent 67%);
-  filter: blur(12px);
-  mix-blend-mode: screen;
-  transform-origin: 18% 8%;
-  animation: intro-rays-breathe 22s ease-in-out infinite;
+    radial-gradient(ellipse at 50% 55%, rgba(255, 250, 240, 0.62), rgba(255, 246, 230, 0.24) 46%, transparent 72%);
+  filter: blur(18px);
+  animation: intro-fog-drift 28s ease-in-out infinite alternate;
+  will-change: transform, opacity;
 }
 
-@keyframes intro-rays-breathe {
-  0%, 100% { transform: rotate(-2deg) scale(1); opacity: 0.3; }
-  50% { transform: rotate(2.5deg) scale(1.06); opacity: 0.5; }
+@keyframes intro-fog-drift {
+  from { transform: translate3d(-3%, 0, 0) scale(1); opacity: 0.5; }
+  to { transform: translate3d(3%, -1.5%, 0) scale(1.08); opacity: 0.8; }
+}
+
+.intro-firefly {
+  animation-name: intro-firefly;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes intro-firefly {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(0.7); opacity: 0.2; }
+  28% { transform: translate3d(6px, -16px, 0) scale(1.1); opacity: 0.95; }
+  55% { transform: translate3d(-4px, -30px, 0) scale(0.9); opacity: 0.5; }
+  78% { transform: translate3d(9px, -12px, 0) scale(1.05); opacity: 0.8; }
+}
+
+.intro-shimmer {
+  color: transparent;
+  background-image: linear-gradient(
+    104deg,
+    transparent 38%,
+    rgba(255, 251, 238, 0.98) 47%,
+    rgba(255, 238, 174, 0.95) 52%,
+    transparent 62%
+  );
+  background-size: 260% 100%;
+  background-position: 190% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: intro-shimmer 6.5s ease-in-out 1.2s infinite;
+  will-change: background-position;
+}
+
+@keyframes intro-shimmer {
+  0% { background-position: 190% 0; }
+  55%, 100% { background-position: -150% 0; }
+}
+
+.intro-gate-frame {
+  --gate-h: clamp(23rem, 58svh, 34rem);
+  position: absolute;
+  left: 50%;
+  top: 54%;
+  height: var(--gate-h);
+  width: calc(var(--gate-h) * 0.625);
+  transform: translate(-50%, -50%);
+}
+
+/* the gate itself */
+.gate-rays {
+  opacity: 0.22;
+  transition: opacity 2.2s ease;
+  mix-blend-mode: screen;
+  background:
+    linear-gradient(104deg, transparent 30%, rgba(255, 246, 210, 0.34) 42%, transparent 52%),
+    linear-gradient(76deg, transparent 46%, rgba(255, 239, 186, 0.28) 56%, transparent 66%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 58%, #000 18%, transparent 68%);
+  mask-image: radial-gradient(ellipse at 50% 58%, #000 18%, transparent 68%);
+  animation: gate-rays-drift 20s ease-in-out infinite alternate;
+}
+
+.gate-rays.is-bloomed {
+  opacity: 0.72;
+}
+
+@keyframes gate-rays-drift {
+  from { transform: translateX(-2%) rotate(-0.8deg); }
+  to { transform: translateX(2%) rotate(0.8deg); }
+}
+
+.gate-door {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  transition: transform 1.9s cubic-bezier(0.65, 0, 0.35, 1);
+  will-change: transform;
+}
+
+.gate-door-left {
+  transform-origin: left center;
+}
+
+.gate-door-right {
+  transform-origin: right center;
+}
+
+.gate-door-left.is-open {
+  transform: rotateY(-82deg);
+}
+
+.gate-door-right.is-open {
+  transform: rotateY(82deg);
+}
+
+/* the invitation, as a line of type rather than a glass pill */
+.intro-enter {
+  position: relative;
+  isolation: isolate;
+  min-height: 2.9rem;
+  padding: 0.55rem 1.15rem;
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--color-plum);
+  transition: color 0.4s ease;
+}
+
+.intro-enter::before {
+  content: "";
+  position: absolute;
+  inset: -0.2rem;
+  border-radius: 999px;
+  background: radial-gradient(ellipse at 50% 50%, rgba(255, 240, 184, 0.55), transparent 72%);
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  z-index: -1;
+}
+
+.intro-enter:hover::before,
+.intro-enter:focus-visible::before {
+  opacity: 1;
+}
+
+.intro-enter::after {
+  content: "";
+  position: absolute;
+  left: 1.15rem;
+  right: 1.15rem;
+  bottom: 0.35rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(73, 51, 72, 0.42), transparent);
+  transform: scaleX(0.76);
+  transform-origin: center;
+  transition: transform 0.5s var(--ease-scene);
+}
+
+.intro-enter:hover::after,
+.intro-enter:focus-visible::after {
+  transform: scaleX(1);
+}
+
+.intro-enter-arrow {
+  display: inline-flex;
+  height: 1.7rem;
+  width: 1.7rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(73, 51, 72, 0.26);
+  border-radius: 999px;
+  background: rgba(255, 249, 240, 0.45);
+  transition: transform 0.45s var(--ease-scene), background 0.45s ease, border-color 0.45s ease;
+}
+
+.intro-enter:hover .intro-enter-arrow,
+.intro-enter:focus-visible .intro-enter-arrow {
+  transform: translateX(3px);
+  background: rgba(255, 249, 240, 0.9);
+  border-color: rgba(73, 51, 72, 0.4);
+}
+
+@media (max-width: 767px) {
+  .intro-camera { animation-duration: 44s; }
+  .intro-fog { filter: blur(13px); }
+  .gate-rays.is-bloomed { opacity: 0.6; }
+  .intro-enter::before { opacity: 0.32; }
+}
+
+/* portrait phones: keep the gate clear of the title above and tagline below */
+@media (orientation: portrait) and (max-height: 640px) {
+  .intro-gate-frame {
+    --gate-h: clamp(18.5rem, 54svh, 26rem);
+    top: 52%;
+  }
+}
+
+/* short landscape screens: the gate must not swallow the viewport */
+@media (max-height: 500px) {
+  .intro-gate-frame {
+    --gate-h: clamp(14rem, 62svh, 20rem);
+    top: 56%;
+  }
 }
 
 /* ————— range / inputs ————— */
@@ -758,16 +956,20 @@ textarea {
     scroll-behavior: auto !important;
   }
 
-  .intro-camera-push {
+  .intro-camera {
     animation: none !important;
     transform: none !important;
   }
 
-  .intro-sunrays {
+  .intro-fog,
+  .intro-firefly,
+  .gate-rays,
+  .intro-shimmer {
     animation: none !important;
   }
 
-  .intro-depth {
+  .intro-depth,
+  .gate-door {
     transition: none !important;
   }
 }
@@ -835,8 +1037,11 @@ textarea {
     animation: none !important;
   }
 
-  .intro-sunrays {
-    filter: blur(8px);
-    opacity: 0.4;
+  .intro-fog {
+    opacity: 0.45;
+  }
+
+  .gate-rays {
+    opacity: 0.18;
   }
 }

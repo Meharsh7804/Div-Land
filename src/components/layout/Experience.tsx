@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useCallback, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, MotionConfig, motion } from "motion/react";
 import { IntroGate } from "@/components/invitation/IntroGate";
 import { Overture } from "@/components/layout/Overture";
@@ -53,6 +53,7 @@ function ExperienceShell() {
   const [entered, setEntered] = useState(false);
   const [gateOpen, setGateOpen] = useState(true);
   const [gateKey, setGateKey] = useState(0);
+  const mainRef = useRef<HTMLElement | null>(null);
   const audio = useAudioExperience();
 
   const activeSection = useActiveChapter(sectionIds);
@@ -91,6 +92,9 @@ function ExperienceShell() {
 
   const handleComplete = useCallback(() => {
     setGateOpen(false);
+    window.requestAnimationFrame(() => {
+      mainRef.current?.focus({ preventScroll: true });
+    });
   }, []);
 
   const handleReplay = useCallback(() => {
@@ -134,9 +138,15 @@ function ExperienceShell() {
         <ScrollTopButton visible={chromeVisible} />
 
         <main
+          ref={mainRef}
+          tabIndex={-1}
           inert={!entered}
           aria-hidden={!entered}
-          className={entered ? "relative" : "pointer-events-none relative"}
+          className={
+            entered
+              ? "relative focus:outline-none"
+              : "pointer-events-none relative focus:outline-none"
+          }
         >
           <motion.div
             initial={false}

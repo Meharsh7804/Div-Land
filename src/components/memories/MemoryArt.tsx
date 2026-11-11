@@ -5,21 +5,9 @@ import { motion } from "motion/react";
 import { EASE_SCENE } from "@/animations/motion";
 import type { MemoryKey } from "@/data/memories";
 
-const SCENE_LENGTH = 9;
 const SCENE_INTRO_END = 0.35;
 const SCENE_FADE_START = 5.4;
 const SCENE_FADE_END = 6.3;
-const SCENE_IN_TIMES: [number, number, number] = [
-  0,
-  SCENE_FADE_START / SCENE_LENGTH,
-  SCENE_FADE_END / SCENE_LENGTH,
-];
-const SCENE_OUT_TIMES: [number, number, number, number] = [
-  0,
-  SCENE_INTRO_END / SCENE_LENGTH,
-  SCENE_FADE_START / SCENE_LENGTH,
-  SCENE_FADE_END / SCENE_LENGTH,
-];
 
 const plum = "#493348";
 const plumSoft = "#6A4C66";
