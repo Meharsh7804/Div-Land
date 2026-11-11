@@ -59,7 +59,7 @@ export const chapters: Chapter[] = [
     id: "making",
     number: "06",
     label: "The Making of Divya",
-    short: "Little things",
+    short: "Her making",
     sectionId: "chapter-making",
   },
   {

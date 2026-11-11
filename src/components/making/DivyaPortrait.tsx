@@ -369,7 +369,7 @@ export function DivyaPortrait({
                 style={{ animationDelay: "-1.2s" }}
               />
             </span>
-            <span className="hand px-6 text-center text-[0.98rem] leading-tight text-plum/40">
+            <span className="hand px-6 text-center text-[0.98rem] leading-tight text-rose-ink">
               waiting for her pieces
             </span>
             <Sparkle className="h-3.5 w-3.5 text-lavender-deep/45 anim-twinkle" />

@@ -16,5 +16,5 @@ export const INTRO_BEATS: ReadonlyArray<readonly [number, IntroStage]> = [
   [240, INTRO_STAGE.dawn],
   [3000, INTRO_STAGE.title],
   [5900, INTRO_STAGE.gate],
-  [7900, INTRO_STAGE.ready],
+  [6000, INTRO_STAGE.ready],
 ];

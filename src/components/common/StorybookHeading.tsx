@@ -37,10 +37,10 @@ export function StorybookHeading({
       <div
         className={cn(
           "flex items-center justify-center gap-2.5 text-[0.6rem] font-extrabold uppercase tracking-[0.24em]",
-          light ? "text-cream/55" : "text-plum/45",
+          light ? "text-cream/55" : "text-plum/70",
         )}
       >
-        <span className={light ? "text-butter/75" : "text-rose-deep/80"}>SC. {number}</span>
+        <span className={light ? "text-butter/75" : "text-rose-ink"}>SC. {number}</span>
         <span className={cn("h-px w-6", light ? "bg-cream/20" : "bg-plum/15")} />
         <span>{label}</span>
       </div>
@@ -65,7 +65,7 @@ export function StorybookHeading({
         <p
           className={cn(
             "hand mt-1.5 text-[clamp(1.05rem,3.5vw,1.35rem)] leading-tight",
-            light ? "text-butter/80" : "text-rose-deep/85",
+            light ? "text-butter/80" : "text-rose-ink",
           )}
         >
           {note}

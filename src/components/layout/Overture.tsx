@@ -125,7 +125,7 @@ export function Overture({ playing = true }: { playing?: boolean }) {
       </motion.div>
 
       <motion.div
-        className="relative z-[2] mx-auto flex w-full max-w-2xl flex-col items-center"
+        className="overture-copy relative z-[2] mx-auto flex w-full max-w-2xl flex-col items-center"
         initial="hidden"
         animate={playing ? "show" : "hidden"}
         variants={sequence}
@@ -135,11 +135,11 @@ export function Overture({ playing = true }: { playing?: boolean }) {
           <span className="flex h-7 w-7 items-center justify-center rounded-full border border-plum/20 bg-cream/50 p-1.5 text-plum/70">
             <ChapterSigil name="invitation" />
           </span>
-          <span className="text-[0.64rem] font-extrabold uppercase tracking-[0.26em] text-plum/60 sm:text-[0.64rem]">
+          <span className="text-[0.64rem] font-extrabold uppercase tracking-[0.26em] text-plum/70 sm:text-[0.64rem]">
             a small gift for sonu
           </span>
           <span className="h-1 w-1 rounded-full bg-rose/60" />
-          <span className="hidden text-[0.64rem] font-extrabold uppercase tracking-[0.26em] text-plum/45 sm:inline">
+          <span className="hidden text-[0.64rem] font-extrabold uppercase tracking-[0.26em] text-plum/70 sm:inline">
             scene 01 · the invitation
           </span>
           <Star4 className="h-2.5 w-2.5 text-rose-deep" />
@@ -184,7 +184,7 @@ export function Overture({ playing = true }: { playing?: boolean }) {
               audio.playSfx("page");
               scrollToTarget("#chapter-files");
             }}
-            className="group flex min-h-11 flex-col items-center gap-1 text-plum/60 transition-colors hover:text-plum"
+            className="group flex min-h-11 flex-col items-center gap-1 text-plum/70 transition-colors hover:text-plum"
           >
             <span className="text-[0.64rem] font-extrabold uppercase tracking-[0.26em]">
               {overture.hint}

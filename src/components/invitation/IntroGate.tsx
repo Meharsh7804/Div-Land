@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { Star4 } from "@/components/common/Illustrations";
 import { useAudioExperience } from "@/components/audio/AudioProvider";
 import { EASE_CINEMA, EASE_ENTER, EASE_SCENE } from "@/animations/motion";
@@ -130,6 +130,7 @@ export function IntroGate({ onEnter, onComplete, reduced }: IntroGateProps) {
   const stage = reduced ? INTRO_STAGE.ready : stageState;
   const [opening, setOpening] = useState(false);
   const [leaving, setLeaving] = useState(false);
+  const [skipVisible, setSkipVisible] = useState(false);
   const sceneRef = useRef<HTMLDivElement | null>(null);
   const gateButtonRef = useRef<HTMLButtonElement | null>(null);
   const hasFocusedGate = useRef(false);
@@ -145,6 +146,19 @@ export function IntroGate({ onEnter, onComplete, reduced }: IntroGateProps) {
       stageTimers.current.forEach((id) => window.clearTimeout(id));
     };
   }, [reduced]);
+
+  useEffect(() => {
+    if (reduced) return;
+    const skipTimer = window.setTimeout(() => setSkipVisible(true), 2000);
+    return () => window.clearTimeout(skipTimer);
+  }, [reduced]);
+
+  const handleSkip = () => {
+    stageTimers.current.forEach((id) => window.clearTimeout(id));
+    stageTimers.current = [];
+    setStage(INTRO_STAGE.ready);
+    setSkipVisible(false);
+  };
 
   useEffect(() => {
     const pending = enterTimers.current;
@@ -442,6 +456,23 @@ export function IntroGate({ onEnter, onComplete, reduced }: IntroGateProps) {
             </span>
           </motion.button>
         </motion.div>
+
+        <AnimatePresence>
+          {skipVisible && !ready && !opening ? (
+            <motion.button
+              type="button"
+              onClick={handleSkip}
+              initial={{ opacity: 0, x: -8 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -8 }}
+              transition={{ duration: 0.45, ease: EASE_ENTER }}
+              className="absolute left-4 top-4 z-[61] flex h-11 items-center rounded-full border border-plum/12 bg-cream/55 px-4 text-[0.62rem] font-extrabold uppercase tracking-[0.2em] text-plum/70 backdrop-blur-md transition-colors hover:bg-cream/85 hover:text-plum sm:left-6 sm:top-6"
+              style={{ marginTop: "env(safe-area-inset-top)" }}
+            >
+              skip the opening
+            </motion.button>
+          ) : null}
+        </AnimatePresence>
 
         <SoundToggle
           onToggle={handleMusicToggle}

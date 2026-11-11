@@ -64,7 +64,7 @@ function BridgeCue({
       <span
         className={cn(
           "text-[0.58rem] font-extrabold uppercase tracking-[0.18em] sm:tracking-[0.22em]",
-          light ? "text-cream/60" : "text-plum/45",
+          light ? "text-cream/60" : "text-plum/70",
         )}
       >
         next · {label}

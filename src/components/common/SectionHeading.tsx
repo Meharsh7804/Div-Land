@@ -42,7 +42,7 @@ export function SectionHeading({
   const isPlacard = variant === "placard";
   const resolvedAlign = isEditorial || isPlacard ? "left" : align;
 
-  const eyebrowColor = light ? "text-blush/85" : "text-rose-deep/90";
+  const eyebrowColor = light ? "text-blush/85" : "text-rose-ink";
   const ruleColor = light ? "bg-blush/35" : "bg-rose/40";
   const titleColor = light ? "text-cream" : "text-plum";
   const scriptColor = light ? "text-butter/90" : "text-rose-deep";
@@ -123,7 +123,7 @@ export function SectionHeading({
             <p
               className={cn(
                 "mt-1 text-[0.64rem] font-extrabold uppercase tracking-[0.28em]",
-                light ? "text-cream/35" : "text-plum/35",
+                light ? "text-cream/35" : "text-plum/70",
               )}
             >
               {sceneNumber ?? "scene"} · take one
@@ -161,7 +161,7 @@ export function SectionHeading({
             <span
               className={cn(
                 "font-display text-xs italic",
-                light ? "text-blush/55" : "text-plum/45",
+                light ? "text-blush/55" : "text-plum/70",
               )}
             >
               {sceneNumber}

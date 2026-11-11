@@ -2,23 +2,21 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import {
-  Coffee,
-  HeartHandshake,
-  MessageCircle,
-  RotateCcw,
-  UtensilsCrossed,
-} from "lucide-react";
+import { RotateCcw } from "lucide-react";
 import { StorybookHeading } from "@/components/common/StorybookHeading";
 import { CatSticker } from "@/components/cats/CatSticker";
 import { useAudioExperience } from "@/components/audio/AudioProvider";
 import { SparkleField } from "@/components/common/Ambient";
 import {
   Balloon,
+  ChatBubbleArt,
+  CoffeeCup,
   Flower,
   GiftArt,
   Heart,
+  HeartHandsArt,
   LeafSprig,
+  MealArt,
   MoonArt,
   Sparkle,
   Star4,
@@ -43,10 +41,10 @@ const sprinkles = Array.from({ length: 16 }, (_, i) => ({
 }));
 
 const giftTokens = [
-  { icon: Coffee, label: "coffee", tone: "border-butter/45 bg-butter text-plum" },
-  { icon: UtensilsCrossed, label: "food", tone: "border-blush/45 bg-blush text-rose-deep" },
-  { icon: MessageCircle, label: "conversations", tone: "border-lavender/45 bg-lavender text-plum" },
-  { icon: HeartHandshake, label: "pampering", tone: "border-rose/45 bg-rose text-cream" },
+  { icon: CoffeeCup, label: "coffee", tone: "border-butter/45 bg-butter text-plum" },
+  { icon: MealArt, label: "food", tone: "border-blush/45 bg-blush text-rose-deep" },
+  { icon: ChatBubbleArt, label: "conversations", tone: "border-lavender/45 bg-lavender text-plum" },
+  { icon: HeartHandsArt, label: "pampering", tone: "border-rose/45 bg-rose text-cream" },
 ];
 
 function Bunting() {
@@ -303,7 +301,7 @@ function Cake({
             />
           ))}
         </div>
-        <p className="text-[0.62rem] font-extrabold uppercase tracking-[0.2em] text-cream/35" aria-live="polite">
+        <p className="text-[0.62rem] font-extrabold uppercase tracking-[0.2em] text-cream/55" aria-live="polite">
           {blown
             ? "one wish, officially sent"
             : litCount === CANDLE_COUNT
@@ -410,7 +408,7 @@ function HoldToBlow({
         <WindArt className="relative h-4 w-4 text-butter" />
         <span className="relative">{holding ? "blowing…" : finale.holdPrompt}</span>
       </button>
-      <p className="text-[0.58rem] font-extrabold uppercase tracking-[0.2em] text-cream/30">
+      <p className="text-[0.58rem] font-extrabold uppercase tracking-[0.2em] text-cream/50">
         {finale.blowPrompt}
       </p>
     </div>
@@ -481,7 +479,7 @@ function MessageCard({ giftRef, giftOpen, onOpenGift }: {
 
       <div ref={giftRef} className="relative mt-6">
         <div className="rounded-[1.2rem] border border-dashed border-butter/30 bg-cream/[0.05] p-4 sm:p-6">
-          <p className="text-[0.64rem] font-extrabold uppercase tracking-[0.24em] text-butter/55">
+          <p className="text-[0.64rem] font-extrabold uppercase tracking-[0.24em] text-butter/70">
             {finale.giftLabel}
           </p>
 
@@ -501,7 +499,7 @@ function MessageCard({ giftRef, giftOpen, onOpenGift }: {
                   <span className="absolute inset-0 rounded-full border border-butter/20 anim-breathe" />
                 </span>
                 <span className="font-hand text-[1.35rem] text-cream/85">unbox it</span>
-                <span className="text-[0.54rem] font-extrabold uppercase tracking-[0.22em] text-cream/30">
+                <span className="text-[0.54rem] font-extrabold uppercase tracking-[0.22em] text-cream/45">
                   {finale.giftTitle}
                 </span>
               </motion.button>
@@ -514,7 +512,7 @@ function MessageCard({ giftRef, giftOpen, onOpenGift }: {
                 className="relative mt-4 overflow-hidden rounded-[1rem] border border-butter/25 bg-[radial-gradient(circle_at_50%_24%,rgba(255,240,184,.15),rgba(255,249,240,.02)_62%,transparent_80%)] px-4 py-6 sm:px-6"
               >
                 <p className="sr-only">{finale.giftBody}</p>
-                <p className="text-[0.56rem] font-extrabold uppercase tracking-[0.22em] text-butter/55">
+                <p className="text-[0.56rem] font-extrabold uppercase tracking-[0.22em] text-butter/70">
                   {finale.giftTitle}
                 </p>
 
@@ -536,7 +534,7 @@ function MessageCard({ giftRef, giftOpen, onOpenGift }: {
                             token.tone,
                           )}
                         >
-                          <Icon className="h-4 w-4" strokeWidth={1.9} />
+                          <Icon className="h-[1.15rem] w-[1.15rem]" />
                         </span>
                         <span className="font-display text-[1.02rem] leading-snug text-cream/85 sm:text-[1.1rem]">
                           {line}
@@ -546,7 +544,7 @@ function MessageCard({ giftRef, giftOpen, onOpenGift }: {
                   })}
                 </div>
 
-                <p className="mt-4 text-[0.64rem] leading-relaxed text-cream/40">
+                <p className="mt-4 text-[0.64rem] leading-relaxed text-cream/55">
                   {finale.giftFooter}
                 </p>
               </motion.div>
@@ -771,10 +769,10 @@ export function Finale({ onReplay }: { onReplay: () => void }) {
         </AnimatePresence>
 
         <div className="mt-14 hidden flex-col items-center gap-2 border-t border-cream/10 pt-6 text-center sm:flex">
-          <p className="text-[0.64rem] font-extrabold uppercase tracking-[0.24em] text-cream/30">
+          <p className="text-[0.64rem] font-extrabold uppercase tracking-[0.24em] text-cream/45">
             made with affection, snacks, and absolutely no supervision
           </p>
-          <p className="hand text-[1.2rem] text-cream/35">divya land · est. this birthday</p>
+          <p className="hand text-[1.2rem] text-cream/50">divya land · est. this birthday</p>
         </div>
       </div>
     </section>

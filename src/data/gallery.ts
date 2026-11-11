@@ -9,7 +9,7 @@ export const finale = {
   blownPrompt: "Wish sent. Look up.",
   messageTitle: "Happy Birthday, Sonuuu!",
   message: [
-    "Here's to year that lets you be both the BADDIE and the BABY, with plenty of room to rest, shine, and celebrate every single win along the way.",
+    "Here's to a year that lets you be both the BADDIE and the BABY, with plenty of room to rest, shine, and celebrate every single win along the way.",
   ],
   signature: "From yours truly, SUDO 😉.",
   giftLabel: "One last surprise",
@@ -22,7 +22,7 @@ export const finale = {
     "And a lifetime supply of pampering.",
   ],
   giftBody:
-    "Unlimited coffee. Unlimited good food. Unlimited conversations. And a lifetime supply of pampering.",
+    "Four little promises, each one redeemable any day she wants — listed below.",
   giftFooter:
     "Redeemable any day. Especially on the days you pretend you're fine.",
   closing: "Your little universe will always be here.",

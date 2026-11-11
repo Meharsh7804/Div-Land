@@ -17,6 +17,7 @@ import {
   useAudioExperience,
 } from "@/components/audio/AudioProvider";
 import { ChapterIndicator, ChapterRail } from "@/components/common/ChapterNav";
+import { SceneTransition } from "@/components/common/SceneTransition";
 import { SmileButton } from "@/components/common/SmileButton";
 import { BrandMark, ScrollTopButton, TopProgress } from "@/components/common/ScrollTop";
 import { chapters, type Chapter } from "@/data/site";
@@ -85,7 +86,7 @@ function ExperienceShell() {
   const handleEnter = useCallback(() => {
     setEntered(true);
     window.setTimeout(
-      () => scrollToTarget("#chapter-files", { immediate: true }),
+      () => scrollToTarget("#top", { immediate: true }),
       60,
     );
   }, []);
@@ -119,6 +120,8 @@ function ExperienceShell() {
   return (
     <MotionConfig reducedMotion="user">
       <div className="relative min-h-screen overflow-x-clip bg-cream">
+        <div aria-hidden className="visual-grain" />
+
         <a
           href="#chapter-files"
           aria-hidden={!chromeVisible}
@@ -136,6 +139,7 @@ function ExperienceShell() {
         <ChapterRail active={active} onSelect={handleSelect} visible={chromeVisible} />
         <SmileButton visible={chromeVisible} />
         <ScrollTopButton visible={chromeVisible} />
+        <SceneTransition active={active} visible={chromeVisible} reduced={reduced} />
 
         <main
           ref={mainRef}

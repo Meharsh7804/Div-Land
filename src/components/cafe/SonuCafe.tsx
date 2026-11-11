@@ -520,7 +520,7 @@ function CoffeeMachineArt({
       </button>
 
       <div className="mt-1 flex flex-col items-center gap-0.5">
-        <span className="flex items-center gap-1.5 text-[0.52rem] font-extrabold uppercase tracking-[0.16em] text-plum/45 sm:text-[0.56rem]">
+        <span className="flex items-center gap-1.5 text-[0.52rem] font-extrabold uppercase tracking-[0.16em] text-plum/70 sm:text-[0.56rem]">
           <span className={cn("h-1.5 w-1.5 rounded-full", busy ? "bg-rose-deep garden-twinkle" : "bg-sage")} />
           {stage === "idle" ? "machine ready" : stage === "done" ? "freshly brewed" : "in progress"}
         </span>
@@ -649,13 +649,13 @@ function Certificate() {
         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border-[3px] border-rose-deep/55 bg-butter/55 shadow-inner">
           <Star4 className="h-6 w-6 text-rose-deep/80" />
         </div>
-        <p className="mt-3 text-[0.56rem] font-extrabold uppercase tracking-[0.26em] text-plum/45">
+        <p className="mt-3 text-[0.56rem] font-extrabold uppercase tracking-[0.26em] text-plum/70">
           {cafe.certificate.title}
         </p>
         <h3 className="display-title mt-1 text-[clamp(1.55rem,5.4vw,2.35rem)] leading-tight text-plum">
           {cafe.certificate.headline}
         </h3>
-        <p className="mx-auto mt-2 max-w-[26rem] text-[0.8rem] leading-relaxed text-plum/62 sm:text-[0.88rem]">
+        <p className="mx-auto mt-2 max-w-[26rem] text-[0.8rem] leading-relaxed text-plum/75 sm:text-[0.88rem]">
           {cafe.certificate.body}
         </p>
         <div className="mt-4 flex items-center justify-center gap-2">

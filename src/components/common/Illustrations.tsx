@@ -163,6 +163,69 @@ export function CoffeeCup({ className, ...props }: ArtProps) {
   );
 }
 
+export function MealArt({ className, ...props }: ArtProps) {
+  return (
+    <svg viewBox="0 0 64 64" fill="none" className={className} {...base} {...props}>
+      <g transform="rotate(-24 32 32)">
+        <ellipse cx="32" cy="14" rx="7.5" ry="10" fill="#F6DCE7" stroke="#493348" strokeWidth="2" />
+        <path d="M32 24c1.2 11 .8 24 0 36" stroke="#493348" strokeWidth="2" strokeLinecap="round" />
+      </g>
+      <g transform="rotate(24 32 32)" stroke="#493348" strokeWidth="2" strokeLinecap="round">
+        <path d="M27 5v11M32 4v12M37 5v11" />
+        <path d="M26 16.5c-.8 2.4 12.8 2.4 12 0" />
+        <path d="M32 19.5c1 12 .8 26 0 41" />
+      </g>
+      <path d="M9 13l1 2.8 2.8 1-2.8 1-1 2.8-1-2.8-2.8-1 2.8-1 1-2.8Z" fill="#FFF0B8" />
+    </svg>
+  );
+}
+
+export function ChatBubbleArt({ className, ...props }: ArtProps) {
+  return (
+    <svg viewBox="0 0 64 64" fill="none" className={className} {...base} {...props}>
+      <path
+        d="M15 7h34a10 10 0 0 1 10 10v15a10 10 0 0 1-10 10H34l-11 9v-9h-8a10 10 0 0 1-10-10V17A10 10 0 0 1 15 7Z"
+        fill="#FFF9F0"
+        stroke="#493348"
+        strokeWidth="2"
+      />
+      <circle cx="20" cy="26" r="3" fill="#C98EA8" />
+      <circle cx="32" cy="26" r="3" fill="#B0708C" />
+      <circle cx="44" cy="26" r="3" fill="#C98EA8" />
+    </svg>
+  );
+}
+
+export function HeartHandsArt({ className, ...props }: ArtProps) {
+  return (
+    <svg viewBox="0 0 64 64" fill="none" className={className} {...base} {...props}>
+      <path
+        d="M32 21c-4.5-6-14-6-14 2 0 6.5 8 11 14 16 6-5 14-9.5 14-16 0-8-9.5-8-14-2Z"
+        fill="#F6DCE7"
+        stroke="#493348"
+        strokeWidth="2"
+      />
+      <path
+        d="M32 26c-2.5-3.4-7.8-2.6-7.8 1.3 0 3.6 5.1 6.4 7.8 8.7 2.7-2.3 7.8-5.1 7.8-8.7 0-3.9-5.3-4.7-7.8-1.3Z"
+        fill="#FFF9F0"
+      />
+      <path
+        d="M6 46c3.5 8.5 12.5 13.5 26 13.5S54.5 54.5 58 46c-8.5 3.5-16.5 5.2-26 5.2S14.5 49.5 6 46Z"
+        fill="#FFF9F0"
+        stroke="#493348"
+        strokeWidth="2"
+      />
+      <path
+        d="M20 52.8c1.6 2 3.6 3.6 6 4.7M44 52.8c-1.6 2-3.6 3.6-6 4.7"
+        stroke="#C98EA8"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+      <path d="M55 6l1.2 3.4 3.4 1.2-3.4 1.2-1.2 3.4-1.2-3.4-3.4-1.2 3.4-1.2 1.2-3.4Z" fill="#FFF0B8" />
+    </svg>
+  );
+}
+
 export function Diya({ className, ...props }: ArtProps) {
   return (
     <svg viewBox="0 0 64 64" fill="none" className={className} {...base} {...props}>

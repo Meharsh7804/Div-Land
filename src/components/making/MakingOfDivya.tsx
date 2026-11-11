@@ -327,7 +327,7 @@ export function MakingOfDivya() {
         <div className="mt-4 flex flex-col items-center gap-2">
           <p
             aria-live="polite"
-            className="text-center text-[0.56rem] font-extrabold uppercase tracking-[0.24em] text-plum/45"
+            className="text-center text-[0.56rem] font-extrabold uppercase tracking-[0.24em] text-plum/70"
           >
             {progressLabel}
           </p>

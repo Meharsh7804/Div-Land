@@ -48,9 +48,8 @@ export function useConfetti() {
     (options: BurstOptions = {}) => {
       if (typeof window === "undefined") return;
       const reduced = prefersReducedMotion();
-      const count =
-        options.count ??
-        (reduced ? 24 : window.innerWidth < 640 ? 110 : 180);
+      if (reduced) return;
+      const count = options.count ?? (window.innerWidth < 640 ? 110 : 180);
 
       const canvas = document.createElement("canvas");
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -74,7 +73,7 @@ export function useConfetti() {
 
       for (let i = 0; i < count; i += 1) {
         const angle = Math.random() * Math.PI * 2;
-        const speed = reduced ? 2 + Math.random() * 3 : 4 + Math.random() * 11;
+        const speed = 4 + Math.random() * 11;
         const shapeRoll = Math.random();
         particles.push({
           x: originX + (Math.random() - 0.5) * 60,

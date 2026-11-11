@@ -141,7 +141,7 @@ export function ChapterIndicator({ active, onSelect, visible }: ChapterIndicator
                           "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border p-1.5 transition-colors",
                           isActive
                             ? "border-rose-deep/45 bg-cream text-rose-deep"
-                            : "border-plum/15 bg-cream/40 text-plum/45",
+                            : "border-plum/15 bg-cream/40 text-plum/55",
                         )}
                       >
                         <ChapterSigil name={chapter.id as SigilName} />
@@ -150,7 +150,7 @@ export function ChapterIndicator({ active, onSelect, visible }: ChapterIndicator
                         <span className="truncate text-[0.86rem] font-bold leading-tight">
                           {chapter.label}
                         </span>
-                        <span className="text-[0.68rem] font-semibold uppercase tracking-[0.08em] text-plum/50">
+                        <span className="text-[0.68rem] font-semibold uppercase tracking-[0.08em] text-plum/70">
                           {chapter.number} · {chapter.short}
                         </span>
                       </span>
@@ -234,7 +234,7 @@ export function ChapterRail({
             ) : (
               <span className="block h-2 w-2 rounded-full border border-plum/30 bg-cream/60 transition-all duration-300 group-hover:h-2.5 group-hover:w-2.5 group-hover:border-plum/60" />
             )}
-            <span className="pointer-events-none absolute right-[calc(100%+10px)] whitespace-nowrap rounded-full bg-plum px-2.5 py-1 text-[0.64rem] font-semibold text-cream opacity-0 shadow-md transition-opacity group-hover:opacity-100">
+            <span className="pointer-events-none absolute right-[calc(100%+10px)] whitespace-nowrap rounded-full bg-plum px-2.5 py-1 text-[0.64rem] font-semibold text-cream opacity-0 shadow-md transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
               {chapter.number} · {chapter.short}
             </span>
           </button>

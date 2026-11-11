@@ -135,10 +135,10 @@ function MixRow({
             {icon}
           </span>
           <span className="min-w-0">
-            <span className="block text-[0.62rem] font-extrabold uppercase tracking-[0.18em] text-plum/65">
+            <span className="block text-[0.62rem] font-extrabold uppercase tracking-[0.18em] text-plum/70">
               {label}
             </span>
-            <span className="hand block truncate text-[0.95rem] leading-tight text-plum/40">
+            <span className="hand block truncate text-[0.95rem] leading-tight text-plum/70">
               {note}
             </span>
           </span>
