@@ -302,7 +302,7 @@ export function IntroGate({ onEnter, onComplete, reduced }: IntroGateProps) {
               }}
               className="eyebrow text-plum/60"
             >
-              a small birthday film
+              a small birthday gift for
             </motion.p>
 
             <div className="relative mt-2 inline-flex items-center justify-center sm:mt-3">

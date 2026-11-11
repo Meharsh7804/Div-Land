@@ -136,7 +136,7 @@ export function Overture({ playing = true }: { playing?: boolean }) {
             <ChapterSigil name="invitation" />
           </span>
           <span className="text-[0.64rem] font-extrabold uppercase tracking-[0.26em] text-plum/60 sm:text-[0.64rem]">
-            a short film for sonu
+            a small gift for sonu
           </span>
           <span className="h-1 w-1 rounded-full bg-rose/60" />
           <span className="hidden text-[0.64rem] font-extrabold uppercase tracking-[0.26em] text-plum/45 sm:inline">

@@ -1,6 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  type CSSProperties,
+} from "react";
 import gsap from "gsap";
 import { Heart, Sparkle, Star4 } from "@/components/common/Illustrations";
 import {
@@ -11,7 +16,8 @@ import {
   portraitFragments,
   type PortraitFragment,
 } from "@/data/portrait";
-import type { SkillId } from "@/data/making";
+import { skills, type SkillId } from "@/data/making";
+import { SkillGlyph } from "./SkillGlyph";
 
 type DivyaPortraitProps = {
   discovered: SkillId[];
@@ -19,10 +25,43 @@ type DivyaPortraitProps = {
   reduced: boolean;
 };
 
+type SkillAccent = (typeof skills)[number]["accent"];
+
 const SCATTER_FILTER =
   "saturate(0.78) brightness(1.03) blur(0.55px) drop-shadow(0 7px 10px rgba(73,51,72,0.14))";
 const SETTLED_FILTER =
-  "saturate(1) brightness(1) blur(0px) drop-shadow(0 0 0 rgba(73,51,72,0))";
+  "saturate(1) brightness(1) blur(0px) drop-shadow(0 3px 5px rgba(73,51,72,0.2))";
+const FRAME_SCALE = 1.045;
+
+const SKILL_ACCENTS = skills.reduce<Record<SkillId, SkillAccent>>(
+  (map, skill) => {
+    map[skill.id] = skill.accent;
+    return map;
+  },
+  {} as Record<SkillId, SkillAccent>,
+);
+
+function pieceWash(accent: SkillAccent, index: number): CSSProperties {
+  const layers = [
+    "radial-gradient(circle at 32% 24%, rgba(255,255,255,0.55), transparent 60%)",
+  ];
+  let size: string | undefined;
+
+  if (index % 3 === 0) {
+    layers.push(`radial-gradient(circle, ${accent.ink}26 1.1px, transparent 1.3px)`);
+    size = "auto, 12px 12px, auto";
+  } else if (index % 3 === 1) {
+    layers.push(
+      `repeating-linear-gradient(135deg, ${accent.ink}1C 0 5px, transparent 5px 11px)`,
+    );
+  }
+  layers.push(`linear-gradient(160deg, ${accent.paper}, ${accent.wash})`);
+
+  return {
+    backgroundImage: layers.join(", "),
+    backgroundSize: size,
+  };
+}
 
 function scatterFor(
   fragment: PortraitFragment,
@@ -51,7 +90,6 @@ export function DivyaPortrait({
   const photoRef = useRef<HTMLDivElement | null>(null);
   const baseRef = useRef<HTMLImageElement | null>(null);
   const emptyRef = useRef<HTMLDivElement | null>(null);
-  const veilRef = useRef<HTMLDivElement | null>(null);
   const glowRef = useRef<HTMLDivElement | null>(null);
   const fragmentRefs = useRef<Array<HTMLDivElement | null>>([]);
   const litRef = useRef<Set<string>>(new Set());
@@ -120,7 +158,6 @@ export function DivyaPortrait({
     if (!width || !height) return;
 
     const current = new Set(discovered);
-    const veil = veilRef.current;
     const empty = emptyRef.current;
     let landing = 0;
 
@@ -136,7 +173,7 @@ export function DivyaPortrait({
         if (reduced) {
           gsap.set(el, {
             opacity: 1,
-            filter: "none",
+            filter: SETTLED_FILTER,
             overwrite: true,
           });
         } else {
@@ -185,15 +222,6 @@ export function DivyaPortrait({
       }
     });
 
-    if (veil) {
-      gsap.to(veil, {
-        opacity: reduced ? 0 : current.size > 0 ? 0.62 : 0,
-        duration: reduced ? 0.2 : 0.6,
-        ease: "power1.out",
-        overwrite: true,
-      });
-    }
-
     if (empty) {
       gsap.to(empty, {
         opacity: current.size > 0 ? 0 : 1,
@@ -205,12 +233,10 @@ export function DivyaPortrait({
   }, [discovered, reduced]);
 
   useEffect(() => {
-    const frame = frameRef.current;
     const base = baseRef.current;
     const empty = emptyRef.current;
-    const veil = veilRef.current;
     const glow = glowRef.current;
-    if (!frame || !base) return;
+    if (!base) return;
 
     const pieces = fragmentRefs.current.filter(
       (el): el is HTMLDivElement => Boolean(el),
@@ -224,9 +250,7 @@ export function DivyaPortrait({
           filter: "none",
         });
         gsap.set(pieces, { opacity: 0 });
-        gsap.set(frame, { scale: 1 });
         gsap.set(empty, { opacity: 0 });
-        gsap.set(veil, { opacity: 0 });
         gsap.set(glow, { opacity: 0 });
         return;
       }
@@ -240,7 +264,6 @@ export function DivyaPortrait({
 
       const tl = gsap.timeline();
       tl.to(empty, { opacity: 0, duration: 0.45, ease: "power1.out" }, 0)
-        .to(veil, { opacity: 0, duration: 0.9, ease: "power2.inOut" }, 0.15)
         .to(base, { opacity: 1, duration: 0.25, ease: "power1.out" }, 0.35)
         .to(
           base,
@@ -266,12 +289,7 @@ export function DivyaPortrait({
           0.35,
         )
         .to(glow, { opacity: 0, duration: 1, ease: "power2.in" }, 0.85)
-        .to(pieces, { opacity: 0, duration: 0.6, ease: "power1.out" }, 0.9)
-        .to(
-          frame,
-          { scale: 1.045, duration: 3, ease: "power2.inOut" },
-          0.55,
-        );
+        .to(pieces, { opacity: 0, duration: 0.6, ease: "power1.out" }, 0.9);
 
       return () => {
         tl.kill();
@@ -284,9 +302,7 @@ export function DivyaPortrait({
         clipPath: "inset(0% 0% 0% 0% round 0.45rem)",
         filter: "none",
       });
-      gsap.set(frame, { scale: 1 });
       gsap.set(empty, { opacity: 1 });
-      gsap.set(veil, { opacity: 0 });
       gsap.set(glow, { opacity: 0 });
       return;
     }
@@ -301,12 +317,6 @@ export function DivyaPortrait({
       clipPath: "inset(0% 0% 0% 0% round 0.45rem)",
       filter: "none",
     });
-    gsap.to(frame, {
-      scale: 1,
-      duration: 0.8,
-      ease: "power2.out",
-      overwrite: true,
-    });
     gsap.to(empty, {
       opacity: 1,
       duration: 0.6,
@@ -314,7 +324,6 @@ export function DivyaPortrait({
       ease: "power1.out",
       overwrite: true,
     });
-    gsap.to(veil, { opacity: 0, duration: 0.4, overwrite: true });
     gsap.to(glow, { opacity: 0, duration: 0.3, overwrite: true });
   }, [finale, reduced]);
 
@@ -325,7 +334,12 @@ export function DivyaPortrait({
       : "Divya's portrait, partly assembled from pieces of her skills.";
 
   return (
-    <div ref={frameRef} data-portrait-frame className="relative">
+    <div
+      ref={frameRef}
+      data-portrait-frame
+      className="relative"
+      style={{ transform: `scale(${FRAME_SCALE})` }}
+    >
       <div className="relative rounded-[1.35rem] border border-rose/25 bg-[linear-gradient(145deg,#FFFDF8,#FBEfE7)] p-2.5 shadow-[0_28px_60px_-34px_rgba(73,51,72,0.55)] sm:p-3">
         <span
           aria-hidden
@@ -398,29 +412,20 @@ export function DivyaPortrait({
                 }}
               >
                 <div
-                  className="absolute bg-no-repeat"
-                  style={{
-                    ...fragment.inner,
-                    backgroundImage: `url(${PORTRAIT_SRC})`,
-                    backgroundSize: "100% 100%",
-                  }}
+                  className="absolute inset-0 bg-no-repeat"
+                  style={pieceWash(SKILL_ACCENTS[fragment.skill], index)}
                 />
+                {index % 3 === 1 ? (
+                  <span className="absolute inset-0 flex items-center justify-center">
+                    <SkillGlyph
+                      id={fragment.skill}
+                      className="h-[40%] w-[40%]"
+                    />
+                  </span>
+                ) : null}
               </div>
             ))}
           </div>
-
-          <div
-            ref={veilRef}
-            aria-hidden
-            data-portrait-veil
-            className="pointer-events-none absolute inset-0 z-[15] rounded-[0.45rem] opacity-0"
-            style={{
-              background:
-                "linear-gradient(155deg, rgba(255,253,248,0.64), rgba(252,236,239,0.48) 48%, rgba(238,232,248,0.58))",
-              backdropFilter: "blur(2px) saturate(0.82)",
-              WebkitBackdropFilter: "blur(2px) saturate(0.82)",
-            }}
-          />
 
           <div
             ref={glowRef}
