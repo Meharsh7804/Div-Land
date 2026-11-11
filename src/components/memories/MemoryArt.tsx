@@ -2086,12 +2086,53 @@ export function MemoryScene({
       focusable="false"
       preserveAspectRatio="xMidYMid meet"
     >
-      {kind === "beginning" ? <BeginningScene animated={animated} /> : null}
-      {kind === "sleep" ? <SleepScene animated={animated} /> : null}
-      {kind === "food" ? <FoodScene animated={animated} /> : null}
-      {kind === "conversations" ? <ConversationsScene animated={animated} /> : null}
-      {kind === "reels" ? <ReelsScene animated={animated} /> : null}
-      {kind === "unexpected" ? <UnexpectedScene animated={animated} /> : null}
+      <motion.g
+        initial={false}
+        animate={
+          animated
+            ? {
+                x: [0, 1.2, 0, -0.8, 0],
+                y: [0, -0.7, 0, 0.5, 0],
+                scale: [1, 1.006, 1.01, 1.004, 1],
+              }
+            : { x: 0, y: 0, scale: 1 }
+        }
+        transition={
+          animated
+            ? { duration: 12, repeat: Infinity, ease: "easeInOut" }
+            : undefined
+        }
+        style={{ transformBox: "view-box", transformOrigin: "160px 105px" }}
+      >
+        {kind === "beginning" ? <BeginningScene animated={animated} /> : null}
+        {kind === "sleep" ? <SleepScene animated={animated} /> : null}
+        {kind === "food" ? <FoodScene animated={animated} /> : null}
+        {kind === "conversations" ? <ConversationsScene animated={animated} /> : null}
+        {kind === "reels" ? <ReelsScene animated={animated} /> : null}
+        {kind === "unexpected" ? <UnexpectedScene animated={animated} /> : null}
+      </motion.g>
+      {animated ? (
+        <motion.rect
+          x="-80"
+          y="-20"
+          width="70"
+          height="250"
+          rx="35"
+          fill="url(#memory-light-sweep)"
+          opacity={0}
+          initial={{ x: -80, opacity: 0 }}
+          animate={{ x: 390, opacity: [0, 0.12, 0] }}
+          transition={{ duration: 8, repeat: Infinity, repeatDelay: 5, ease: "easeInOut" }}
+          pointerEvents="none"
+        />
+      ) : null}
+      <defs>
+        <linearGradient id="memory-light-sweep" x1="0" x2="1">
+          <stop offset="0" stopColor="#FFF9F0" stopOpacity="0" />
+          <stop offset="0.5" stopColor="#FFF0B8" stopOpacity="0.8" />
+          <stop offset="1" stopColor="#FFF9F0" stopOpacity="0" />
+        </linearGradient>
+      </defs>
     </svg>
   );
 }
