@@ -19,7 +19,7 @@ const shared = {
 export function SkillGlyph({ id, className, ...props }: SkillGlyphProps) {
   return (
     <svg className={className} {...shared} {...props}>
-      {id === "artistry" ? (
+      {id === "creativity" ? (
         <>
           <path
             d="M8.5 29.5C6 21 12.5 13.5 22 12.6c9.4-.9 16.6 4.4 15.9 12-.6 6.7-7.4 5.9-10.3 8.8-2.8 2.8-1.7 6.6-5.7 6.6-6 0-10.6-3.8-13.4-10.5Z"
@@ -46,45 +46,46 @@ export function SkillGlyph({ id, className, ...props }: SkillGlyphProps) {
         </>
       ) : null}
 
-      {id === "speaking" ? (
+      {id === "cooking" ? (
         <>
-          <rect x="17.5" y="6.5" width="13" height="20" rx="6.5" fill="#E2DAF5" />
-          <path d="M17.5 12h13M17.5 16h13M17.5 20h13" opacity=".45" />
-          <path d="M11.5 20.5a12.5 12.5 0 0 0 25 0" />
-          <path d="M24 33v6.5M17 40.5h14" />
-          <path d="M33.5 8.5h6a3.5 3.5 0 0 1 3.5 3.5v4a3.5 3.5 0 0 1-3.5 3.5h-2l-3.5 2.6v-2.6h-.5a3.5 3.5 0 0 1-3.5-3.5v-4a3.5 3.5 0 0 1 3.5-3.5Z" fill="#FFF9F0" />
-          <path d="M35 12h5M35 15h3" strokeWidth="1.1" opacity=".55" />
-          <path d="M36 26.5c2.2 1.8 4.6 2.2 6.8 1.2M36.5 30c1.7 1 3.6 1.2 5.3.6" opacity=".55" />
+          <path d="M18 12.5c-1.6-1.8.2-3-.5-4.6M24 11.5c-1.6-1.8.2-3-.5-4.6M30 12.5c-1.6-1.8.2-3-.5-4.6" stroke="#7C9A70" strokeWidth="1.3" strokeLinecap="round" opacity=".7" />
+          <circle cx="24" cy="13.2" r="2.1" fill="#D6A23F" stroke="none" />
+          <path d="M13.5 20.5h21l-1.3-3.1a2.2 2.2 0 0 0-2-1.4H16.8a2.2 2.2 0 0 0-2 1.4Z" fill="#DCD5F5" />
+          <path d="M9 22h30v8.5a6 6 0 0 1-6 6H15a6 6 0 0 1-6-6Z" fill="#FFF9F0" />
+          <path d="M9 24H6.5a2.6 2.6 0 0 0 0 5.2H9M39 24h2.5a2.6 2.6 0 0 1 0 5.2H39" strokeWidth="1.3" />
+          <path d="M14 27.5c3 1.2 6.4 1.2 9.4 0M25 27.5c3 1.2 6.4 1.2 9.4 0" opacity=".45" strokeWidth="1.1" />
+          <path d="M20 17.5l1.1 2.7 2.7 1.1-2.7 1.1-1.1 2.7-1.1-2.7-2.7-1.1 2.7-1.1 1.1-2.7Z" fill="#C95D86" stroke="none" opacity=".8" />
+          <circle cx="33.5" cy="31.5" r="1.3" fill="#D6A23F" stroke="none" opacity=".75" />
         </>
       ) : null}
 
       {id === "marwadi-dimaag" ? (
         <>
-          <path d="M7.5 13h33v25.5h-33V13Z" fill="#FFF9F0" />
-          <path d="M7.5 13c4.4.3 6.3 5.4 6.3 12.2S11.9 37.2 7.5 38.5V13Z" fill="#F2C8D7" />
-          <path d="M40.5 13c-4.4.3-6.3 5.4-6.3 12.2s1.9 12 6.3 13.3V13Z" fill="#F2C8D7" />
-          <path d="M7.5 13h33" stroke="#D6A23F" strokeWidth="1.8" />
-          <path d="M14 8v5M24 7v6M34 8v5" stroke="#D6A23F" opacity=".8" />
-          <circle cx="14" cy="7" r="1.2" fill="#D6A23F" stroke="none" />
-          <circle cx="24" cy="6" r="1.2" fill="#D6A23F" stroke="none" />
-          <circle cx="34" cy="7" r="1.2" fill="#D6A23F" stroke="none" />
-          <path d="M24 18.5l2 4.2 4.6.7-3.3 3.2.8 4.6-4.1-2.2-4.1 2.2.8-4.6-3.3-3.2 4.6-.7 2-4.2Z" fill="#FFF0B8" />
-          <path d="M19 31.5c3.1 1.3 6.9 1.3 10 0" stroke="#C98EA8" opacity=".7" />
+          <path d="M19 9.5h10l1.4 6H17.6Z" fill="#D6A23F" />
+          <path d="M17 15h14c4.2 3.6 6.5 8.3 6.5 12.7C37.5 35 32.5 40.5 24 40.5S10.5 35 10.5 27.7c0-4.4 2.3-9.1 6.5-12.7Z" fill="#FFF9F0" />
+          <path d="M17 15c-1.6 2-2.6 3.6-3.1 5.4M31 15c1.6 2 2.6 3.6 3.1 5.4" opacity=".45" strokeWidth="1.1" />
+          <circle cx="19" cy="26" r="4.4" fill="#D6A23F" stroke="none" />
+          <circle cx="19" cy="26" r="1.5" fill="#FFF0B8" stroke="none" />
+          <circle cx="28.5" cy="23.5" r="3.6" fill="#D6A23F" stroke="none" opacity=".85" />
+          <circle cx="28.5" cy="23.5" r="1.3" fill="#FFF0B8" stroke="none" />
+          <circle cx="25" cy="32" r="3.1" fill="#D6A23F" stroke="none" opacity=".7" />
+          <path d="M24 15v-3.2" strokeWidth="1.4" />
+          <path d="M38.5 9l1.1 2.9 2.9 1.1-2.9 1.1-1.1 2.9-1.1-2.9-2.9-1.1 2.9-1.1 1.1-2.9Z" fill="#C95D86" stroke="none" opacity=".85" />
+          <path d="M9 38.5c2.4-1 4.4-.8 6.5 1M33 39.5c2-1.4 4-1.6 6-1" opacity=".5" />
         </>
       ) : null}
 
-      {id === "smartness" ? (
+      {id === "emotional" ? (
         <>
           <path
-            d="M24 23c0-3.7 5.5-3.7 5.5 0 0 5.5-9 6.4-10.3 0-1.5-8 12.4-11.3 15.6-2.1 3.1 9-8.5 16-16.5 9.2-7.6-6.4-1.2-18.4 8.6-17.2"
-            strokeWidth="1.8"
+            d="M19.5 37.5C13.4 32.8 8.5 28.9 8.5 23.9c0-3.9 3-6.9 6.7-6.9 2.3 0 4.4 1.2 5.7 3.2 1.3-2 3.4-3.2 5.7-3.2 3.7 0 6.7 3 6.7 6.9 0 5-4.9 8.9-13.8 13.6Z"
+            fill="#F6DCE7"
           />
-          <circle cx="10" cy="11" r="2" fill="#C95D86" stroke="none" />
-          <circle cx="38" cy="33" r="2.4" fill="#4E8C7A" stroke="none" />
-          <circle cx="39" cy="12" r="1.7" fill="#D6A23F" stroke="none" />
-          <path d="M7 24c2.8-1.8 4.6-1.8 7.4 0M7 28c2.8 1.8 4.6 1.8 7.4 0" opacity=".6" />
-          <path d="M34 7l1.2 3 3 1.2-3 1.2-1.2 3-1.2-3-3-1.2 3-1.2L34 7Z" fill="#8A6BB5" stroke="none" opacity=".75" />
-          <path d="M33 38.5c2.5 0 4 1.5 4 3.5M8 38c1.5-2.6 3.6-3.5 6-3" opacity=".5" />
+          <path d="M14.5 22.5c1.4 3.4 1.4 7.1 0 10.5" stroke="#FFF9F0" strokeWidth="1.2" opacity=".8" />
+          <path d="M35.5 10.5c3.2 3.9 5 6.9 5 9.6a5 5 0 1 1-10 0c0-2.7 1.8-5.7 5-9.6Z" fill="#96ACE0" opacity=".85" />
+          <circle cx="36.5" cy="18" r="1.4" fill="#FFF9F0" stroke="none" />
+          <path d="M6 41c2.2-1.6 4.4-1.6 6.6 0M15 42.5c2-1.3 4-1.3 6 0" stroke="#C98EA8" strokeWidth="1.2" strokeLinecap="round" opacity=".65" />
+          <path d="M30.5 7l.9 2.3 2.3.9-2.3.9-.9 2.3-.9-2.3-2.3-.9 2.3-.9.9-2.3Z" fill="#D6A23F" stroke="none" opacity=".8" />
         </>
       ) : null}
 

@@ -475,7 +475,7 @@ export function MakingOfDivya() {
               </div>
             </div>
 
-            <div className="relative z-20 mt-7 grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3 lg:mt-0 lg:block lg:h-[50rem] lg:gap-0 xl:h-[52rem]">
+            <div className="absolute inset-0 z-20 lg:relative lg:inset-auto lg:h-[50rem] xl:h-[52rem]">
               <AnimatePresence initial={false}>
                 {remaining.map((skill) => (
                   <SkillCard
@@ -633,12 +633,7 @@ function SkillCard({ skill, index, reduced, onSelect }: SkillCardProps) {
         delay: index * 0.055,
         ease: EASE_SCENE,
       }}
-      className={cn(
-        "relative w-full",
-        skill.position,
-        skill.id === "kindness" &&
-          "col-span-2 justify-self-center max-sm:w-[calc(50%-0.3125rem)] sm:col-span-3 sm:max-lg:w-[calc(33.333%-0.5rem)]",
-      )}
+      className={cn("relative", skill.position)}
     >
       <motion.button
         ref={buttonRef}

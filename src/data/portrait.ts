@@ -36,23 +36,23 @@ const COLS = 3;
 const ROWS = 7;
 
 const ROW_SKILLS: SkillId[] = [
-  "artistry",
-  "confidence",
-  "speaking",
-  "marwadi-dimaag",
-  "smartness",
-  "allrounder",
+  "creativity",
+  "cooking",
   "kindness",
+  "confidence",
+  "marwadi-dimaag",
+  "allrounder",
+  "emotional",
 ];
 
 const SKILL_ANCHORS: Record<SkillId, [number, number]> = {
-  artistry: [-0.64, -0.55],
-  confidence: [0.64, -0.56],
-  speaking: [-0.66, -0.04],
-  "marwadi-dimaag": [0.66, 0.03],
-  smartness: [-0.64, 0.54],
+  creativity: [-0.64, -0.55],
+  cooking: [0.64, -0.56],
+  kindness: [-0.66, -0.04],
+  confidence: [0.66, 0.03],
+  "marwadi-dimaag": [-0.64, 0.54],
   allrounder: [0.64, 0.55],
-  kindness: [0, 0.63],
+  emotional: [0, 0.63],
 };
 
 function createRng(seed: number) {
