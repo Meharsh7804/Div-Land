@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { StorybookHeading } from "@/components/common/StorybookHeading";
 import { CatSticker } from "@/components/cats/CatSticker";
 import { useAudioExperience } from "@/components/audio/AudioProvider";
+import { useChapterGate } from "@/components/journey/JourneyProvider";
 import {
   Cloud,
   CoffeeCup,
@@ -15,6 +16,7 @@ import {
   Star4,
 } from "@/components/common/Illustrations";
 import { cafe, type DrinkId, type MenuItem } from "@/data/cafe";
+import { chapterInstructions } from "@/data/journey";
 import { EASE_SCENE } from "@/animations/motion";
 import { cn, makeBag } from "@/lib/utils";
 
@@ -679,6 +681,7 @@ export function SonuCafe() {
   const timers = useRef<number[]>([]);
   const selected = cafe.menu.find((item) => item.id === selectedId) ?? cafe.menu[0];
   const busy = stage === "grinding" || stage === "brewing";
+  const { markComplete } = useChapterGate("cafe");
 
   useEffect(() => {
     const activeTimers = timers.current;
@@ -686,6 +689,10 @@ export function SonuCafe() {
       activeTimers.forEach((id) => window.clearTimeout(id));
     };
   }, []);
+
+  useEffect(() => {
+    if (cups > 0) markComplete("cafe");
+  }, [cups, markComplete]);
 
   const clearTimers = () => {
     timers.current.forEach((id) => window.clearTimeout(id));
@@ -759,6 +766,7 @@ export function SonuCafe() {
           label={cafe.eyebrow.replace("Chapter 04 · ", "")}
           title={cafe.title}
           note={cafe.script}
+          instruction={chapterInstructions.cafe}
         />
 
         <div className="mt-6 grid gap-6 sm:mt-9 lg:grid-cols-[1.3fr_0.7fr] lg:items-start">

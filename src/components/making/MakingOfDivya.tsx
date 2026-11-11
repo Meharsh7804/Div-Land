@@ -17,6 +17,7 @@ import {
   TinyFlower,
 } from "@/components/common/Illustrations";
 import { useAudioExperience } from "@/components/audio/AudioProvider";
+import { useChapterGate } from "@/components/journey/JourneyProvider";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { EASE_ENTER, EASE_SCENE } from "@/animations/motion";
 import { cn } from "@/lib/utils";
@@ -26,6 +27,7 @@ import {
   type Skill,
   type SkillId,
 } from "@/data/making";
+import { chapterInstructions } from "@/data/journey";
 import { DivyaPortrait } from "./DivyaPortrait";
 import { SkillGlyph } from "./SkillGlyph";
 
@@ -85,6 +87,7 @@ function pulse(overlay: HTMLDivElement, x: number, y: number, color: string) {
 export function MakingOfDivya() {
   const audio = useAudioExperience();
   const reduced = useReducedMotion();
+  const { markComplete } = useChapterGate("making");
 
   const [discovered, setDiscovered] = useState<SkillId[]>([]);
   const [finale, setFinale] = useState(false);
@@ -104,6 +107,10 @@ export function MakingOfDivya() {
       overlay?.replaceChildren();
     };
   }, []);
+
+  useEffect(() => {
+    if (discovered.length === TOTAL) markComplete("making");
+  }, [discovered.length, markComplete]);
 
   const spawnBurst = useCallback((skill: Skill, originEl: HTMLElement) => {
     const overlay = overlayRef.current;
@@ -322,6 +329,7 @@ export function MakingOfDivya() {
           label={makingCopy.label}
           title={makingCopy.title}
           note={makingCopy.note}
+          instruction={chapterInstructions.making}
         />
 
         <div className="mt-4 flex flex-col items-center gap-2">

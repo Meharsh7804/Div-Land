@@ -15,8 +15,9 @@ import { ScallopDivider } from "@/components/common/Dividers";
 import { SparkleField } from "@/components/common/Ambient";
 import { CatSticker } from "@/components/cats/CatSticker";
 import { useAudioExperience } from "@/components/audio/AudioProvider";
-import { scrollToTarget } from "@/animations/useSmoothScroll";
+import { useJourney } from "@/components/journey/JourneyProvider";
 import { DUR, EASE_ENTER, EASE_SCENE, STAGGER } from "@/animations/motion";
+import { chapterInstructions } from "@/data/journey";
 import { overture } from "@/data/site";
 
 const sequence = {
@@ -75,6 +76,7 @@ function GardenArch() {
 export function Overture({ playing = true }: { playing?: boolean }) {
   const sectionRef = useRef<HTMLElement | null>(null);
   const audio = useAudioExperience();
+  const { goNext } = useJourney();
 
   return (
     <section
@@ -177,12 +179,22 @@ export function Overture({ playing = true }: { playing?: boolean }) {
           {overture.line}
         </motion.p>
 
+        <motion.div
+          variants={fadeUp}
+          className="mt-4 flex w-fit max-w-md items-start gap-2 rounded-full border border-dashed border-plum/20 bg-cream/45 px-3.5 py-1.5 text-left"
+        >
+          <Sparkle className="mt-0.5 h-3 w-3 shrink-0 text-rose-deep/70" />
+          <span className="text-[0.72rem] font-semibold leading-snug text-plum/65">
+            {chapterInstructions.invitation}
+          </span>
+        </motion.div>
+
         <motion.div variants={fadeUp} className="mt-9 flex flex-col items-center gap-2">
           <button
             type="button"
             onClick={() => {
               audio.playSfx("page");
-              scrollToTarget("#chapter-files");
+              goNext();
             }}
             className="group flex min-h-11 flex-col items-center gap-1 text-plum/70 transition-colors hover:text-plum"
           >
@@ -190,11 +202,7 @@ export function Overture({ playing = true }: { playing?: boolean }) {
               {overture.hint}
             </span>
             <span className="flex h-10 w-9 items-center justify-center rounded-full border border-plum/20 bg-cream/60 transition-transform group-hover:translate-y-0.5">
-              <svg viewBox="0 0 24 40" fill="none" className="h-6 w-4 text-plum/70">
-                <rect x="7" y="2" width="10" height="20" rx="5" stroke="currentColor" strokeWidth="1.4" />
-                <circle cx="12" cy="8" r="1.6" fill="currentColor" className="anim-bounce-soft" />
-                <path d="M12 27v8M8 31l4 4 4-4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+              <Sparkle className="h-4 w-4 text-plum/70" />
             </span>
           </button>
           <Sparkle className="h-3 w-3 text-rose/70 anim-breathe" />

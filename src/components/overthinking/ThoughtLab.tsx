@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { StorybookHeading } from "@/components/common/StorybookHeading";
 import { CatSticker } from "@/components/cats/CatSticker";
 import { useAudioExperience } from "@/components/audio/AudioProvider";
+import { useChapterGate } from "@/components/journey/JourneyProvider";
 import {
   BrainBloom,
   Butterfly,
@@ -16,6 +17,7 @@ import {
 } from "@/components/common/Illustrations";
 import { SparkleField } from "@/components/common/Ambient";
 import { labCopy, thoughts, type Thought } from "@/data/thoughts";
+import { chapterInstructions } from "@/data/journey";
 import { EASE_SCENE, EASE_SOFT } from "@/animations/motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { cn, makeBag } from "@/lib/utils";
@@ -564,6 +566,7 @@ export function ThoughtLab() {
   const bag = useRef<Thought[]>([]);
   const lastId = useRef<string | null>(null);
   const timer = useRef<number | null>(null);
+  const { markComplete } = useChapterGate("overthinking");
 
   useEffect(
     () => () => {
@@ -571,6 +574,10 @@ export function ThoughtLab() {
     },
     [],
   );
+
+  useEffect(() => {
+    if (served > 0) markComplete("overthinking");
+  }, [markComplete, served]);
 
   const nextThought = useCallback(() => {
     if (phase === "processing") return;
@@ -638,6 +645,7 @@ export function ThoughtLab() {
           label={labCopy.eyebrow.replace("Chapter 03 · ", "")}
           title={labCopy.title}
           note={labCopy.script}
+          instruction={chapterInstructions.overthinking}
         />
 
         {paperNotes.map((note, index) => (

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { X } from "lucide-react";
+import { Lock, X } from "lucide-react";
 import { chapters, type Chapter } from "@/data/site";
 import { EASE_ENTER } from "@/animations/motion";
 import { cn } from "@/lib/utils";
@@ -31,9 +31,15 @@ type ChapterIndicatorProps = {
   active: Chapter;
   onSelect: (chapter: Chapter) => void;
   visible: boolean;
+  unlockedIndex: number;
 };
 
-export function ChapterIndicator({ active, onSelect, visible }: ChapterIndicatorProps) {
+export function ChapterIndicator({
+  active,
+  onSelect,
+  visible,
+  unlockedIndex,
+}: ChapterIndicatorProps) {
   const [open, setOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
@@ -118,22 +124,27 @@ export function ChapterIndicator({ active, onSelect, visible }: ChapterIndicator
               </button>
             </div>
             <ul className="max-h-[52vh] space-y-0.5 overflow-y-auto overscroll-contain">
-              {chapters.map((chapter) => {
+              {chapters.map((chapter, index) => {
                 const isActive = chapter.id === active.id;
+                const locked = index > unlockedIndex;
                 return (
                   <li key={chapter.id}>
                     <button
                       type="button"
                       onClick={() => {
+                        if (locked) return;
                         closePanel();
                         onSelect(chapter);
                       }}
+                      disabled={locked}
+                      aria-disabled={locked || undefined}
                       aria-current={isActive ? "step" : undefined}
                       className={cn(
                         "flex min-h-11 w-full items-center gap-3 rounded-xl px-2.5 py-2 text-left transition-colors",
                         isActive
                           ? "bg-blush/70 text-plum"
                           : "text-ink/80 hover:bg-blush/40",
+                        locked && "cursor-not-allowed opacity-45 hover:bg-transparent",
                       )}
                     >
                       <span
@@ -154,6 +165,9 @@ export function ChapterIndicator({ active, onSelect, visible }: ChapterIndicator
                           {chapter.number} · {chapter.short}
                         </span>
                       </span>
+                      {locked ? (
+                        <Lock className="ml-auto h-3.5 w-3.5 shrink-0 text-plum/40" />
+                      ) : null}
                     </button>
                   </li>
                 );
@@ -200,10 +214,12 @@ export function ChapterRail({
   active,
   onSelect,
   visible,
+  unlockedIndex,
 }: {
   active: Chapter;
   onSelect: (chapter: Chapter) => void;
   visible: boolean;
+  unlockedIndex: number;
 }) {
   return (
     <nav
@@ -216,26 +232,40 @@ export function ChapterRail({
       )}
     >
       <span className="mb-1 h-8 w-px bg-gradient-to-b from-transparent to-plum/20" />
-      {chapters.map((chapter) => {
+      {chapters.map((chapter, index) => {
         const isActive = chapter.id === active.id;
+        const locked = index > unlockedIndex;
         return (
           <button
             key={chapter.id}
             type="button"
-            onClick={() => onSelect(chapter)}
-            aria-label={`Go to chapter ${chapter.number}: ${chapter.label}`}
+            onClick={() => {
+              if (!locked) onSelect(chapter);
+            }}
+            disabled={locked}
+            aria-disabled={locked || undefined}
+            aria-label={
+              locked
+                ? `Chapter ${chapter.number} locked. Finish this scene first.`
+                : `Go to chapter ${chapter.number}: ${chapter.label}`
+            }
             aria-current={isActive ? "step" : undefined}
-            className="group relative flex h-11 w-11 items-center justify-center"
+            className={cn(
+              "group relative flex h-11 w-11 items-center justify-center",
+              locked && "cursor-not-allowed opacity-40",
+            )}
           >
             {isActive ? (
               <span className="flex h-8 w-8 items-center justify-center rounded-full border border-rose-deep/40 bg-cream/80 p-1.5 text-rose-deep shadow-[0_0_0_4px_rgba(255,249,240,.4)] transition-all duration-300">
                 <ChapterSigil name={chapter.id as SigilName} />
               </span>
+            ) : locked ? (
+              <Lock className="h-3 w-3 text-plum/40" />
             ) : (
               <span className="block h-2 w-2 rounded-full border border-plum/30 bg-cream/60 transition-all duration-300 group-hover:h-2.5 group-hover:w-2.5 group-hover:border-plum/60" />
             )}
             <span className="pointer-events-none absolute right-[calc(100%+10px)] whitespace-nowrap rounded-full bg-plum px-2.5 py-1 text-[0.64rem] font-semibold text-cream opacity-0 shadow-md transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
-              {chapter.number} · {chapter.short}
+              {locked ? "locked · finish this scene first" : `${chapter.number} · ${chapter.short}`}
             </span>
           </button>
         );

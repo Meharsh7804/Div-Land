@@ -43,11 +43,17 @@ export function ScrollTopButton({ visible }: { visible: boolean }) {
   );
 }
 
-export function BrandMark({ visible }: { visible: boolean }) {
+export function BrandMark({
+  visible,
+  onHome,
+}: {
+  visible: boolean;
+  onHome?: () => void;
+}) {
   return (
     <button
       type="button"
-      onClick={() => scrollToTarget(0)}
+      onClick={() => (onHome ? onHome() : scrollToTarget(0))}
       aria-label="Divya Land — back to the beginning"
       aria-hidden={!visible}
       inert={!visible}

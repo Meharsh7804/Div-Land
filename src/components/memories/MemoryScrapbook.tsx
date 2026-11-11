@@ -6,9 +6,11 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { StorybookHeading } from "@/components/common/StorybookHeading";
 import { CatSticker } from "@/components/cats/CatSticker";
 import { useAudioExperience } from "@/components/audio/AudioProvider";
+import { useChapterGate } from "@/components/journey/JourneyProvider";
 import { Heart as HeartArt, Sparkle, Star4 } from "@/components/common/Illustrations";
 import { DottedBackdrop, SparkleField } from "@/components/common/Ambient";
 import { memories, memoriesCopy, memoryToneStyles } from "@/data/memories";
+import { chapterInstructions } from "@/data/journey";
 import { EASE_SCENE } from "@/animations/motion";
 import { cn } from "@/lib/utils";
 import { MemoryScene } from "./MemoryArt";
@@ -41,10 +43,12 @@ export function MemoryScrapbook() {
   const selected = memories.find((memory) => memory.id === selectedId) ?? memories[0];
   const selectedIndex = memories.findIndex((memory) => memory.id === selected.id);
   const tone = memoryToneStyles[selected.tone];
+  const { markComplete } = useChapterGate("memories");
 
   const open = (id: string) => {
     audio.playSfx("page");
     setSelectedId(id);
+    markComplete("memories");
   };
 
   const step = (direction: 1 | -1) => {
@@ -92,6 +96,7 @@ export function MemoryScrapbook() {
           label={memoriesCopy.eyebrow.replace("Chapter 05 · ", "")}
           title={memoriesCopy.title}
           note={memoriesCopy.script}
+          instruction={chapterInstructions.memories}
         />
 
         <div className="relative mx-auto mt-6 w-full max-w-5xl sm:mt-9">

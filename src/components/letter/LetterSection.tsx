@@ -7,6 +7,7 @@ import { X } from "lucide-react";
 import { StorybookHeading } from "@/components/common/StorybookHeading";
 import { CatSticker } from "@/components/cats/CatSticker";
 import { useAudioExperience } from "@/components/audio/AudioProvider";
+import { useChapterGate } from "@/components/journey/JourneyProvider";
 import {
   Flower,
   Heart as HeartArt,
@@ -16,6 +17,7 @@ import {
   TinyFlower,
 } from "@/components/common/Illustrations";
 import { letter, letterUi } from "@/data/letter";
+import { chapterInstructions } from "@/data/journey";
 import { EASE_CURTAIN, EASE_ENTER, EASE_EXIT, EASE_SCENE } from "@/animations/motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { cn, seeded } from "@/lib/utils";
@@ -524,6 +526,7 @@ function LetterModal({ onClose, reduceMotion }: { onClose: () => void; reduceMot
 export function LetterSection() {
   const audio = useAudioExperience();
   const reduceMotion = useReducedMotion();
+  const { markComplete } = useChapterGate("letter");
   const [open, setOpen] = useState(false);
   const [opening, setOpening] = useState(false);
   const [portalReady, setPortalReady] = useState(false);
@@ -542,9 +545,10 @@ export function LetterSection() {
     setPortalReady(true);
     setOpening(true);
     setOpen(true);
+    markComplete("letter");
     if (reduceMotion) return;
     timer.current = window.setTimeout(() => audio.playSfx("spark"), 280);
-  }, [audio, opening, open, reduceMotion]);
+  }, [audio, markComplete, opening, open, reduceMotion]);
 
   const handleClose = useCallback(() => {
     if (timer.current) window.clearTimeout(timer.current);
@@ -597,6 +601,7 @@ export function LetterSection() {
           label="A Letter for Sonu"
           title={letter.title}
           note={letter.script}
+          instruction={chapterInstructions.letter}
           tone="light"
         />
 

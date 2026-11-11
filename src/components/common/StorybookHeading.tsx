@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { EASE_SCENE } from "@/animations/motion";
+import { Sparkle } from "./Illustrations";
 
 type StorybookHeadingProps = {
   id?: string;
@@ -11,6 +12,7 @@ type StorybookHeadingProps = {
   label: string;
   title?: ReactNode;
   note?: string;
+  instruction?: string;
   tone?: "dark" | "light";
   className?: string;
 };
@@ -21,6 +23,7 @@ export function StorybookHeading({
   label,
   title,
   note,
+  instruction,
   tone = "dark",
   className,
 }: StorybookHeadingProps) {
@@ -70,6 +73,33 @@ export function StorybookHeading({
         >
           {note}
         </p>
+      ) : null}
+
+      {instruction ? (
+        <div
+          className={cn(
+            "mx-auto mt-3 flex w-fit max-w-[30rem] items-start gap-2 rounded-full border border-dashed px-3.5 py-1.5 text-left",
+            light
+              ? "border-cream/20 bg-cream/[0.06]"
+              : "border-plum/20 bg-cream/50",
+          )}
+        >
+          <Sparkle
+            aria-hidden
+            className={cn(
+              "mt-0.5 h-3 w-3 shrink-0",
+              light ? "text-butter/75" : "text-rose-deep/70",
+            )}
+          />
+          <span
+            className={cn(
+              "text-[0.72rem] font-semibold leading-snug",
+              light ? "text-cream/65" : "text-plum/65",
+            )}
+          >
+            {instruction}
+          </span>
+        </div>
       ) : null}
     </motion.header>
   );

@@ -11,40 +11,55 @@ import { MemoryScrapbook } from "@/components/memories/MemoryScrapbook";
 import { MakingOfDivya } from "@/components/making/MakingOfDivya";
 import { LetterSection } from "@/components/letter/LetterSection";
 import { Finale } from "@/components/finale/Finale";
-import { AudioControls } from "@/components/audio/AudioControls";
 import {
   AudioProvider,
   useAudioExperience,
 } from "@/components/audio/AudioProvider";
-import { ChapterIndicator, ChapterRail } from "@/components/common/ChapterNav";
+import { ChapterRail } from "@/components/common/ChapterNav";
 import { SceneTransition } from "@/components/common/SceneTransition";
-import { SmileButton } from "@/components/common/SmileButton";
-import { BrandMark, ScrollTopButton, TopProgress } from "@/components/common/ScrollTop";
+import { ScrollTopButton, TopProgress } from "@/components/common/ScrollTop";
+import { JourneyContinue } from "@/components/journey/JourneyContinue";
+import {
+  JourneyProvider,
+  useJourney,
+} from "@/components/journey/JourneyProvider";
 import { chapters, type Chapter } from "@/data/site";
-import { useActiveChapter } from "@/hooks/useChapterProgress";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { scrollToTarget } from "@/animations/useSmoothScroll";
 import { EASE_ENTER } from "@/animations/motion";
 
-const sectionIds = chapters.map((chapter) => chapter.sectionId);
-
 const StorySections = memo(function StorySections({
   playing,
   onReplay,
+  currentIndex,
 }: {
   playing: boolean;
   onReplay: () => void;
+  currentIndex: number;
 }) {
+  const views = [
+    <Overture key="overture" playing={playing} />,
+    <PersonalityFiles key="files" />,
+    <ThoughtLab key="overthinking" />,
+    <SonuCafe key="cafe" />,
+    <MemoryScrapbook key="memories" />,
+    <MakingOfDivya key="making" />,
+    <LetterSection key="letter" />,
+    <Finale key="finale" onReplay={onReplay} />,
+  ];
+
   return (
     <>
-      <Overture playing={playing} />
-      <PersonalityFiles />
-      <ThoughtLab />
-      <SonuCafe />
-      <MemoryScrapbook />
-      <MakingOfDivya />
-      <LetterSection />
-      <Finale onReplay={onReplay} />
+      {views.map((view, index) => (
+        <div
+          key={chapters[index].id}
+          hidden={index !== currentIndex}
+          aria-hidden={index !== currentIndex}
+          inert={index !== currentIndex}
+        >
+          {view}
+        </div>
+      ))}
     </>
   );
 });
@@ -54,12 +69,18 @@ function ExperienceShell() {
   const [entered, setEntered] = useState(false);
   const [gateOpen, setGateOpen] = useState(true);
   const [gateKey, setGateKey] = useState(0);
+  const [storyKey, setStoryKey] = useState(0);
   const mainRef = useRef<HTMLElement | null>(null);
   const audio = useAudioExperience();
+  const {
+    currentIndex,
+    furthestIndex,
+    goTo,
+    reset: resetJourney,
+    isUnlocked,
+  } = useJourney();
 
-  const activeSection = useActiveChapter(sectionIds);
-  const active =
-    chapters.find((chapter) => chapter.sectionId === activeSection) ?? chapters[0];
+  const active = chapters[currentIndex] ?? chapters[0];
   const chromeVisible = entered && !gateOpen;
   const { setMood } = audio;
 
@@ -82,6 +103,14 @@ function ExperienceShell() {
     };
   }, [gateOpen, entered]);
 
+  useEffect(() => {
+    if (!entered || gateOpen) return;
+    const frame = window.requestAnimationFrame(() =>
+      scrollToTarget(0, { immediate: true }),
+    );
+    return () => window.cancelAnimationFrame(frame);
+  }, [currentIndex, entered, gateOpen]);
+
 
   const handleEnter = useCallback(() => {
     setEntered(true);
@@ -99,22 +128,26 @@ function ExperienceShell() {
   }, []);
 
   const handleReplay = useCallback(() => {
+    resetJourney();
+    setStoryKey((key) => key + 1);
     setEntered(false);
     setGateKey((key) => key + 1);
     setGateOpen(true);
     scrollToTarget(0, { immediate: true });
-  }, []);
+  }, [resetJourney]);
 
   const handleSelect = useCallback(
     (chapter: Chapter) => {
+      const index = chapters.findIndex((item) => item.id === chapter.id);
+      if (index < 0 || !isUnlocked(index)) return;
       audio.playSfx("page");
-      if (chapter.sectionId === "top") {
+      if (index === currentIndex) {
         scrollToTarget(0);
         return;
       }
-      scrollToTarget(`#${chapter.sectionId}`);
+      goTo(index);
     },
-    [audio],
+    [audio, currentIndex, goTo, isUnlocked],
   );
 
   return (
@@ -123,21 +156,22 @@ function ExperienceShell() {
         <div aria-hidden className="visual-grain" />
 
         <a
-          href="#chapter-files"
+          href={`#${active.sectionId}`}
           aria-hidden={!chromeVisible}
           inert={!chromeVisible}
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[96] focus:rounded-full focus:bg-plum focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-cream"
         >
-          Skip to the chapters
+          Skip to the current chapter
         </a>
 
-        <AudioControls visible={chromeVisible} />
-
         <TopProgress visible={chromeVisible} />
-        <BrandMark visible={chromeVisible} />
-        <ChapterIndicator active={active} onSelect={handleSelect} visible={chromeVisible} />
-        <ChapterRail active={active} onSelect={handleSelect} visible={chromeVisible} />
-        <SmileButton visible={chromeVisible} />
+        <ChapterRail
+          active={active}
+          onSelect={handleSelect}
+          visible={chromeVisible}
+          unlockedIndex={furthestIndex}
+        />
+        <JourneyContinue visible={chromeVisible} />
         <ScrollTopButton visible={chromeVisible} />
         <SceneTransition active={active} visible={chromeVisible} reduced={reduced} />
 
@@ -157,7 +191,12 @@ function ExperienceShell() {
             animate={{ opacity: entered ? 1 : 0 }}
             transition={{ duration: entered ? 1.4 : 0.4, ease: EASE_ENTER }}
           >
-            <StorySections playing={entered} onReplay={handleReplay} />
+            <StorySections
+              key={storyKey}
+              playing={entered}
+              onReplay={handleReplay}
+              currentIndex={currentIndex}
+            />
           </motion.div>
         </main>
 
@@ -178,8 +217,10 @@ function ExperienceShell() {
 
 export function Experience() {
   return (
-    <AudioProvider>
-      <ExperienceShell />
-    </AudioProvider>
+    <JourneyProvider>
+      <AudioProvider>
+        <ExperienceShell />
+      </AudioProvider>
+    </JourneyProvider>
   );
 }

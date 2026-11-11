@@ -23,6 +23,7 @@ import {
   WindArt,
 } from "@/components/common/Illustrations";
 import { finale } from "@/data/gallery";
+import { chapterInstructions } from "@/data/journey";
 import { EASE_ENTER } from "@/animations/motion";
 import { useConfetti } from "@/hooks/useConfetti";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
@@ -690,6 +691,7 @@ export function Finale({ onReplay }: { onReplay: () => void }) {
           label="The Grand Birthday Finale"
           title="One last wish."
           note={finale.script}
+          instruction={chapterInstructions.finale}
           tone="light"
         />
 

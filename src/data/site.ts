@@ -82,5 +82,5 @@ export const overture = {
   eyebrow: "you're in",
   script: "welcome home, sonu",
   line: "Eight small chapters. One very specific person.",
-  hint: "Scroll to open the story",
+  hint: "Tap to begin the story",
 };

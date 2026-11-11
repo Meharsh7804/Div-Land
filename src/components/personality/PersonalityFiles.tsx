@@ -12,6 +12,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { StorybookHeading } from "@/components/common/StorybookHeading";
 import { CatSticker } from "@/components/cats/CatSticker";
 import { useAudioExperience } from "@/components/audio/AudioProvider";
+import { useChapterGate } from "@/components/journey/JourneyProvider";
 import {
   Bow,
   CoffeeCup,
@@ -28,6 +29,7 @@ import {
   type PersonalityMode,
 } from "@/data/personality";
 import { EASE_ENTER } from "@/animations/motion";
+import { chapterInstructions } from "@/data/journey";
 import { clamp, cn } from "@/lib/utils";
 import { MineDivya, WorldDivya } from "./DivyaCharacters";
 
@@ -298,7 +300,9 @@ export function PersonalityFiles() {
   const stageRef = useRef<HTMLDivElement | null>(null);
   const pointerActive = useRef(false);
   const previousMode = useRef<PersonalityMode>(displayMode);
+  const seenModes = useRef<Set<PersonalityMode>>(new Set(["world"]));
   const audio = useAudioExperience();
+  const { markComplete } = useChapterGate("files");
 
   const mix = clamp(
     (position - MIN_POSITION) / (MAX_POSITION - MIN_POSITION),
@@ -313,6 +317,11 @@ export function PersonalityFiles() {
     previousMode.current = displayMode;
     audio.playSfx("page");
   }, [audio, displayMode]);
+
+  useEffect(() => {
+    seenModes.current.add(displayMode);
+    if (seenModes.current.size >= 2) markComplete("files");
+  }, [displayMode, markComplete]);
 
   const updateMode = useCallback((next: number) => {
     setDisplayMode((current) => {
@@ -411,6 +420,7 @@ export function PersonalityFiles() {
           id="files-title"
           number="02"
           label={filesCopy.eyebrow}
+          instruction={chapterInstructions.files}
           title={
             <>
               One person.{" "}
