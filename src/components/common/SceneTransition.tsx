@@ -45,7 +45,7 @@ export function SceneTransition({
       timer = window.setTimeout(() => {
         setSlate(active);
         setPlaying(true);
-      }, 240);
+      }, 0);
     }
     return () => {
       if (timer) window.clearTimeout(timer);

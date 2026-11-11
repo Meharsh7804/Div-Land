@@ -375,8 +375,8 @@ export function MakingOfDivya() {
         </div>
 
         <div className="relative mx-auto mt-4 w-full max-w-[64rem] sm:mt-5">
-          <div ref={stageRef} className="relative">
-            <div className="relative flex justify-center lg:absolute lg:inset-0 lg:items-center">
+          <div ref={stageRef} className="relative min-h-[42rem] sm:min-h-0">
+            <div className="absolute inset-x-0 top-1/2 flex -translate-y-1/2 justify-center lg:absolute lg:inset-0 lg:top-auto lg:translate-y-0 lg:items-center">
               <div
                 ref={figureRef}
                 className="relative w-[min(17rem,72vw)] sm:w-[19rem] lg:w-[20rem]"

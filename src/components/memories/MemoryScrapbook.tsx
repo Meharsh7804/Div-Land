@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useInView } from "motion/react";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { StorybookHeading } from "@/components/common/StorybookHeading";
@@ -38,16 +38,37 @@ export function MemoryScrapbook() {
   const audio = useAudioExperience();
   const reduceMotion = useReducedMotion();
   const sceneRef = useRef<HTMLDivElement>(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
   const sceneInView = useInView(sceneRef, { once: true, amount: 0.45 });
   const [selectedId, setSelectedId] = useState(memories[0].id);
+  const [visitedIds, setVisitedIds] = useState<Set<string>>(
+    () => new Set([memories[0].id]),
+  );
   const selected = memories.find((memory) => memory.id === selectedId) ?? memories[0];
   const selectedIndex = memories.findIndex((memory) => memory.id === selected.id);
   const tone = memoryToneStyles[selected.tone];
   const { markComplete } = useChapterGate("memories");
 
+  useEffect(() => {
+    const carousel = carouselRef.current;
+    const card = carousel?.querySelector<HTMLElement>(
+      `[data-memory-id="${selected.id}"]`,
+    );
+    if (!carousel || !card) return;
+    carousel.scrollTo({
+      left: card.offsetLeft - (carousel.clientWidth - card.offsetWidth) / 2,
+      behavior: "smooth",
+    });
+  }, [selected.id]);
+
   const open = (id: string) => {
     audio.playSfx("page");
     setSelectedId(id);
+    setVisitedIds((previous) => {
+      const next = new Set(previous);
+      next.add(id);
+      return next;
+    });
     markComplete("memories");
   };
 
@@ -215,7 +236,68 @@ export function MemoryScrapbook() {
                   <Star4 className="h-3 w-3 text-rose/45 garden-twinkle" />
                 </div>
 
-                <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
+                <div
+                  ref={carouselRef}
+                  className="mx-auto flex w-full max-w-[22rem] snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain px-[10%] pb-3 [scrollbar-width:none] sm:hidden [&::-webkit-scrollbar]:hidden"
+                  aria-label="Memory carousel"
+                >
+                  {memories.map((memory) => {
+                    const active = memory.id === selected.id;
+                    const cardTone = memoryToneStyles[memory.tone];
+
+                    return (
+                      <motion.div
+                        key={memory.id}
+                        data-memory-id={memory.id}
+                        className="w-[82%] shrink-0 snap-center"
+                        animate={{ scale: active ? 1 : 0.96, opacity: active ? 1 : 0.72 }}
+                        transition={{ duration: 0.35, ease: EASE_SCENE }}
+                      >
+                        <button
+                          type="button"
+                          onClick={() => open(memory.id)}
+                          aria-pressed={active}
+                          aria-label={`Open scene: ${memory.title}. ${memory.caption}`}
+                          className={cn(
+                            "group relative block w-full rounded-[1rem] border bg-cream p-2 text-left shadow-[0_20px_34px_-24px_rgba(47,31,46,.7)] transition-colors focus-visible:outline-offset-4",
+                            active
+                              ? "border-rose-deep/55 shadow-[0_24px_40px_-22px_rgba(47,31,46,.75)]"
+                              : "border-plum/12",
+                          )}
+                        >
+                          <span className="absolute -top-1.5 left-1/2 z-[3] h-2.5 w-10 -translate-x-1/2 rotate-[-3deg] bg-butter/80 shadow-sm" />
+                          <div
+                            className={cn(
+                              "relative aspect-[16/8] overflow-hidden rounded-[0.7rem] border bg-cream/60",
+                              cardTone.wash,
+                            )}
+                          >
+                            <MemoryScene
+                              kind={memory.key}
+                              animated={false}
+                              className="relative h-full w-full"
+                            />
+                            {memory.core ? (
+                              <span className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-cream/90 shadow-sm">
+                                <HeartArt className="h-3 w-3 text-rose-deep" />
+                              </span>
+                            ) : null}
+                          </div>
+                          <div className="mt-2 flex items-baseline justify-between gap-2 px-1">
+                            <span className="text-[0.48rem] font-extrabold tracking-[0.12em] text-plum/35">
+                              scene {memory.index}
+                            </span>
+                            <span className="truncate hand text-[1rem] leading-tight text-plum/80">
+                              {memory.short}
+                            </span>
+                          </div>
+                        </button>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+
+                <div className="hidden grid-cols-2 gap-2.5 sm:grid sm:gap-3">
                   {memories.map((memory, index) => {
                     const active = memory.id === selected.id;
                     const cardTone = memoryToneStyles[memory.tone];
@@ -307,9 +389,20 @@ export function MemoryScrapbook() {
 
         <div className="mt-7 flex flex-col items-center gap-2 text-center sm:mt-9">
           <span className="h-px w-16 bg-plum/15" />
-          <p className="hand text-[clamp(1.2rem,4vw,1.65rem)] leading-tight text-rose-deep/90">
-            {memoriesCopy.outro}
-          </p>
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={visitedIds.size === memories.length ? "complete" : "outro"}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.45, ease: EASE_SCENE }}
+              className="hand text-[clamp(1.2rem,4vw,1.65rem)] leading-tight text-rose-deep/90"
+            >
+              {visitedIds.size === memories.length
+                ? "Some things become special simply because they happened with you."
+                : memoriesCopy.outro}
+            </motion.p>
+          </AnimatePresence>
           <span className="flex items-center gap-1.5 text-[0.46rem] font-extrabold uppercase tracking-[0.22em] text-plum/30">
             <HeartArt className="h-2.5 w-2.5 text-rose/60" />
             kept anyway

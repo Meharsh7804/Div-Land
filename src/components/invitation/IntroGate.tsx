@@ -2,14 +2,28 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { Star4 } from "@/components/common/Illustrations";
+import { Sparkle, Star4 } from "@/components/common/Illustrations";
+import { Polaroid } from "@/components/scrapbook/Polaroid";
+import {
+  CornerVine,
+  DelicateButterfly,
+  DoodleHeart,
+  Eucalyptus,
+  PostageStamp,
+  Squiggle,
+  Tape,
+  WaxSeal,
+} from "@/components/scrapbook/ScrapbookArt";
 import { useAudioExperience } from "@/components/audio/AudioProvider";
-import { EASE_CINEMA, EASE_ENTER, EASE_SCENE } from "@/animations/motion";
+import {
+  DUR,
+  EASE_CINEMA,
+  EASE_ENTER,
+  EASE_SCENE,
+  STAGGER,
+} from "@/animations/motion";
 import { site } from "@/data/site";
 import { cn, seeded } from "@/lib/utils";
-import { IntroScenery } from "./IntroScenery";
-import { IntroSparks } from "./IntroSparks";
-import { INTRO_BEATS, INTRO_STAGE, type IntroStage } from "./introTimeline";
 
 type IntroGateProps = {
   onEnter: () => void;
@@ -19,18 +33,40 @@ type IntroGateProps = {
 
 const LETTERS = ["D", "I", "V", "Y", "A"];
 
+const cover = {
+  hidden: {},
+  show: {
+    transition: { staggerChildren: STAGGER.loose, delayChildren: 0.28 },
+  },
+};
+
+const rise = {
+  hidden: { opacity: 0, y: 22, filter: "blur(7px)" },
+  show: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: DUR.wide, ease: EASE_ENTER },
+  },
+};
+
+const scatter = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { duration: DUR.base, ease: EASE_SCENE } },
+};
+
 const petalBurst = (() => {
-  const random = seeded(157);
+  const random = seeded(91);
   const tones = ["#F3C9DC", "#FFF0B8", "#DCD5F5", "#FFDCCB", "#F6DCE7"];
-  return Array.from({ length: 16 }, (_, id) => {
-    const angle = (id / 16) * Math.PI * 2 + random() * 0.6;
-    const distance = 70 + random() * 150;
+  return Array.from({ length: 18 }, (_, id) => {
+    const angle = (id / 18) * Math.PI * 2 + random() * 0.5;
+    const distance = 90 + random() * 190;
     return {
       id,
       x: Math.cos(angle) * distance,
-      y: Math.sin(angle) * distance - 26,
-      rotate: random() * 420 - 210,
-      size: 5 + random() * 7,
+      y: Math.sin(angle) * distance,
+      rotate: random() * 400 - 200,
+      size: 5 + random() * 8,
       tone: tones[Math.floor(random() * tones.length)],
     };
   });
@@ -44,7 +80,7 @@ function ArrowDoodle({ className }: { className?: string }) {
       aria-hidden
       className={className}
       stroke="currentColor"
-      strokeWidth="1.6"
+      strokeWidth="1.7"
       strokeLinecap="round"
       strokeLinejoin="round"
     >
@@ -90,14 +126,14 @@ function SoundToggle({
       aria-pressed={musicOn}
       aria-label={
         musicOn && playing
-          ? "Turn the garden soundtrack off"
-          : "Turn the garden soundtrack on"
+          ? "Turn the little soundtrack off"
+          : "Turn the little soundtrack on"
       }
       className={cn(
         "group absolute right-4 top-4 z-[61] flex h-11 w-11 items-center justify-center rounded-full border backdrop-blur-md transition-all sm:right-6 sm:top-6",
         musicOn
-          ? "border-plum/20 bg-plum/90 text-cream shadow-[0_12px_30px_-14px_rgba(47,31,46,.8)]"
-          : "border-plum/12 bg-cream/55 text-plum/55 hover:bg-cream/85 hover:text-plum",
+          ? "border-rose-ink/30 bg-rose-ink text-cream shadow-[0_12px_30px_-14px_rgba(138,80,104,.85)]"
+          : "border-plum/12 bg-cream/60 text-plum/55 hover:bg-cream/90 hover:text-plum",
         busy && "opacity-60",
       )}
       style={{ marginTop: "env(safe-area-inset-top)" }}
@@ -108,10 +144,7 @@ function SoundToggle({
             <span
               key={bar}
               className="w-[2.5px] animate-pulse rounded-full bg-butter"
-              style={{
-                height: 6 + bar * 4,
-                animationDelay: `${bar * 0.14}s`,
-              }}
+              style={{ height: 6 + bar * 4, animationDelay: `${bar * 0.14}s` }}
             />
           ))}
         </span>
@@ -124,70 +157,32 @@ function SoundToggle({
 
 export function IntroGate({ onEnter, onComplete, reduced }: IntroGateProps) {
   const audio = useAudioExperience();
-  const [stageState, setStage] = useState<IntroStage>(
-    reduced ? INTRO_STAGE.ready : INTRO_STAGE.dusk,
-  );
-  const stage = reduced ? INTRO_STAGE.ready : stageState;
+  const [ready, setReady] = useState(reduced);
   const [opening, setOpening] = useState(false);
   const [leaving, setLeaving] = useState(false);
-  const [skipVisible, setSkipVisible] = useState(false);
-  const sceneRef = useRef<HTMLDivElement | null>(null);
   const gateButtonRef = useRef<HTMLButtonElement | null>(null);
   const hasFocusedGate = useRef(false);
-  const stageTimers = useRef<number[]>([]);
   const enterTimers = useRef<number[]>([]);
 
   useEffect(() => {
     if (reduced) return;
-    stageTimers.current = INTRO_BEATS.map(([delay, value]) =>
-      window.setTimeout(() => setStage(value), delay),
-    );
-    return () => {
-      stageTimers.current.forEach((id) => window.clearTimeout(id));
-    };
+    const timer = window.setTimeout(() => setReady(true), 1500);
+    return () => window.clearTimeout(timer);
   }, [reduced]);
-
-  useEffect(() => {
-    if (reduced) return;
-    const skipTimer = window.setTimeout(() => setSkipVisible(true), 2000);
-    return () => window.clearTimeout(skipTimer);
-  }, [reduced]);
-
-  const handleSkip = () => {
-    stageTimers.current.forEach((id) => window.clearTimeout(id));
-    stageTimers.current = [];
-    setStage(INTRO_STAGE.ready);
-    setSkipVisible(false);
-  };
 
   useEffect(() => {
     const pending = enterTimers.current;
-    return () => {
-      pending.forEach((id) => window.clearTimeout(id));
-    };
+    return () => pending.forEach((id) => window.clearTimeout(id));
   }, []);
 
   useEffect(() => {
-    if (reduced) return;
-    const node = sceneRef.current;
-    if (!node) return;
-    let frame = 0;
-    const onMove = (event: PointerEvent) => {
-      if (event.pointerType === "touch" || frame) return;
-      frame = requestAnimationFrame(() => {
-        frame = 0;
-        const x = (event.clientX / window.innerWidth - 0.5) * 2;
-        const y = (event.clientY / window.innerHeight - 0.5) * 2;
-        node.style.setProperty("--px", `${x.toFixed(3)}`);
-        node.style.setProperty("--py", `${y.toFixed(3)}`);
-      });
-    };
-    window.addEventListener("pointermove", onMove, { passive: true });
-    return () => {
-      if (frame) cancelAnimationFrame(frame);
-      window.removeEventListener("pointermove", onMove);
-    };
-  }, [reduced]);
+    if (!ready || opening || hasFocusedGate.current) return;
+    const frame = window.requestAnimationFrame(() => {
+      hasFocusedGate.current = true;
+      gateButtonRef.current?.focus({ preventScroll: true });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [ready, opening]);
 
   const handleEnter = () => {
     if (opening) return;
@@ -204,10 +199,10 @@ export function IntroGate({ onEnter, onComplete, reduced }: IntroGateProps) {
     }
 
     enterTimers.current.push(
-      window.setTimeout(() => audio.playSfx("enter"), 700),
-      window.setTimeout(() => onEnter(), 1500),
-      window.setTimeout(() => setLeaving(true), 1650),
-      window.setTimeout(() => onComplete(), 2900),
+      window.setTimeout(() => audio.playSfx("enter"), 620),
+      window.setTimeout(() => onEnter(), 900),
+      window.setTimeout(() => setLeaving(true), 1050),
+      window.setTimeout(() => onComplete(), 2250),
     );
   };
 
@@ -221,123 +216,181 @@ export function IntroGate({ onEnter, onComplete, reduced }: IntroGateProps) {
     if (willPlay) audio.playSfx("garden");
   };
 
-  const titleVisible = stage >= INTRO_STAGE.title;
-  const titleMoved = stage >= INTRO_STAGE.gate;
-  const ready = stage >= INTRO_STAGE.ready;
-
-  useEffect(() => {
-    if (!ready || opening || hasFocusedGate.current) return;
-    const handle = window.requestAnimationFrame(() => {
-      hasFocusedGate.current = true;
-      gateButtonRef.current?.focus({ preventScroll: true });
-    });
-    return () => window.cancelAnimationFrame(handle);
-  }, [ready, opening]);
-
   return (
     <motion.div
       role="dialog"
       aria-modal="true"
       aria-labelledby="intro-title"
-      className="fixed inset-0 z-[80] overflow-hidden bg-[#130d18]"
+      className="sb-scene fixed inset-0 z-[80] overflow-hidden"
       initial={false}
       animate={{ opacity: leaving ? 0 : 1 }}
       exit={{ opacity: 0 }}
       transition={{
-        duration: leaving ? 0.95 : reduced ? 0.2 : 1.25,
+        duration: leaving ? 0.95 : reduced ? 0.2 : 1.15,
         ease: leaving ? EASE_CINEMA : EASE_ENTER,
       }}
     >
+      <div aria-hidden className="sb-grain" />
+      <div aria-hidden className="sb-fiber" />
       <div
-        ref={sceneRef}
-        className="intro-world"
-        data-intro-stage={stage}
-        data-intro-opening={opening || undefined}
-        style={{ ["--px" as string]: "0", ["--py" as string]: "0" }}
-      >
-        <div className="intro-camera">
-          <IntroScenery stage={stage} opening={opening} reduced={reduced} />
-        </div>
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(ellipse_at_50%_46%,transparent_44%,rgba(73,51,72,.16)_100%)]"
+      />
 
+      {/* the desk around the journal */}
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-[2]"
+        initial="hidden"
+        animate="show"
+        variants={cover}
+      >
         <motion.div
-          aria-hidden
-          initial={false}
+          variants={scatter}
+          transition={{ delay: 0.5 }}
+          className="absolute left-[7%] top-[16%] h-16 w-16 sm:h-24 sm:w-24"
+        >
+          <span className="sb-sway block h-full w-full text-rose/50">
+            <FlowerSway />
+          </span>
+        </motion.div>
+        <motion.div
+          variants={scatter}
+          transition={{ delay: 0.7 }}
+          className="absolute bottom-[14%] right-[8%] h-14 w-14 opacity-80 sm:h-20 sm:w-20"
+        >
+          <span className="sb-float block h-full w-full">
+            <DoodleHeart className="h-full w-full text-rose/45" />
+          </span>
+        </motion.div>
+        <motion.div
+          variants={scatter}
+          transition={{ delay: 0.85 }}
+          className="absolute left-[13%] bottom-[20%] h-20 w-20 text-sage/60 sm:h-28 sm:w-28"
+        >
+          <span className="sb-sway block h-full w-full">
+            <Eucalyptus className="h-full w-full" />
+          </span>
+        </motion.div>
+        <motion.div
+          variants={scatter}
+          transition={{ delay: 0.6 }}
+          className="absolute right-[14%] top-[12%] h-8 w-8 text-butter sm:h-11 sm:w-11"
+        >
+          <span className="sb-twinkle block h-full w-full">
+            <Star4 className="h-full w-full" />
+          </span>
+        </motion.div>
+        <motion.div
+          variants={scatter}
+          transition={{ delay: 1 }}
+          className="absolute right-[22%] bottom-[10%] h-4 w-4 text-lavender-deep sm:h-6 sm:w-6"
+        >
+          <span className="sb-twinkle block h-full w-full">
+            <Sparkle className="h-full w-full" />
+          </span>
+        </motion.div>
+        <motion.div
+          variants={scatter}
+          transition={{ delay: 0.75 }}
+          className="absolute left-[26%] top-[9%] h-9 w-9 opacity-70 sm:h-12 sm:w-12"
+        >
+          <span className="sb-drift block h-full w-full">
+            <DelicateButterfly className="h-full w-full" />
+          </span>
+        </motion.div>
+      </motion.div>
+
+      {/* the journal itself */}
+      <div className="pointer-events-none absolute inset-0 z-[50] flex items-center justify-center px-5 py-16 sm:py-20">
+        <motion.div
+          className="pointer-events-auto relative w-full max-w-[32rem]"
+          style={{ transformPerspective: 1500, transformOrigin: "left center" }}
+          initial={reduced ? false : { opacity: 0, y: 30, scale: 0.94 }}
           animate={{
-            opacity: reduced || stage >= INTRO_STAGE.dawn ? 0 : 1,
+            opacity: opening ? 0.75 : 1,
+            y: opening ? 0 : 0,
+            scale: 1,
+            rotateY: opening ? -112 : 0,
           }}
           transition={{
-            duration: reduced ? 0.01 : 3.6,
-            ease: EASE_SCENE,
+            duration: opening ? 0.9 : 1.05,
+            ease: opening ? EASE_CINEMA : EASE_ENTER,
           }}
-          className="pointer-events-none absolute inset-0 z-[40]"
-          style={{
-            background:
-              "radial-gradient(ellipse at 50% 46%, #241a2c 0%, #170f1e 58%, #0d0812 100%)",
-          }}
-        />
-
-        <IntroSparks stage={stage} opening={opening} reduced={reduced} />
-
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 z-[42] bg-[radial-gradient(ellipse_at_50%_46%,transparent_50%,rgba(30,18,30,.28)_100%)]"
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 z-[43] h-[20%] bg-gradient-to-b from-plum/15 to-transparent"
-        />
-
-        <div className="pointer-events-none absolute inset-0 z-[50] flex items-center justify-center px-6">
+        >
           <motion.div
-            initial={false}
-            animate={
-              opening
-                ? { y: "-24vh", scale: 0.5, opacity: 0 }
-                : titleMoved
-                  ? { y: "-30vh", scale: 0.56, opacity: 1 }
-                  : { y: "0vh", scale: 1, opacity: 1 }
-            }
-            transition={{
-              duration: opening ? 0.7 : 1.9,
-              ease: opening ? EASE_CINEMA : EASE_ENTER,
-            }}
-            className="flex flex-col items-center text-center"
+            initial="hidden"
+            animate="show"
+            variants={cover}
+            className="sb-cover relative rounded-[1.5rem] px-6 pb-9 pt-10 text-center sm:px-10 sm:pb-11 sm:pt-12"
           >
-            <motion.p
-              initial={false}
-              animate={{
-                opacity: titleVisible && !titleMoved && !opening ? 0.62 : 0,
-                y: titleVisible ? 0 : 8,
-              }}
-              transition={{
-                duration: titleVisible ? 1 : 0.5,
-                delay: titleVisible && !titleMoved ? 0.15 : 0,
-                ease: EASE_ENTER,
-              }}
-              className="eyebrow text-plum/60"
-            >
-              a small birthday gift for
-            </motion.p>
+            <span aria-hidden className="sb-stitch pointer-events-none absolute inset-3 rounded-[1.2rem]" />
+            <CornerVine
+              aria-hidden
+              className="pointer-events-none absolute -left-3 -top-3 h-24 w-24 opacity-70 sm:h-32 sm:w-32"
+            />
+            <CornerVine
+              aria-hidden
+              className="pointer-events-none absolute -bottom-3 -right-3 h-24 w-24 rotate-180 opacity-70 sm:h-32 sm:w-32"
+            />
 
-            <div className="relative mt-2 inline-flex items-center justify-center sm:mt-3">
+            {/* ribbon bookmark */}
+            <span
+              aria-hidden
+              className="absolute -top-6 right-9 h-12 w-3.5 rounded-b-[3px] bg-gradient-to-b from-rose-deep to-rose shadow-[0_6px_10px_-6px_rgba(73,51,72,.6)]"
+            >
+              <span className="absolute inset-x-0 bottom-0 h-2.5 [clip-path:polygon(0_0,50%_100%,100%_0)] bg-cream/70" />
+            </span>
+
+            {/* taped photo corner */}
+            <motion.div
+              variants={rise}
+              className="absolute -left-4 bottom-10 hidden w-28 sm:block lg:-left-10 lg:w-32"
+            >
+              <div className="relative">
+                <Tape tone="lav" className="left-1/2 top-0 h-5 w-20 -translate-x-1/2 -translate-y-1/2 rotate-[-4deg]" />
+                <Polaroid
+                  src="/divya/1.jpeg"
+                  alt="The birthday girl"
+                  rotate={-7}
+                  objectPosition="center 22%"
+                  caption="The birthday Girl"
+                />
+              </div>
+            </motion.div>
+
+            <motion.div
+              variants={rise}
+              className="absolute -right-3 top-16 hidden sm:block"
+            >
+              <span className="sb-float block">
+                <PostageStamp className="h-20 w-16 rotate-[8deg]" />
+              </span>
+            </motion.div>
+
+            {/* the written cover */}
+            <div className="relative z-[2] flex flex-col items-center">
+              <motion.p
+                variants={rise}
+                className="text-[0.62rem] font-extrabold uppercase tracking-[0.34em] text-rose-ink/70"
+              >
+                a small birthday gift for
+              </motion.p>
+
               <h1
                 id="intro-title"
-                className="display-title flex items-baseline justify-center text-[clamp(3.4rem,15vw,8rem)] uppercase leading-[0.82] tracking-[0.16em] text-plum"
+                className="display-title mt-3 flex items-baseline justify-center text-[clamp(3.6rem,16vw,7rem)] uppercase leading-[0.82] tracking-[0.12em] text-plum"
               >
-                <span className="sr-only">Divya</span>
+                <span className="sr-only">{site.recipient}</span>
                 {LETTERS.map((letter, index) => (
                   <motion.span
                     key={`${letter}-${index}`}
                     aria-hidden
-                    initial={false}
-                    animate={
-                      titleVisible
-                        ? { opacity: 1, y: 0, filter: "blur(0px)" }
-                        : { opacity: 0, y: 18, filter: "blur(14px)" }
-                    }
+                    initial={reduced ? false : { opacity: 0, y: 20, filter: "blur(12px)" }}
+                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                     transition={{
-                      duration: reduced ? 0.01 : 1.15,
-                      delay: titleVisible && !reduced ? index * 0.08 : 0,
+                      duration: reduced ? 0.01 : 1,
+                      delay: reduced ? 0 : 0.35 + index * 0.07,
                       ease: EASE_ENTER,
                     }}
                     className="inline-block"
@@ -346,152 +399,82 @@ export function IntroGate({ onEnter, onComplete, reduced }: IntroGateProps) {
                   </motion.span>
                 ))}
               </h1>
-              <motion.span
-                aria-hidden
-                initial={false}
-                animate={{ opacity: titleVisible && !opening ? 0.72 : 0 }}
-                transition={{
-                  duration: 0.9,
-                  delay: titleVisible ? 0.65 : 0,
-                  ease: "easeOut",
-                }}
-                className="intro-shimmer display-title pointer-events-none absolute inset-0 flex select-none items-center justify-center text-[clamp(3.4rem,15vw,8rem)] uppercase leading-[0.82] tracking-[0.16em]"
+
+              <motion.div variants={rise} className="mt-1 text-rose-deep/70">
+                <Squiggle className="h-4 w-40" />
+              </motion.div>
+
+              <motion.p
+                variants={rise}
+                className="hand mt-3 max-w-[22ch] text-balance text-[1.35rem] leading-tight text-plum/75 sm:text-[1.5rem]"
               >
-                DIVYA
-              </motion.span>
+                {site.tagline}
+              </motion.p>
+
+              <motion.div
+                variants={rise}
+                className="mt-6 flex items-center justify-center gap-2.5 text-rose/60"
+              >
+                <span className="h-px w-8 bg-current" />
+                <Star4 className="h-2.5 w-2.5" />
+                <span className="h-px w-8 bg-current" />
+              </motion.div>
+
+              <motion.div variants={rise} className="mt-6">
+                <button
+                  ref={gateButtonRef}
+                  type="button"
+                  onClick={handleEnter}
+                  disabled={opening || !ready}
+                  aria-label="Open the scrapbook and enter Divya Land"
+                  className="sb-cta focus-visible:outline-none disabled:cursor-default disabled:opacity-70"
+                >
+                  <span>Open the scrapbook</span>
+                  <span aria-hidden className="sb-cta__badge">
+                    <ArrowDoodle className="h-3.5 w-3.5" />
+                  </span>
+                </button>
+              </motion.div>
+
+              <motion.p
+                variants={rise}
+                className="hand mt-3 text-[0.95rem] text-rose-ink/60"
+              >
+                made with a little extra love ♡
+              </motion.p>
             </div>
 
+            {/* wax seal */}
             <motion.div
-              initial={false}
-              animate={{
-                opacity: titleVisible && !titleMoved && !opening ? 1 : 0,
-                width: titleVisible && !titleMoved ? "5.5rem" : "0rem",
-              }}
-              transition={{
-                duration: titleVisible ? 1.1 : 0.4,
-                delay: titleVisible && !titleMoved ? 0.5 : 0,
-                ease: EASE_ENTER,
-              }}
-              className="mt-4 flex items-center justify-center gap-2.5 text-rose/60"
+              variants={rise}
+              className="absolute -bottom-5 right-8 sm:right-10"
             >
-              <span className="h-px flex-1 bg-current" />
-              <Star4 className="h-2 w-2 shrink-0" />
-              <span className="h-px flex-1 bg-current" />
+              <WaxSeal className="h-16 w-16 drop-shadow-[0_8px_12px_rgba(138,80,104,.35)]" />
             </motion.div>
-
-            <motion.p
-              initial={false}
-              animate={{
-                opacity: titleVisible && !titleMoved && !opening ? 1 : 0,
-                y: titleVisible && !titleMoved ? 0 : -6,
-                filter:
-                  titleVisible && !titleMoved ? "blur(0px)" : "blur(6px)",
-              }}
-              transition={{
-                duration: titleVisible ? 1.2 : 0.5,
-                delay: titleVisible && !titleMoved ? 0.75 : 0,
-                ease: EASE_ENTER,
-              }}
-              className="mt-4 max-w-[24ch] text-balance font-display text-[clamp(1rem,3.7vw,1.35rem)] italic leading-[1.55] text-plum/75 sm:max-w-[28ch]"
-            >
-              Some people make the world a little more beautiful.
-            </motion.p>
           </motion.div>
-        </div>
-
-        <motion.div
-          initial={false}
-          animate={
-            opening
-              ? { opacity: 0, y: 18 }
-              : stage >= INTRO_STAGE.gate
-                ? { opacity: 1, y: 0 }
-                : { opacity: 0, y: 22 }
-          }
-          transition={{
-            duration: opening ? 0.5 : 1.15,
-            delay: stage >= INTRO_STAGE.gate && !opening ? 0.55 : 0,
-            ease: EASE_ENTER,
-          }}
-          className="absolute inset-x-0 bottom-[max(1.35rem,env(safe-area-inset-bottom))] z-[55] flex flex-col items-center px-6 pb-1"
-        >
-          <p
-            data-intro-tagline
-            className="text-balance font-display text-[clamp(1.05rem,3.4vw,1.4rem)] italic text-plum/80"
-          >
-            {site.tagline}
-          </p>
-
-          <span
-            aria-hidden
-            className="mt-3 flex items-center justify-center gap-2 text-rose/45"
-          >
-            <span className="h-px w-7 bg-current" />
-            <Star4 className="h-1.5 w-1.5" />
-            <span className="h-px w-7 bg-current" />
-          </span>
-
-          <motion.button
-            ref={gateButtonRef}
-            data-intro-cta
-            type="button"
-            onClick={handleEnter}
-            disabled={opening || !ready}
-            aria-label="Open the gate and enter Divya Land"
-            initial={false}
-            animate={{
-              opacity: ready && !opening ? 1 : 0,
-              y: ready && !opening ? 0 : 10,
-            }}
-            transition={{
-              duration: 0.9,
-              delay: ready && !opening ? 0.15 : 0,
-              ease: EASE_ENTER,
-            }}
-            className="intro-enter group mt-2 inline-flex items-center gap-3 rounded-full focus-visible:outline-offset-4 disabled:cursor-default"
-          >
-            <span>Enter Divya Land</span>
-            <span aria-hidden className="intro-enter-arrow">
-              <ArrowDoodle className="h-3.5 w-3.5" />
-            </span>
-          </motion.button>
         </motion.div>
+      </div>
 
-        <AnimatePresence>
-          {skipVisible && !ready && !opening ? (
-            <motion.button
-              type="button"
-              onClick={handleSkip}
-              initial={{ opacity: 0, x: -8 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -8 }}
-              transition={{ duration: 0.45, ease: EASE_ENTER }}
-              className="absolute left-4 top-4 z-[61] flex h-11 items-center rounded-full border border-plum/12 bg-cream/55 px-4 text-[0.62rem] font-extrabold uppercase tracking-[0.2em] text-plum/70 backdrop-blur-md transition-colors hover:bg-cream/85 hover:text-plum sm:left-6 sm:top-6"
-              style={{ marginTop: "env(safe-area-inset-top)" }}
-            >
-              skip the opening
-            </motion.button>
-          ) : null}
-        </AnimatePresence>
+      <SoundToggle
+        onToggle={handleMusicToggle}
+        musicOn={audio.musicOn}
+        playing={audio.playing}
+        busy={audio.busy}
+      />
 
-        <SoundToggle
-          onToggle={handleMusicToggle}
-          musicOn={audio.musicOn}
-          playing={audio.playing}
-          busy={audio.busy}
-        />
-
+      {/* the cover swings open */}
+      <AnimatePresence>
         {opening ? (
           <>
             <motion.div
               aria-hidden
-              className="pointer-events-none absolute left-1/2 top-[54%] z-[56] h-[82vmax] w-[82vmax] -translate-x-1/2 -translate-y-1/2 rounded-full"
+              className="pointer-events-none absolute left-1/2 top-1/2 z-[56] h-[84vmax] w-[84vmax] -translate-x-1/2 -translate-y-1/2 rounded-full"
               style={{
                 background:
-                  "radial-gradient(circle, #FFFCF1 0%, #FFEFB9 30%, #F6DCE7 54%, transparent 74%)",
+                  "radial-gradient(circle, #FFFDF6 0%, #FFEFB9 32%, #F6DCE7 56%, transparent 76%)",
               }}
               initial={{ opacity: 0, scale: 0.1 }}
-              animate={{ opacity: [0, 0.85, 1, 1], scale: [0.1, 1.1, 2.7, 3.3] }}
+              animate={{ opacity: [0, 0.8, 1, 1], scale: [0.1, 1.1, 2.6, 3.2] }}
               transition={{
                 duration: 1.9,
                 times: [0, 0.24, 0.7, 1],
@@ -506,7 +489,7 @@ export function IntroGate({ onEnter, onComplete, reduced }: IntroGateProps) {
               {petalBurst.map((petal) => (
                 <motion.span
                   key={petal.id}
-                  className="absolute left-1/2 top-[54%] block"
+                  className="absolute left-1/2 top-1/2 block"
                   style={{
                     width: petal.size,
                     height: petal.size * 0.72,
@@ -531,19 +514,40 @@ export function IntroGate({ onEnter, onComplete, reduced }: IntroGateProps) {
             </div>
           </>
         ) : null}
+      </AnimatePresence>
 
-        <motion.div
-          aria-hidden
-          initial={false}
-          animate={{ opacity: leaving ? 1 : 0 }}
-          transition={{ duration: 0.8, ease: EASE_CINEMA }}
-          className="pointer-events-none absolute inset-0 z-[72]"
-          style={{
-            background:
-              "radial-gradient(ellipse at 50% 56%, #FFFDF8 0%, #FFF6E4 46%, #F9E9E1 100%)",
-          }}
-        />
-      </div>
+      <motion.div
+        aria-hidden
+        initial={false}
+        animate={{ opacity: leaving ? 1 : 0 }}
+        transition={{ duration: 0.8, ease: EASE_CINEMA }}
+        className="pointer-events-none absolute inset-0 z-[72]"
+        style={{
+          background:
+            "radial-gradient(ellipse at 50% 54%, #FFFDF8 0%, #FFF6E4 46%, #F9E9E1 100%)",
+        }}
+      />
     </motion.div>
+  );
+}
+
+function FlowerSway() {
+  return (
+    <svg viewBox="0 0 64 64" fill="none" aria-hidden className="h-full w-full">
+      <g fill="currentColor">
+        {[0, 72, 144, 216, 288].map((deg) => (
+          <ellipse
+            key={deg}
+            cx="32"
+            cy="17"
+            rx="9"
+            ry="14"
+            transform={`rotate(${deg} 32 32)`}
+          />
+        ))}
+      </g>
+      <circle cx="32" cy="32" r="7.5" fill="#FFF0B8" />
+      <circle cx="32" cy="32" r="3" fill="#C98EA8" opacity="0.55" />
+    </svg>
   );
 }

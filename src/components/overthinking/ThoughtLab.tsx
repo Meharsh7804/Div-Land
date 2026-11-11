@@ -261,6 +261,96 @@ function ThoughtMachine({
 }) {
   const busy = phase === "processing";
 
+  if (phase === "idle" || phase === "processing" || phase === "ready") {
+    return (
+      <div className="relative mx-auto w-full max-w-[30rem] px-1 sm:px-0">
+        <motion.div
+          animate={busy ? { scale: [1, 1.012, 1] } : { scale: 1 }}
+          transition={{ duration: 0.8, repeat: busy ? Infinity : 0, ease: "easeInOut" }}
+          className="relative overflow-hidden rounded-[2rem] border border-white/80 bg-[linear-gradient(145deg,rgba(255,249,240,.94),rgba(246,220,231,.78)_55%,rgba(220,213,245,.72))] p-3 shadow-[0_28px_60px_-34px_rgba(73,51,72,.65)] sm:p-4"
+        >
+          <div aria-hidden className="pointer-events-none absolute -right-14 -top-14 h-40 w-40 rounded-full bg-butter/45 blur-3xl" />
+          <div aria-hidden className="pointer-events-none absolute -bottom-16 -left-12 h-44 w-44 rounded-full bg-lavender/45 blur-3xl" />
+          <div className="relative rounded-[1.45rem] border border-plum/10 bg-cream/70 p-4 sm:p-5">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="font-display text-xl italic leading-none text-plum sm:text-2xl">
+                  {labCopy.machine.name}
+                </p>
+                <p className="mt-1 text-[0.52rem] font-extrabold uppercase tracking-[0.2em] text-plum/45">
+                  {labCopy.machine.sub}
+                </p>
+              </div>
+              <span className="flex items-center gap-1.5 rounded-full border border-plum/10 bg-white/55 px-2.5 py-1 text-[0.48rem] font-extrabold uppercase tracking-[0.14em] text-plum/55">
+                <span className={cn("h-2 w-2 rounded-full", busy ? "bg-rose-deep garden-twinkle" : "bg-sage")} />
+                {busy ? labCopy.machine.busy : labCopy.machine.ready}
+              </span>
+            </div>
+
+            <div className="relative mt-4 flex min-h-[12rem] items-center justify-center overflow-hidden rounded-[1.2rem] border border-white/80 bg-[radial-gradient(circle_at_50%_38%,rgba(255,240,184,.5),transparent_38%),linear-gradient(160deg,#FFF9F0,#F4EAF8)] px-4 py-6">
+              <span aria-hidden className="absolute h-32 w-32 rounded-full border border-rose/20" />
+              <span aria-hidden className="absolute h-24 w-24 rounded-full border border-lavender-deep/25 garden-breathe" />
+              <span aria-hidden className="absolute left-[18%] top-[24%] h-2 w-2 rounded-full bg-butter garden-twinkle" />
+              <span aria-hidden className="absolute right-[20%] top-[30%] h-1.5 w-1.5 rounded-full bg-rose/60 garden-twinkle" />
+              <span aria-hidden className="absolute bottom-[22%] left-[28%] h-1.5 w-1.5 rounded-full bg-lavender-deep garden-twinkle" />
+              <AnimatePresence mode="wait" initial={false}>
+                {thought ? (
+                  <ThoughtBubble key={`${thought.id}-${served}`} thought={thought} />
+                ) : (
+                  <EmptyChamber key="empty" />
+                )}
+              </AnimatePresence>
+            </div>
+
+            <div className="mt-3 flex items-center justify-between gap-2 rounded-full border border-plum/10 bg-white/45 px-3 py-2">
+              <span className="flex items-center gap-1.5 text-[0.48rem] font-extrabold uppercase tracking-[0.15em] text-plum/50">
+                <Sparkle className="h-3 w-3 text-rose-deep/65" />
+                positive thoughts only
+              </span>
+              <span className="text-[0.48rem] font-extrabold uppercase tracking-[0.12em] text-plum/38">
+                {served} converted
+              </span>
+            </div>
+          </div>
+        </motion.div>
+
+        <button
+          type="button"
+          onClick={onActivate}
+          disabled={busy}
+          aria-label="Convert a thought in the positive overthinking machine"
+          className="btn-magic mt-4 min-h-[3.25rem] w-full text-[0.9rem] shadow-[0_18px_34px_-20px_rgba(73,51,72,.7)]"
+        >
+          <Sparkle className="h-4 w-4 text-butter" />
+          {phase === "processing"
+            ? labCopy.processing
+            : thought
+              ? labCopy.again
+              : labCopy.button}
+        </button>
+
+        <p className="mt-2 text-center text-[0.52rem] font-extrabold uppercase tracking-[0.2em] text-plum/32">
+          {served > 0 ? `${served} converted · only good ones leave` : labCopy.footnote}
+        </p>
+
+        <div className="relative mx-auto mt-4 w-full max-w-[28rem]">
+          <span className="tape left-1/2 top-0 h-3 w-16 -translate-x-1/2 -translate-y-1/2 rotate-[-2deg]" />
+          <div className="flex items-start gap-2.5 rounded-[0.8rem] border border-dashed border-rose-deep/35 bg-[#FFF5DD] px-4 py-2.5 text-left shadow-[0_16px_28px_-24px_rgba(47,31,46,.55)]">
+            <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-rose-deep/70 garden-twinkle" />
+            <div>
+              <p className="text-[0.42rem] font-extrabold uppercase tracking-[0.2em] text-plum/38">
+                {labCopy.machine.warningLabel}
+              </p>
+              <p className="text-[0.58rem] font-extrabold uppercase leading-snug tracking-[0.11em] text-plum/68">
+                {labCopy.warning}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="relative mx-auto w-[17rem] sm:w-[22rem]">
       <div

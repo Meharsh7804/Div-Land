@@ -164,11 +164,11 @@ function ExperienceShell() {
           Skip to the current chapter
         </a>
 
-        <TopProgress visible={chromeVisible} />
+        <TopProgress visible={chromeVisible && currentIndex > 0} />
         <ChapterRail
           active={active}
           onSelect={handleSelect}
-          visible={chromeVisible}
+          visible={chromeVisible && currentIndex > 0}
           unlockedIndex={furthestIndex}
         />
         <JourneyContinue visible={chromeVisible} />

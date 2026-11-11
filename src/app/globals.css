@@ -1118,3 +1118,236 @@ textarea {
     opacity: 0.18;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   THE SCRAPBOOK UNIVERSE · scene 01 visual identity
+   A handcrafted paper world: pastel stock, washi tape, polaroids,
+   pressed botanicals and soft ink doodles.
+   ═══════════════════════════════════════════════════════════════ */
+
+.sb-scene {
+  isolation: isolate;
+  background-color: #fbeef0;
+  background-image:
+    radial-gradient(ellipse at 12% 4%, rgba(255, 255, 255, 0.85), transparent 46%),
+    radial-gradient(ellipse at 88% 10%, rgba(255, 240, 184, 0.42), transparent 44%),
+    radial-gradient(ellipse at 16% 94%, rgba(220, 213, 245, 0.55), transparent 52%),
+    radial-gradient(ellipse at 86% 90%, rgba(246, 220, 231, 0.6), transparent 54%),
+    linear-gradient(158deg, #fdf0f1 0%, #f7e8f1 32%, #efeafa 64%, #fcf3ea 100%);
+}
+
+/* tactile paper grain — a single tiled turbulence keeps it cheap on mobile */
+.sb-grain {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='200'%20height='200'%3E%3Cfilter%20id='n'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='0.8'%20numOctaves='2'%20stitchTiles='stitch'/%3E%3CfeColorMatrix%20type='saturate'%20values='0'/%3E%3C/filter%3E%3Crect%20width='100%25'%20height='100%25'%20filter='url(%23n)'%20opacity='0.42'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* faint laid-paper fibres */
+.sb-fiber {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.55;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(73, 51, 72, 0.022) 0,
+      rgba(73, 51, 72, 0.022) 1px,
+      transparent 1px,
+      transparent 5px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.05) 0,
+      rgba(255, 255, 255, 0.05) 1px,
+      transparent 1px,
+      transparent 6px
+    );
+}
+
+/* the paper the journal is built from */
+.sb-card {
+  position: relative;
+  background-color: #fffaf2;
+  background-image:
+    radial-gradient(circle at 15% 8%, rgba(255, 255, 255, 0.9), transparent 44%),
+    radial-gradient(circle at 88% 94%, rgba(246, 220, 231, 0.4), transparent 52%),
+    radial-gradient(circle at 78% 12%, rgba(220, 213, 245, 0.22), transparent 48%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 34px 64px -38px rgba(73, 51, 72, 0.55),
+    0 3px 0 rgba(73, 51, 72, 0.05);
+}
+
+/* the journal cover, bound in soft blush cloth */
+.sb-cover {
+  position: relative;
+  background-color: #f7e2ea;
+  background-image:
+    radial-gradient(circle at 22% 14%, rgba(255, 255, 255, 0.6), transparent 46%),
+    linear-gradient(150deg, #f9e6ee 0%, #f2d9e6 44%, #e7d8f0 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5),
+    inset 0 0 40px rgba(176, 112, 140, 0.18),
+    0 30px 56px -30px rgba(73, 51, 72, 0.6);
+}
+
+/* a soft double rule, like stitched bookbinding */
+.sb-stitch {
+  border: 1px dashed rgba(73, 51, 72, 0.28);
+}
+
+/* ————— polaroid ————— */
+.sb-polaroid {
+  position: relative;
+  display: block;
+  width: 100%;
+  background: linear-gradient(158deg, #fffefa, #fff4e6);
+  padding: 0.5rem 0.5rem 2.1rem;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 1px 2px rgba(73, 51, 72, 0.1),
+    0 20px 32px -20px rgba(73, 51, 72, 0.6);
+  transition: transform 0.55s var(--ease-scene), box-shadow 0.55s var(--ease-scene);
+}
+
+.sb-polaroid-frame {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  background: #f1e6e2;
+  box-shadow: inset 0 0 0 1px rgba(73, 51, 72, 0.08);
+}
+
+.sb-polaroid-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (hover: hover) {
+  .sb-polaroid:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.9),
+      0 2px 3px rgba(73, 51, 72, 0.1),
+      0 30px 44px -22px rgba(73, 51, 72, 0.66);
+  }
+}
+
+/* ————— washi tape ————— */
+.sb-tape {
+  position: absolute;
+  background: rgba(255, 240, 184, 0.72);
+  box-shadow: 0 2px 5px rgba(73, 51, 72, 0.13);
+  clip-path: polygon(1% 7%, 99% 0%, 100% 93%, 0% 100%);
+  pointer-events: none;
+}
+
+.sb-tape--rose { background: rgba(201, 142, 168, 0.5); }
+.sb-tape--lav { background: rgba(201, 191, 233, 0.58); }
+.sb-tape--mint { background: rgba(199, 211, 189, 0.6); }
+.sb-tape--cream { background: rgba(255, 249, 240, 0.82); }
+
+/* ————— taped notes & stickers ————— */
+.sb-note {
+  background-image: linear-gradient(180deg, #fffdf6, #fff5e0);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 16px 28px -20px rgba(73, 51, 72, 0.65);
+}
+
+.sb-doodle {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* ————— idle motion (kept alive on mobile) ————— */
+@keyframes sb-float {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -7px, 0); }
+}
+
+@keyframes sb-sway {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2.4deg); }
+}
+
+@keyframes sb-twinkle {
+  0%, 100% { opacity: 0.32; transform: scale(0.82); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes sb-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes sb-drift {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(9px, -11px, 0) rotate(3deg); }
+}
+
+.sb-float { animation: sb-float 6.6s ease-in-out infinite; }
+.sb-sway { animation: sb-sway 6.2s ease-in-out infinite; }
+.sb-twinkle { animation: sb-twinkle 3.8s ease-in-out infinite; }
+.sb-breathe { animation: sb-breathe 5.6s ease-in-out infinite; }
+.sb-drift { animation: sb-drift 9.5s ease-in-out infinite; }
+
+/* ————— the invitation's call to action ————— */
+.sb-cta {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 3.15rem;
+  padding: 0.7rem 0.7rem 0.7rem 1.5rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #b0708c, #8a5068);
+  color: var(--color-cream);
+  font-weight: 800;
+  font-size: 0.92rem;
+  letter-spacing: 0.01em;
+  box-shadow:
+    0 20px 34px -18px rgba(138, 80, 104, 0.85),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.4), box-shadow 0.35s ease;
+}
+
+.sb-cta:active { transform: scale(0.97); }
+
+@media (hover: hover) {
+  .sb-cta:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 26px 44px -20px rgba(138, 80, 104, 0.95),
+      inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  }
+}
+
+.sb-cta:focus-visible {
+  box-shadow:
+    0 0 0 4px rgba(255, 249, 240, 0.9),
+    0 0 0 6px rgba(176, 112, 140, 0.55);
+}
+
+.sb-cta__badge {
+  display: inline-flex;
+  height: 2.1rem;
+  width: 2.1rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(255, 249, 240, 0.18);
+  color: var(--color-butter);
+  transition: transform 0.4s var(--ease-scene);
+}
+
+.sb-cta:hover .sb-cta__badge { transform: translateX(3px) rotate(-6deg); }
